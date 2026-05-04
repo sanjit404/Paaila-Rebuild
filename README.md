@@ -89,6 +89,6 @@ php artisan serve
 ---
 
 ## Contribution
-- Sanjit404 *** https://github.com/Sanjit404 ***
-- kushal-KRB *** https://github.com/kushal-KRB ***
-- Sumanadk7 *** https://github.com/Sumanadk7 ***
+- *** Sanjit404  https://github.com/Sanjit404 ***
+- *** kushal-KRB  https://github.com/kushal-KRB ***
+- *** Sumanadk7  https://github.com/Sumanadk7 ***
