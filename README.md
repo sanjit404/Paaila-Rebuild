@@ -79,11 +79,14 @@ php artisan serve
 
 ```
 
+---
+
 ## Usage
 - Access the application via the local development server
 - Use the feed section to explore posts and trending content
 - Use the tracking page to monitor traveler movement and additional data
 
+---
 
 ## Contribution
 - Sanjit404 *** https://github.com/Sanjit404 ***
