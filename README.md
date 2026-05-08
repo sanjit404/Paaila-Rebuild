@@ -54,33 +54,8 @@ https://github.com/sanjit404/paailav1
 
 ## Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/sanjit404/Paaila-Rebuild.git
-
-# Navigate into the project
-cd Paaila-Rebuild
-
-# Install dependencies
-composer install
-npm install
-
-# Setup environment
-cp .env.example .env
-
-# Generate application key
-php artisan key:generate
-
-# Run migrations
-php artisan migrate
-
-# Run seeders
-php artisan db:seed
-
-# Start development server
-php artisan serve
-
-```
+For installation manual please visit.
+text``` https://github.com/sanjit404/Paaila-Rebuild/blob/Main/INSTALLATION.md ```
 
 ---
 
