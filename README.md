@@ -55,7 +55,7 @@ https://github.com/sanjit404/paailav1
 ## Installation
 
 For installation manual please visit.
-text``` https://github.com/sanjit404/Paaila-Rebuild/blob/Main/INSTALLATION.md ```
+ https://github.com/sanjit404/Paaila-Rebuild/blob/Main/INSTALLATION.md
 
 ---
 
