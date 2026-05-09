@@ -10,7 +10,7 @@ Paaila-Rebuild is a redesigned and restructured version of the original Paaila a
 This version introduces major system-level improvements along with new features aimed at improving user engagement and tracking accuracy.
 
 **Original Project:**  
-https://github.com/sanjit404/paailav1
+[PaailaV1](https://github.com/sanjit404/paailav1)
 
 ---
 
@@ -67,7 +67,7 @@ For installation manual please visit.
 ---
 
 ## Contribution
-- Sanjit404  https://github.com/Sanjit404
-- kushal-KRB  https://github.com/kushal-KRB
-- Sumanadk7  https://github.com/Sumanadk7
+- [Sanjit404](https://github.com/Sanjit404)
+- [kushal-KRB](https://github.com/kushal-KRB)
+- [Sumanadk7](https://github.com/Sumanadk7)
 
