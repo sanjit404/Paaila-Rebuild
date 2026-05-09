@@ -54,8 +54,7 @@ This version introduces major system-level improvements along with new features 
 
 ## Installation
 
-For installation manual please visit.
- https://github.com/sanjit404/Paaila-Rebuild/blob/Main/INSTALLATION.md
+```[Installation Manual](https://github.com/sanjit404/Paaila-Rebuild/blob/Main/INSTALLATION.md)```
 
 ---
 
