@@ -18,11 +18,12 @@ Before installing the application, ensure the following software and tools are i
 
 1. PHP 8.0 or higher
 2. Composer (Latest Stable Version)
-3. XAMPP Control Panel
-4. MySQL
-5. Node.js and NPM
-6. Git
-7. Visual Studio Code or any preferred code editor
+3. php8.2-xml & php-pdo [See Here](#enable-php-xml-extension)
+4. XAMPP Control Panel
+5. MySQL
+6. Node.js and NPM
+7. Git
+8. Visual Studio Code or any preferred code editor
 
 ---
 
@@ -286,6 +287,98 @@ npm run dev
 ```
 
 is running in a separate terminal.
+
+---
+
+# Enable PHP XML Extension 
+
+## Install XML Extension
+
+### Ubuntu / Debian
+
+```bash
+sudo apt update
+sudo apt install php-xml
+```
+
+For a specific PHP version:
+
+```bash
+sudo apt install php8.2-xml
+```
+
+---
+
+# Edit php.ini
+
+Open php.ini:
+
+```bash
+sudo nano /etc/php/8.2/apache2/php.ini
+```
+
+For PHP CLI:
+
+```bash
+sudo nano /etc/php/8.2/cli/php.ini
+```
+
+---
+
+# Enable XML Extensions
+
+Make sure these lines exist and are NOT commented:
+
+```ini
+extension=xml
+extension=dom
+extension=simplexml
+extension=xmlreader
+extension=xmlwriter
+```
+
+If lines start with `;`, remove the semicolon:
+
+```ini
+;extension=xml
+```
+
+Change to:
+
+```ini
+extension=xml
+```
+
+---
+
+# Restart Apache
+
+```bash
+sudo systemctl restart apache2
+```
+
+For PHP-FPM:
+
+```bash
+sudo systemctl restart php8.2-fpm
+```
+
+---
+
+# Verify Installation
+
+```bash
+php -m | grep xml
+```
+
+Expected output:
+
+```bash
+libxml
+xml
+xmlreader
+xmlwriter
+```
 
 ---
 
