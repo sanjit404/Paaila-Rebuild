@@ -4,9 +4,7 @@ const ROUTING_CONFIG = {
     openroute: '{{ env('OPENROUTE_API_KEY') }}',
 };
 
-/**
- * Smart Route Drawing with OpenRouteService + OSRM fallback
- */
+
 async function drawSmartRoute(waypoints, map) {
     console.log(`🗺️ Drawing route with ${waypoints.length} waypoints...`);
 
@@ -26,9 +24,7 @@ async function drawSmartRoute(waypoints, map) {
     return drawStraightLine(waypoints, map);
 }
 
-/**
- * OpenRouteService Routing (BEST - up to 50 waypoints)
- */
+
 async function getOpenRouteServiceRoute(waypoints, map) {
     const API_KEY = ROUTING_CONFIG.openroute;
     
@@ -59,7 +55,6 @@ async function getOpenRouteServiceRoute(waypoints, map) {
             const route = data.features[0];
             const routeCoordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
             
-            // Draw beautiful route
             const routeLine = L.polyline(routeCoordinates, {
                 color: '#667eea',
                 weight: 5,
@@ -69,10 +64,8 @@ async function getOpenRouteServiceRoute(waypoints, map) {
                 className: 'route-line'
             }).addTo(map);
 
-            // Fit map to route
             map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
 
-            // Extract stats
             const distance = (route.properties.segments.reduce((sum, seg) => sum + seg.distance, 0) / 1000).toFixed(1);
             const duration = Math.round(route.properties.segments.reduce((sum, seg) => sum + seg.duration, 0) / 60);
 
@@ -92,9 +85,7 @@ async function getOpenRouteServiceRoute(waypoints, map) {
     }
 }
 
-/**
- * OSRM Routing (Fallback - unlimited but may need segmentation)
- */
+
 async function getOSRMRoute(waypoints, map) {
     try {
         // OSRM has URL length limits, split if too many waypoints
@@ -141,9 +132,7 @@ async function getOSRMRoute(waypoints, map) {
     }
 }
 
-/**
- * OSRM Segmented (for >25 waypoints)
- */
+
 async function getOSRMRouteSegmented(waypoints, map) {
     console.log(`🔄 Splitting ${waypoints.length} waypoints into segments...`);
     
@@ -208,9 +197,7 @@ async function getOSRMRouteSegmented(waypoints, map) {
     return null;
 }
 
-/**
- * Straight Line Fallback
- */
+
 function drawStraightLine(waypoints, map) {
     const routePoints = waypoints.map(w => [w.lat, w.lng]);
     
@@ -234,7 +221,6 @@ function drawStraightLine(waypoints, map) {
 </script>
 
 <style>
-/* Animated route line */
 @keyframes routeAppear {
     from {
         stroke-dashoffset: 1000;

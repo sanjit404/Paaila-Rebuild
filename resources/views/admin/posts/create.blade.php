@@ -6,7 +6,6 @@
 <section style="background: var(--color-bg); min-height: calc(100vh - 70px);">
     <div class="container" style="padding-top: var(--space-xl); padding-bottom: var(--space-xl);">
         <div style="max-width: 900px; margin: 0 auto;">
-            <!-- Header -->
             <div style="margin-bottom: var(--space-xl);">
                 <a href="{{ route('admin.posts') }}" style="color: var(--color-text-light); text-decoration: none; font-size: 14px; margin-bottom: var(--space-md); display: inline-block;">
                     <i class="fas fa-arrow-left"></i> Back to Posts
@@ -15,13 +14,11 @@
                 <p style="color: var(--color-text-light); margin: 0;">Add content to your feed</p>
             </div>
 
-            <!-- Form -->
             <div class="card">
                 <div class="card-body" style="padding: var(--space-xl);">
                     <form method="POST" action="{{ route('admin.posts.store') }}" enctype="multipart/form-data">
                         @csrf
 
-                        <!-- Title -->
                         <div class="form-group">
                             <label class="form-label">Title <span class="required">*</span></label>
                             <input type="text" name="title" class="form-input" value="{{ old('title') }}" required>
@@ -30,7 +27,6 @@
                             @enderror
                         </div>
 
-                        <!-- Content -->
                         <div class="form-group">
                             <label class="form-label">Content <span class="required">*</span></label>
                             <textarea name="content" class="form-textarea" rows="8" required>{{ old('content') }}</textarea>
@@ -39,7 +35,6 @@
                             @enderror
                         </div>
 
-                        <!-- Type -->
                         <div class="form-group">
                             <label class="form-label">Type <span class="required">*</span></label>
                             <select name="type" class="form-select" required>
@@ -52,7 +47,6 @@
                             @enderror
                         </div>
 
-                        <!-- Trek Package (Optional) -->
                         <div class="form-group">
                             <label class="form-label">Related Trek Package (Optional)</label>
                             <select name="trek_id" class="form-select">
@@ -68,17 +62,14 @@
                             @enderror
                         </div>
 
-                        <!-- Image -->
                         <div class="form-group">
                             <label class="form-label">Featured Image</label>
-                            <input type="file" name="image" class="form-input" accept="image/*">
-                            <div class="form-helper">Max size: 2MB. Formats: JPG, PNG, WEBP</div>
+                            <input type="text" name="image" class="form-input" >
                             @error('image')
                                 <div class="form-error">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Highlighted -->
                         <div class="form-group">
                             <label style="display: flex; align-items: center; gap: var(--space-sm); cursor: pointer;">
                                 <input type="checkbox" name="is_highlighted" value="1" {{ old('is_highlighted') ? 'checked' : '' }}>
@@ -87,7 +78,6 @@
                             <div class="form-helper">Only one post can be highlighted at a time</div>
                         </div>
 
-                        <!-- Actions -->
                         <div class="flex gap-md">
                             <a href="{{ route('admin.posts') }}" class="btn btn-secondary btn-lg" style="flex: 1;">
                                 Cancel

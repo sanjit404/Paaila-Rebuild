@@ -27,26 +27,18 @@ class TravelerLocation extends Model
         'heading'   => 'decimal:2',
     ];
 
-    // ─── Relationships ────────────────────────────────────────────
 
     public function tourBooking(): BelongsTo
     {
         return $this->belongsTo(TourBooking::class);
     }
 
-    // ─── Computed ─────────────────────────────────────────────────
 
-    /**
-     * Human-readable time since this location was recorded.
-     */
     public function getTimeAgoAttribute(): string
     {
         return $this->created_at->diffForHumans();
     }
 
-    /**
-     * Returns 'online' | 'recent' | 'offline' based on age.
-     */
     public function getStatusClassAttribute(): string
     {
         $seconds = $this->created_at->diffInSeconds(now());
@@ -63,15 +55,6 @@ class TravelerLocation extends Model
         return $this->created_at->diffInSeconds(now()) < 30;
     }
 
-    // ─── Haversine ────────────────────────────────────────────────
-
-    /**
-     * Distance in metres to an arbitrary WGS-84 point.
-     *
-     *   a = sin²(Δφ/2) + cos(φ1)·cos(φ2)·sin²(Δλ/2)
-     *   c = 2·atan2(√a, √(1−a))
-     *   d = R·c   (R = 6 371 000 m)
-     */
     public function distanceTo(float $lat, float $lon): float
     {
         $R  = 6_371_000;

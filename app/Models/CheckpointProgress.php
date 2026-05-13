@@ -22,7 +22,6 @@ class CheckpointProgress extends Model
         'distance_from_checkpoint' => 'decimal:2',
     ];
 
-    // ─── Relationships ────────────────────────────────────────────
 
     public function tourBooking(): BelongsTo
     {
@@ -34,7 +33,6 @@ class CheckpointProgress extends Model
         return $this->belongsTo(Checkpoint::class);
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────
 
     public function isReached(): bool
     {
@@ -58,11 +56,6 @@ class CheckpointProgress extends Model
         $this->update(['facts_viewed' => true]);
     }
 
-    // ─── Computed ─────────────────────────────────────────────────
-
-    /**
-     * Human-readable distance string.
-     */
     public function getFormattedDistanceAttribute(): string
     {
         if (is_null($this->distance_from_checkpoint)) {

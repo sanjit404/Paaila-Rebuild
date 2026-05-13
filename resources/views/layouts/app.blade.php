@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'TourNepal') - Trek with Confidence</title>
+    <title>@yield('title', 'Paaila') - Trek with Confidence</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
@@ -498,11 +495,12 @@
             </a>
 
             <ul class="navbar-menu">
-            <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed</a></li>
+            <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed <sup ><i class="fa-solid fa-circle fa-beat-fade fa-2xs"></i></sup></a></li>
             <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
             
             @auth
                 <li><a href="{{ route('bookings.index') }}" class="navbar-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}">My Bookings</a></li>
+                <li><a href="{{ route('profile.show') }}" class="navbar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a></li>
                 
                 @if(auth()->user()->role === 'admin')
                     <li><a href="{{ route('admin.dashboard') }}" class="navbar-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
@@ -514,6 +512,7 @@
                         <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
                     </form>
                 </li>
+                
             @else
                 <li><a href="{{ route('login') }}" class="btn btn-secondary btn-sm">Login</a></li>
                 <li><a href="{{ route('register') }}" class="btn btn-primary btn-sm">Sign Up</a></li>

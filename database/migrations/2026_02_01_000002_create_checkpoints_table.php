@@ -14,6 +14,7 @@ return new class extends Migration
                 $table->foreignId('tour_package_id')->constrained()->onDelete('cascade');
                 $table->string('name');
                 $table->text('description')->nullable();
+                $table->text('image')->nullable();
                 $table->decimal('latitude', 10, 8);
                 $table->decimal('longitude', 11, 8);
                 $table->unsignedInteger('estimated_time_from_previous')->default(0);

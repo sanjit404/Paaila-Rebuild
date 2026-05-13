@@ -9,10 +9,12 @@
             <h1><i class="fas fa-edit"></i> Edit Package</h1>
             <p>{{ $package->name }}</p>
         </div>
+
         <div class="header-actions">
             <a href="{{ route('tours.show', $package) }}" class="btn btn-secondary" target="_blank">
                 <i class="fas fa-eye"></i> Preview
             </a>
+
             <a href="{{ route('admin.packages') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Back
             </a>
@@ -20,149 +22,270 @@
     </div>
 
     <div class="edit-layout">
-        <!-- Package Details -->
         <div class="edit-main">
             <div class="form-card">
                 <div class="card-header">
-                    <h3><i class="fas fa-info-circle"></i> Package Details</h3>
+                    <h3>
+                        <i class="fas fa-box"></i>
+                        Package Details
+                    </h3>
                 </div>
 
                 <form method="POST" action="{{ route('admin.packages.update', $package) }}">
                     @csrf
                     @method('PUT')
 
-                    <div class="form-group">
-                        <label for="name">Package Name *</label>
-                        <input type="text" name="name" id="name" value="{{ old('name', $package->name) }}" required>
-                    </div>
+                    <div class="form-section">
+                        <h4>Basic Information</h4>
 
-                    <div class="form-group">
-                        <label for="description">Description *</label>
-                        <textarea name="description" id="description" rows="4" required>{{ old('description', $package->description) }}</textarea>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
-                            <label for="price">Price (Rs.) *</label>
-                            <input type="number" name="price" id="price" value="{{ old('price', $package->price) }}" min="0" step="0.01" required>
+                            <label>Package Name *</label>
+                            <input type="text" name="name" value="{{ old('name', $package->name) }}" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="duration_days">Duration (Days) *</label>
-                            <input type="number" name="duration_days" id="duration_days" value="{{ old('duration_days', $package->duration_days) }}" min="1" required>
+                            <label>Description *</label>
+                            <textarea name="description" rows="5" required>{{ old('description', $package->description) }}</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Trek Type</label>
+                                @php
+                                    $types = ['nature','historical','cultural','adventure','spiritual','scenic','wildlife','village'];
+                                @endphp
+                                <select name="trek_type">
+                                    <option value="">Select Type</option>
+                                    @foreach($types as $type)
+                                        <option value="{{ $type }}" {{ old('trek_type', $package->trek_type) === $type ? 'selected' : '' }}>
+                                            {{ ucfirst($type) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Region</label>
+                                <input type="text" name="region" value="{{ old('region', $package->region) }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Price (Rs.) *</label>
+                                <input type="number" name="price" step="0.01" min="0" value="{{ old('price', $package->price) }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Duration (Days) *</label>
+                                <input type="number" name="duration_days" min="1" value="{{ old('duration_days', $package->duration_days) }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Difficulty *</label>
+                                <select name="difficulty_level" required>
+                                    <option value="easy" {{ old('difficulty_level', $package->difficulty_level) === 'easy' ? 'selected' : '' }}>Easy</option>
+                                    <option value="moderate" {{ old('difficulty_level', $package->difficulty_level) === 'moderate' ? 'selected' : '' }}>Moderate</option>
+                                    <option value="hard" {{ old('difficulty_level', $package->difficulty_level) === 'hard' ? 'selected' : '' }}>Hard</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Max Participants *</label>
+                                <input type="number" name="max_participants" min="1" value="{{ old('max_participants', $package->max_participants) }}" required>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <div class="form-section">
+                        <h4>Tags & Seasons</h4>
+
                         <div class="form-group">
-                            <label for="difficulty_level">Difficulty *</label>
-                            <select name="difficulty_level" id="difficulty_level" required>
-                                <option value="easy" {{ $package->difficulty_level == 'easy' ? 'selected' : '' }}>Easy</option>
-                                <option value="moderate" {{ $package->difficulty_level == 'moderate' ? 'selected' : '' }}>Moderate</option>
-                                <option value="hard" {{ $package->difficulty_level == 'hard' ? 'selected' : '' }}>Hard</option>
-                            </select>
+                            <label>Tags (comma separated)</label>
+                            <input type="text"
+                                   name="tags"
+                                   value="{{ old('tags', is_array($package->tags) ? implode(',', $package->tags) : $package->tags) }}"
+                                   placeholder="forest, wildlife, himalaya">
                         </div>
 
                         <div class="form-group">
-                            <label for="max_participants">Max Participants *</label>
-                            <input type="number" name="max_participants" id="max_participants" value="{{ old('max_participants', $package->max_participants) }}" min="1" required>
-                        </div>
-                    </div>
+                            <label>Available Seasons</label>
+                            @php
+                                $selectedSeasons = is_array($package->season)
+                                    ? $package->season
+                                    : (json_decode($package->season, true) ?: []);
+                            @endphp
 
-                    <div class="form-section-title">Start Location</div>
-
-                    <div class="form-group">
-                        <label for="start_location_name">Location Name *</label>
-                        <input type="text" name="start_location_name" id="start_location_name" value="{{ old('start_location_name', $package->start_location_name) }}" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="start_lat">Latitude *</label>
-                            <input type="number" name="start_lat" id="start_lat" value="{{ old('start_lat', $package->start_lat) }}" step="0.000001" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="start_lng">Longitude *</label>
-                            <input type="number" name="start_lng" id="start_lng" value="{{ old('start_lng', $package->start_lng) }}" step="0.000001" required>
+                            <div class="checkbox-grid">
+                                @foreach(['spring','summer','autumn','winter'] as $season)
+                                    <label class="checkbox-item">
+                                        <input type="checkbox"
+                                               name="season[]"
+                                               value="{{ $season }}"
+                                               {{ in_array($season, old('season', $selectedSeasons)) ? 'checked' : '' }}>
+                                        {{ ucfirst($season) }}
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-section-title">End Location</div>
+                    <div class="form-section">
+                        <h4>Package Image</h4>
 
-                    <div class="form-group">
-                        <label for="end_location_name">Location Name *</label>
-                        <input type="text" name="end_location_name" id="end_location_name" value="{{ old('end_location_name', $package->end_location_name) }}" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="end_lat">Latitude *</label>
-                            <input type="number" name="end_lat" id="end_lat" value="{{ old('end_lat', $package->end_lat) }}" step="0.000001" required>
-                        </div>
+                        @if($package->image)
+                            <div class="image-preview">
+                                <img src="{{ $package->image }}" alt="{{ $package->name }}">
+                            </div>
+                        @endif
 
                         <div class="form-group">
-                            <label for="end_lng">Longitude *</label>
-                            <input type="number" name="end_lng" id="end_lng" value="{{ old('end_lng', $package->end_lng) }}" step="0.000001" required>
+                            <label>Image URL / Path</label>
+                            <input type="text" name="image" value="{{ old('image', $package->image) }}" placeholder="https://example.com/image.jpg or /storage/packages/image.jpg">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" name="is_active" value="1" {{ $package->is_active ? 'checked' : '' }}>
+                    <div class="form-section">
+                        <h4>Start Location</h4>
+
+                        <div class="form-group">
+                            <label>Location Name *</label>
+                            <input type="text" name="start_location_name" value="{{ old('start_location_name', $package->start_location_name) }}" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Latitude *</label>
+                                <input type="number" step="0.00000001" name="start_lat" value="{{ old('start_lat', $package->start_lat) }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Longitude *</label>
+                                <input type="number" step="0.00000001" name="start_lng" value="{{ old('start_lng', $package->start_lng) }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>End Location</h4>
+
+                        <div class="form-group">
+                            <label>Location Name *</label>
+                            <input type="text" name="end_location_name" value="{{ old('end_location_name', $package->end_location_name) }}" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Latitude *</label>
+                                <input type="number" step="0.00000001" name="end_lat" value="{{ old('end_lat', $package->end_lat) }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Longitude *</label>
+                                <input type="number" step="0.00000001" name="end_lng" value="{{ old('end_lng', $package->end_lng) }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Statistics</h4>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Views Count</label>
+                                <input type="number" name="views_count" min="0" value="{{ old('views_count', $package->views_count) }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Bookings Count</label>
+                                <input type="number" name="bookings_count" min="0" value="{{ old('bookings_count', $package->bookings_count) }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Rating Average</label>
+                                <input type="number" name="rating_avg" step="0.01" min="0" max="5" value="{{ old('rating_avg', $package->rating_avg) }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Rating Count</label>
+                                <input type="number" name="rating_count" min="0" value="{{ old('rating_count', $package->rating_count) }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <input type="hidden" name="is_active" value="0">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', $package->is_active) ? 'checked' : '' }}>
                             Package is active
                         </label>
                     </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Update Package
+                            <i class="fas fa-save"></i>
+                            Update Package
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Checkpoints -->
             <div class="form-card">
                 <div class="card-header">
-                    <h3><i class="fas fa-map-marker-alt"></i> Checkpoints</h3>
+                    <h3>
+                        <i class="fas fa-map-marker-alt"></i>
+                        Checkpoints
+                    </h3>
+
                     <button type="button" class="btn btn-primary btn-sm" onclick="toggleAddCheckpoint()">
-                        <i class="fas fa-plus"></i> Add Checkpoint
+                        <i class="fas fa-plus"></i>
+                        Add Checkpoint
                     </button>
                 </div>
 
-                <!-- Add Checkpoint Form -->
-                <div id="addCheckpointForm" style="display: none;">
+                <div id="addCheckpointForm" style="display:none;">
                     <form method="POST" action="{{ route('admin.checkpoints.add', $package) }}" class="checkpoint-form">
                         @csrf
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Checkpoint Name *</label>
-                                <input type="text" name="name" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Latitude *</label>
-                                <input type="number" name="latitude" step="0.000001" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Longitude *</label>
-                                <input type="number" name="longitude" step="0.000001" required>
-                            </div>
+
+                        <div class="form-group">
+                            <label>Name *</label>
+                            <input type="text" name="name" required>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Detection Radius (meters)</label>
-                                <input type="number" name="detection_radius" value="100" min="10">
-                            </div>
-                            <div class="form-group">
-                                <label>Time from Previous (mins)</label>
-                                <input type="number" name="estimated_time_from_previous" min="0">
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea name="short_description" rows="2"></textarea>
+                            <textarea name="description" rows="3"></textarea>
                         </div>
+
+                        <div class="form-group">
+                            <label>Image URL / Path</label>
+                            <input type="text" name="image" placeholder="https://example.com/checkpoint.jpg">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Latitude *</label>
+                                <input type="number" step="0.00000001" name="latitude" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Longitude *</label>
+                                <input type="number" step="0.00000001" name="longitude" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Radius</label>
+                                <input type="number" name="radius" value="100">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Estimated Time</label>
+                                <input type="number" name="estimated_time_from_previous">
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary btn-sm">Add Checkpoint</button>
                             <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAddCheckpoint()">Cancel</button>
@@ -170,143 +293,208 @@
                     </form>
                 </div>
 
-                <!-- Checkpoints List -->
-                @if($package->checkpoints->count() > 0)
-                    <div class="checkpoints-list">
-                        @foreach($package->checkpoints->sortBy('order') as $checkpoint)
-                            <div class="checkpoint-item">
-                                <div class="checkpoint-header">
-                                    <div class="checkpoint-number">{{ $checkpoint->order }}</div>
-                                    <div class="checkpoint-info">
-                                        <h4>{{ $checkpoint->name }}</h4>
-                                        <p>{{ $checkpoint->short_description }}</p>
-                                        <small>Lat: {{ $checkpoint->latitude }}, Lng: {{ $checkpoint->longitude }} | Radius: {{ $checkpoint->detection_radius }}m</small>
-                                    </div>
-                                    <div class="checkpoint-actions">
-                                        <button type="button" class="btn-icon" onclick="toggleFacts({{ $checkpoint->id }})" title="Facts">
-                                            <i class="fas fa-lightbulb"></i> {{ $checkpoint->facts->count() }}
-                                        </button>
-                                        <form method="POST" action="{{ route('admin.checkpoints.delete', $checkpoint) }}" style="display: inline;" onsubmit="return confirm('Delete this checkpoint?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-icon btn-danger" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                <div class="checkpoints-list">
+                    @forelse($package->checkpoints as $checkpoint)
+                        <div class="checkpoint-item">
+                            <div class="checkpoint-header">
+                                <div class="checkpoint-number">{{ $checkpoint->order }}</div>
 
-                                <!-- Facts for this checkpoint -->
-                                <div id="facts-{{ $checkpoint->id }}" class="facts-section" style="display: none;">
-                                    <div class="facts-header">
-                                        <h5><i class="fas fa-lightbulb"></i> Educational Facts</h5>
-                                        <button type="button" class="btn btn-primary btn-sm" onclick="toggleAddFact({{ $checkpoint->id }})">
-                                            <i class="fas fa-plus"></i> Add Fact
-                                        </button>
-                                    </div>
+                                <div class="checkpoint-info">
+                                    <h4>{{ $checkpoint->name }}</h4>
+                                    <p>{{ $checkpoint->description }}</p>
+                                    <small>{{ $checkpoint->latitude }}, {{ $checkpoint->longitude }}</small>
 
-                                    <!-- Add Fact Form -->
-                                    <div id="addFactForm-{{ $checkpoint->id }}" style="display: none;">
-                                        <form method="POST" action="{{ route('admin.facts.add', $checkpoint) }}" class="fact-form">
-                                            @csrf
-                                            <div class="form-group">
-                                                <label>Title *</label>
-                                                <input type="text" name="title" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Content *</label>
-                                                <textarea name="content" rows="3" required></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Type *</label>
-                                                <select name="type" required>
-                                                    <option value="history">History</option>
-                                                    <option value="culture">Culture</option>
-                                                    <option value="safety">Safety</option>
-                                                    <option value="info">Information</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-actions">
-                                                <button type="submit" class="btn btn-primary btn-sm">Add Fact</button>
-                                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleAddFact({{ $checkpoint->id }})">Cancel</button>
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                    <!-- Facts List -->
-                                    @if($checkpoint->facts->count() > 0)
-                                        <div class="facts-list">
-                                            @foreach($checkpoint->facts->sortBy('order') as $fact)
-                                                <div class="fact-item">
-                                                    <div class="fact-type-badge type-{{ $fact->type }}">
-                                                        <i class="{{ $fact->icon_class }}"></i>
-                                                        {{ ucfirst($fact->type) }}
-                                                    </div>
-                                                    <div class="fact-content">
-                                                        <h6>{{ $fact->title }}</h6>
-                                                        <p>{{ $fact->content }}</p>
-                                                    </div>
-                                                    <form method="POST" action="{{ route('admin.facts.delete', $fact) }}" style="display: inline;" onsubmit="return confirm('Delete this fact?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-icon btn-danger btn-sm" title="Delete">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            @endforeach
+                                    @if($checkpoint->image)
+                                        <div class="checkpoint-image">
+                                            <img src="{{ $checkpoint->image }}" alt="{{ $checkpoint->name }}" style="max-width:120px; margin-top:10px; border-radius:8px;">
                                         </div>
-                                    @else
-                                        <p class="text-muted">No facts added yet</p>
                                     @endif
                                 </div>
+
+                                <div class="checkpoint-actions">
+                                    <button type="button"
+                                            class="btn-icon"
+                                            onclick="toggleEditCheckpoint({{ $checkpoint->id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    <form method="POST"
+                                          action="{{ route('admin.checkpoints.delete', $checkpoint) }}"
+                                          onsubmit="return confirm('Delete this checkpoint?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-icon btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p class="text-muted">No checkpoints added yet. Add checkpoints to create the tour route.</p>
-                @endif
+
+                            <div id="editCheckpointForm-{{ $checkpoint->id }}" class="checkpoint-edit-form" style="display:none;">
+                                <form method="POST" action="{{ route('admin.checkpoints.update', $checkpoint) }}" class="checkpoint-form">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="form-group">
+                                        <label>Name *</label>
+                                        <input type="text" name="name" value="{{ old('name', $checkpoint->name) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea name="description" rows="3">{{ old('description', $checkpoint->description) }}</textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Image URL / Path</label>
+                                        <input type="text" name="image" value="{{ old('image', $checkpoint->image) }}">
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Latitude *</label>
+                                            <input type="number" step="0.00000001" name="latitude" value="{{ old('latitude', $checkpoint->latitude) }}" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Longitude *</label>
+                                            <input type="number" step="0.00000001" name="longitude" value="{{ old('longitude', $checkpoint->longitude) }}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Order</label>
+                                            <input type="number" name="order" min="1" value="{{ old('order', $checkpoint->order) }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Radius</label>
+                                            <input type="number" name="radius" value="{{ old('radius', $checkpoint->radius) }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Estimated Time</label>
+                                            <input type="number" name="estimated_time_from_previous" value="{{ old('estimated_time_from_previous', $checkpoint->estimated_time_from_previous) }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary btn-sm">Update Checkpoint</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditCheckpoint({{ $checkpoint->id }})">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="facts-section">
+                                <div class="facts-header">
+                                    <h5>Facts</h5>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="toggleAddFact({{ $checkpoint->id }})">
+                                        Add Fact
+                                    </button>
+                                </div>
+
+                                <div id="addFactForm-{{ $checkpoint->id }}" style="display:none;" class="fact-form">
+                                    <form method="POST" action="{{ route('admin.facts.add', $checkpoint) }}">
+                                        @csrf
+
+                                        <div class="form-group">
+                                            <label>Title *</label>
+                                            <input type="text" name="title" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Content *</label>
+                                            <textarea name="content" rows="3" required></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Type *</label>
+                                            <select name="type" required>
+                                                <option value="history">History</option>
+                                                <option value="culture">Culture</option>
+                                                <option value="safety">Safety</option>
+                                                <option value="info">Info</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn btn-primary btn-sm">Add Fact</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="facts-list">
+                                    @forelse($checkpoint->facts as $fact)
+                                        <div class="fact-item">
+                                            <div class="fact-type-badge type-{{ $fact->type }}">
+                                                {{ ucfirst($fact->type) }}
+                                            </div>
+
+                                            <div class="fact-content">
+                                                <h6>{{ $fact->title }}</h6>
+                                                <p>{{ $fact->content }}</p>
+                                            </div>
+
+                                            <form method="POST" action="{{ route('admin.facts.delete', $fact) }}" onsubmit="return confirm('Delete this fact?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-icon btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted">No facts added yet.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted">No checkpoints found for this package.</p>
+                    @endforelse
+                </div>
             </div>
         </div>
 
-        <!-- Sidebar -->
         <div class="edit-sidebar">
-            <!-- Danger Zone -->
             <div class="danger-zone">
                 <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
-                <p>Once you delete a package, there is no going back.</p>
-                <form method="POST" action="{{ route('admin.packages.delete', $package) }}" onsubmit="return confirm('Are you sure? This will delete the package and all its checkpoints!')">
+                <p>Deleting this package will remove all checkpoints and facts.</p>
+
+                <form method="POST" action="{{ route('admin.packages.delete', $package) }}" onsubmit="return confirm('Delete this package permanently?')">
                     @csrf
                     @method('DELETE')
+
                     <button type="submit" class="btn btn-danger btn-block">
-                        <i class="fas fa-trash"></i> Delete Package
+                        <i class="fas fa-trash"></i>
+                        Delete Package
                     </button>
                 </form>
             </div>
 
-            <!-- Quick Info -->
             <div class="info-box">
                 <h4>Package Info</h4>
-                <div class="info-item">
-                    <i class="fas fa-calendar"></i>
-                    <span>Created {{ $package->created_at->diffForHumans() }}</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-edit"></i>
-                    <span>Updated {{ $package->updated_at->diffForHumans() }}</span>
-                </div>
+
                 <div class="info-item">
                     <i class="fas fa-map-marker-alt"></i>
                     <span>{{ $package->checkpoints->count() }} Checkpoints</span>
                 </div>
+
                 <div class="info-item">
-                    <i class="fas fa-ticket-alt"></i>
-                    <span>{{ $package->bookings->count() }} Bookings</span>
+                    <i class="fas fa-lightbulb"></i>
+                    <span>{{ $package->checkpoints->sum(fn($c) => $c->facts->count()) }} Facts</span>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ $package->created_at->diffForHumans() }}</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
 
 @push('styles')
 <style>
@@ -354,14 +542,6 @@
     .card-header h3 {
         margin: 0;
         color: #333;
-    }
-
-    .form-section-title {
-        font-weight: 600;
-        color: #667eea;
-        margin: 2rem 0 1rem 0;
-        padding-top: 1.5rem;
-        border-top: 1px solid #e0e0e0;
     }
 
     .form-group {
@@ -650,6 +830,10 @@
         margin-right: 0.5rem;
     }
 
+    .checkpoint-edit-form {
+        margin-top: 1rem;
+    }
+
     @media (max-width: 1200px) {
         .edit-layout {
             grid-template-columns: 1fr;
@@ -669,15 +853,14 @@
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
-    function toggleFacts(checkpointId) {
-        const facts = document.getElementById('facts-' + checkpointId);
-        facts.style.display = facts.style.display === 'none' ? 'block' : 'none';
-    }
-
     function toggleAddFact(checkpointId) {
         const form = document.getElementById('addFactForm-' + checkpointId);
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
+
+    function toggleEditCheckpoint(checkpointId) {
+        const form = document.getElementById('editCheckpointForm-' + checkpointId);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
 </script>
 @endpush
-@endsection

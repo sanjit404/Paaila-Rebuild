@@ -26,8 +26,6 @@ class PostSeeder extends Seeder
                 'is_highlighted' => true,
                 'trek_id' => $packages->first()->id,
                 'likes_count' => 45,
-                'rating_avg' => 4.5,
-                'rating_count' => 12,
             ],
 
             [
@@ -38,8 +36,6 @@ class PostSeeder extends Seeder
                 'is_highlighted' => false,
                 'trek_id' => $packages->first()->id,
                 'likes_count' => 28,
-                'rating_avg' => 4.7,
-                'rating_count' => 8,
             ],
             [
                 'title' => 'Pokhara Adventure: Lakes & Mountains',
@@ -49,8 +45,6 @@ class PostSeeder extends Seeder
                 'is_highlighted' => false,
                 'trek_id' => $packages->count() > 1 ? $packages->skip(1)->first()->id : $packages->first()->id,
                 'likes_count' => 34,
-                'rating_avg' => 4.8,
-                'rating_count' => 10,
             ],
             [
                 'title' => 'Early Bird Special: Save 20% on Summer Treks',
@@ -60,8 +54,6 @@ class PostSeeder extends Seeder
                 'is_highlighted' => false,
                 'trek_id' => null,
                 'likes_count' => 56,
-                'rating_avg' => 4.9,
-                'rating_count' => 15,
             ],
             [
                 'title' => 'Group Discount: Bring 5+ Friends, Get 25% Off',
@@ -71,8 +63,6 @@ class PostSeeder extends Seeder
                 'is_highlighted' => false,
                 'trek_id' => null,
                 'likes_count' => 41,
-                'rating_avg' => 4.7,
-                'rating_count' => 11,
             ],
 
             [
@@ -83,8 +73,6 @@ class PostSeeder extends Seeder
                 'is_highlighted' => false,
                 'trek_id' => null,
                 'likes_count' => 67,
-                'rating_avg' => 4.9,
-                'rating_count' => 18,
             ],
             [
                 'title' => 'Safety First: Our New Emergency Response System',
@@ -94,8 +82,6 @@ class PostSeeder extends Seeder
                 'is_highlighted' => false,
                 'trek_id' => null,
                 'likes_count' => 53,
-                'rating_avg' => 4.8,
-                'rating_count' => 14,
             ],
             
         ];

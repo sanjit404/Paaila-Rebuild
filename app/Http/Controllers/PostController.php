@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Like;
-use App\Models\Rating;
 use App\Services\UserIdentifierService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,29 +36,25 @@ class PostController extends Controller
             ->pluck('post_id')
             ->toArray();
 
-        $userRatings = Rating::where('identifier', $identifier)
-            ->pluck('rating', 'post_id')
-            ->toArray();
+        
 
         return view('feed.index', compact(
             'posts',
             'highlighted',
             'identifier',
             'likedPostIds',
-            'userRatings'
         ));
     }
 
   
     public function show(Post $post)
     {
-        $post->load('trek', 'ratings');
+       
         
         $identifier = UserIdentifierService::getIdentifier();
-        $userRating = $post->getRatingBy($identifier);
         $hasLiked = $post->isLikedBy($identifier);
 
-        return view('feed.show', compact('post', 'userRating', 'hasLiked', 'identifier'));
+        return view('feed.show', compact('post', 'hasLiked', 'identifier'));
     }
 
     
@@ -105,45 +100,4 @@ class PostController extends Controller
         }
     }
 
-   
-    public function rate(Request $request, Post $post)
-    {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-        ]);
-
-        $identifier = UserIdentifierService::getIdentifier();
-
-        try {
-            DB::beginTransaction();
-
-            Rating::updateOrCreate(
-                [
-                    'post_id' => $post->id,
-                    'identifier' => $identifier,
-                ],
-                [
-                    'rating' => $request->rating,
-                ]
-            );
-
-            DB::commit();
-
-            $post->refresh();
-
-            return response()->json([
-                'success' => true,
-                'rating_avg' => $post->rating_avg,
-                'rating_count' => $post->rating_count,
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to save rating',
-            ], 500);
-        }
-    }
 }

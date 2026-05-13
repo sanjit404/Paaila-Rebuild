@@ -13,11 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class TrackingController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | TRAVELER - Active trekker GPS interface
-    |--------------------------------------------------------------------------
-    */
+    
 
     public function traveler(TourBooking $booking)
     {
@@ -50,22 +46,14 @@ class TrackingController extends Controller
         return view('tracking.traveler', compact('booking'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | PIN ENTRY - Public page for family / friends
-    |--------------------------------------------------------------------------
-    */
+    
 
     public function pinEntry()
     {
         return view('tracking.pin-entry');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | VERIFY PIN
-    |--------------------------------------------------------------------------
-    */
+    
 
     public function verifyPin(Request $request)
     {
@@ -88,11 +76,7 @@ class TrackingController extends Controller
         return redirect()->route('tracking.parent', $trackingPin->tourBooking);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | PARENT VIEW - Family / friends monitor trek
-    |--------------------------------------------------------------------------
-    */
+    
 
     public function parent(TourBooking $booking)
     {
@@ -119,17 +103,7 @@ class TrackingController extends Controller
         return view('tracking.parent', compact('booking'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE LOCATION - Called every 5 s from traveler device
-    |
-    | Algorithm:
-    | 1. Save GPS coordinates to traveler_locations
-    | 2. For each checkpoint, compute Haversine distance
-    | 3. If distance <= detection_radius → geofence triggered → mark reached
-    | 4. Return checkpoint data + progress to frontend
-    |--------------------------------------------------------------------------
-    */
+    
 
     public function updateLocation(Request $request, TourBooking $booking)
     {
@@ -178,7 +152,7 @@ class TrackingController extends Controller
                     'checkpoint_id'   => $checkpoint->id,
                 ]);
 
-                // --- HAVERSINE DISTANCE ---
+                // HAVERSINE DISTANCE
                 $distance = $this->haversine(
                     $validated['latitude'],
                     $validated['longitude'],
@@ -189,7 +163,7 @@ class TrackingController extends Controller
                 // Persist real-time distance
                 $progress->update(['distance_from_checkpoint' => round($distance, 2)]);
 
-                // --- GEOFENCE BOUNDARY CHECK ---
+                // GEOFENCE BOUNDARY CHECK
                 $radius = (int) ($checkpoint->detection_radius ?? 50);
 
                 if ($distance <= $radius && ! $progress->reached_at) {
@@ -245,11 +219,7 @@ class TrackingController extends Controller
         }
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | GET CURRENT LOCATION - Polled every 5 s by parent view
-    |--------------------------------------------------------------------------
-    */
+   
 
     public function getCurrentLocation(TourBooking $booking)
     {
@@ -310,11 +280,7 @@ class TrackingController extends Controller
         ]);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | MARK FACTS VIEWED
-    |--------------------------------------------------------------------------
-    */
+    
 
     public function markFactsViewed(TourBooking $booking, Checkpoint $checkpoint)
     {
@@ -330,15 +296,13 @@ class TrackingController extends Controller
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | HAVERSINE FORMULA
-    |
-    |   a = sin²(Δφ/2) + cos(φ1)·cos(φ2)·sin²(Δλ/2)
-    |   c = 2·atan2(√a, √(1−a))
-    |   d = R·c          (R = 6 371 000 m)
-    |
-    | Returns distance in metres between two WGS-84 coordinates.
-    |--------------------------------------------------------------------------
+     HAVERSINE FORMULA
+    
+       a = sin²(Δφ/2) + cos(φ1)·cos(φ2)·sin²(Δλ/2)
+       c = 2·atan2(√a, √(1−a))
+       d = R·c          (R = 6 371 000 m)
+    
+     Returns distance in metres between two WGS-84 coordinates.
     */
 
     private function haversine(
@@ -359,11 +323,7 @@ class TrackingController extends Controller
         return $R * $c;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | FORMAT CHECKPOINT for JSON response
-    |--------------------------------------------------------------------------
-    */
+    
 
     private function formatCheckpoint(Checkpoint $checkpoint): array
     {

@@ -9,8 +9,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            TourAppSeeder::class,  // Existing seeder (users, packages, checkpoints)
-            PostSeeder::class,      // NEW: Feed content
+            RecommendationSystemSeeder::class,
+            PostSeeder::class,
         ]);
     }
 }

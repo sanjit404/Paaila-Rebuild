@@ -5,7 +5,6 @@
 @section('content')
 <section style="background: var(--color-bg); min-height: calc(100vh - 70px);">
     <div class="container" style="padding-top: var(--space-xl); padding-bottom: var(--space-xl);">
-        <!-- Header -->
         <div style="margin-bottom: var(--space-xl);">
             <a href="{{ route('admin.bookings') }}" style="color: var(--color-text-light); text-decoration: none; font-size: 14px; margin-bottom: var(--space-md); display: inline-block;">
                 <i class="fas fa-arrow-left"></i> Back to Bookings

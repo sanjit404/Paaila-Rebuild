@@ -5,19 +5,17 @@
 @section('content')
 <section style="background: var(--color-bg); min-height: calc(100vh - 70px);">
     <div class="container" style="padding-top: var(--space-xl); padding-bottom: var(--space-xl);">
-        <!-- Header -->
         <div class="flex-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
             <div>
                 <h1 style="font-size: 28px; font-weight: 700; margin-bottom: var(--space-sm);">Manage Posts</h1>
                 <p style="color: var(--color-text-light); margin: 0;">Control feed content and news</p>
             </div>
-            <a href="{{ route('admin.posts.create') }}" class="btn btn-cta btn-lg">
+            <a href="{{ route('admin.posts.create') }}" class="btn btn-cta btn-lg" style="background:var(--color-primary-dark);">
                 <i class="fas fa-plus-circle"></i>
                 Create New Post
             </a>
         </div>
 
-        <!-- Filters -->
         <div class="card" style="margin-bottom: var(--space-xl);">
             <div class="card-body">
                 <form method="GET" action="{{ route('admin.posts') }}" class="flex gap-md" style="flex-wrap: wrap; align-items: end;">
@@ -57,42 +55,9 @@
             </div>
         </div>
 
-        <!-- Stats -->
-        <div class="grid grid-4" style="margin-bottom: var(--space-xl);">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 28px; font-weight: 700; color: var(--color-text);">{{ $stats['total'] }}</div>
-                    <div style="font-size: 12px; color: var(--color-text-light);">Total Posts</div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 28px; font-weight: 700; color: #1976D2;">{{ $stats['news'] }}</div>
-                    <div style="font-size: 12px; color: var(--color-text-light);">News</div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 28px; font-weight: 700; color: var(--color-warning);">{{ $stats['offers'] }}</div>
-                    <div style="font-size: 12px; color: var(--color-text-light);">Offers</div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 28px; font-weight: 700; color: var(--color-primary);">{{ $stats['treks'] }}</div>
-                    <div style="font-size: 12px; color: var(--color-text-light);">Treks</div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 28px; font-weight: 700; color: var(--color-accent);">{{ $stats['highlighted'] }}</div>
-                    <div style="font-size: 12px; color: var(--color-text-light);">Highlighted</div>
-                </div>
-            </div>
-        </div>
+        
 
         @if($posts->count() > 0)
-            <!-- Posts Table -->
             <div class="card">
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: collapse;">
@@ -166,7 +131,6 @@
                 </div>
             </div>
 
-            <!-- Pagination -->
             <div style="margin-top: var(--space-xl);">
                 {{ $posts->links() }}
             </div>
@@ -186,7 +150,6 @@
     </div>
 </section>
 
-<!-- Delete Modal -->
 <div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; padding: var(--space-lg);">
     <div style="background: white; border-radius: var(--radius-lg); max-width: 500px; width: 100%;">
         <div style="padding: var(--space-xl);">
