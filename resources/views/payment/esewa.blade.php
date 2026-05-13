@@ -18,7 +18,6 @@
                         </p>
                     </div>
 
-                    <!-- Booking Summary -->
                     <div style="padding: var(--space-lg); background: #F5F5F5; border-radius: var(--radius-md); margin-bottom: var(--space-xl);">
                         <div class="flex-between" style="margin-bottom: var(--space-md);">
                             <span>Booking Number</span>
@@ -36,17 +35,31 @@
                         </div>
                     </div>
 
-                    <!-- eSewa Form -->
-                    <form action="https://uat.esewa.com.np/epay/main" method="POST" id="esewaForm">
-                        <input type="hidden" name="tAmt" value="{{ $booking->total_amount }}">
-                        <input type="hidden" name="amt" value="{{ $booking->total_amount }}">
-                        <input type="hidden" name="txAmt" value="0">
-                        <input type="hidden" name="psc" value="0">
-                        <input type="hidden" name="pdc" value="0">
-                        <input type="hidden" name="scd" value="{{ $esewaConfig['merchant_code'] }}">
-                        <input type="hidden" name="pid" value="{{ $booking->booking_number }}">
-                        <input type="hidden" name="su" value="{{ $esewaConfig['success_url'] }}">
-                        <input type="hidden" name="fu" value="{{ $esewaConfig['failure_url'] }}">
+                    <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST" id="esewaForm">
+                            <input type="hidden" name="amount" value="{{ $esewaConfig['amount'] }}">
+
+                            <input type="hidden" name="tax_amount" value="{{ $esewaConfig['tax_amount'] }}">
+
+                            <input type="hidden" name="total_amount" value="{{ $esewaConfig['total_amount'] }}">
+
+                            <input type="hidden" name="transaction_uuid" value="{{ $esewaConfig['transaction_uuid'] }}">
+
+                            <input type="hidden" name="product_code" value="{{ $esewaConfig['product_code'] }}">
+
+                            <input type="hidden" name="product_service_charge" value="0">
+
+                            <input type="hidden" name="product_delivery_charge" value="0">
+
+                            <input type="hidden" name="success_url" value="{{ $esewaConfig['success_url'] }}">
+
+                            <input type="hidden" name="failure_url" value="{{ $esewaConfig['failure_url'] }}">
+
+                            <input type="hidden" name="signed_field_names"
+                                value="total_amount,transaction_uuid,product_code">
+
+                            <input type="hidden" name="signature"
+                                value="{{ $esewaConfig['signature'] }}">
+ 
 
                         <button type="submit" class="btn btn-cta btn-lg btn-block">
                             <i class="fas fa-wallet"></i>

@@ -5,19 +5,17 @@
 @section('content')
 <section style="background: var(--color-bg); min-height: calc(100vh - 70px);">
     <div class="container" style="padding-top: var(--space-xl); padding-bottom: var(--space-xl);">
-        <!-- Header -->
         <div class="flex-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
             <div>
                 <h1 style="font-size: 28px; font-weight: 700; margin-bottom: var(--space-sm);">Trek Packages</h1>
                 <p style="color: var(--color-text-light); margin: 0;">Manage your trek offerings</p>
             </div>
-            <a href="{{ route('admin.packages.create') }}" class="btn btn-cta btn-lg">
+            <a href="{{ route('admin.packages.create') }}" class="btn btn-cta btn-lg" style="background:var(--color-primary-dark)">
                 <i class="fas fa-plus-circle"></i>
                 Create New Trek
             </a>
         </div>
 
-        <!-- Filter & Search -->
         <div class="card" style="margin-bottom: var(--space-xl);">
             <div class="card-body">
                 <form method="GET" action="{{ route('admin.packages') }}" class="flex gap-md" style="flex-wrap: wrap; align-items: end;">
@@ -66,7 +64,6 @@
             </div>
         </div>
 
-        <!-- Stats Row -->
         <div class="grid grid-4" style="margin-bottom: var(--space-xl);">
             <div class="card">
                 <div class="card-body text-center">
@@ -106,20 +103,17 @@
         </div>
 
         @if($packages->count() > 0)
-            <!-- Packages List -->
             <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
                 @foreach($packages as $package)
                     <div class="card">
                         <div class="card-body">
                             <div class="flex-between" style="gap: var(--space-lg); flex-wrap: wrap;">
-                                <!-- Package Info -->
                                 <div style="flex: 1; min-width: 300px;">
                                     <div class="flex-between" style="margin-bottom: var(--space-md);">
                                         <h3 style="font-size: 18px; font-weight: 700; margin: 0;">
                                             {{ $package->name }}
                                         </h3>
                                         
-                                        <!-- Active Toggle -->
                                         <form method="POST" action="{{ route('admin.packages.toggle-status', $package) }}" style="display: inline;">
                                             @csrf
                                             @method('PATCH')
@@ -138,7 +132,6 @@
                                         {{ Str::limit($package->description, 100) }}
                                     </p>
 
-                                    <!-- Package Stats -->
                                     <div class="flex gap-lg" style="flex-wrap: wrap; font-size: 13px; color: var(--color-text-light);">
                                         <div class="flex" style="gap: var(--space-xs); align-items: center;">
                                             @if($package->difficulty_level === 'easy')
@@ -163,7 +156,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Analytics -->
                                     <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid #E0E0E0;">
                                         <div class="flex gap-lg" style="font-size: 13px;">
                                             <div>
@@ -186,7 +178,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Price & Actions -->
                                 <div style="text-align: right; display: flex; flex-direction: column; justify-content: space-between; min-width: 200px;">
                                     <div style="margin-bottom: var(--space-lg);">
                                         <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">Price</div>
@@ -227,12 +218,10 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
             <div style="margin-top: var(--space-xl);">
                 {{ $packages->links() }}
             </div>
         @else
-            <!-- Empty State -->
             <div class="card">
                 <div class="card-body text-center" style="padding: var(--space-2xl);">
                     <i class="fas fa-box-open" style="font-size: 64px; color: #E0E0E0; margin-bottom: var(--space-lg);"></i>
@@ -250,7 +239,6 @@
     </div>
 </section>
 
-<!-- Delete Confirmation Modal -->
 <div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; padding: var(--space-lg);">
     <div style="background: white; border-radius: var(--radius-lg); max-width: 500px; width: 100%;">
         <div style="padding: var(--space-xl);">

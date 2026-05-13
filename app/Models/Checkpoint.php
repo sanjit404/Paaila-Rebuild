@@ -15,7 +15,8 @@ class Checkpoint extends Model
         'latitude',
         'longitude',
         'order',
-        'detection_radius',  // geofence radius in metres (default 50)
+        'image',
+        'detection_radius', 
     ];
 
     protected $casts = [
@@ -25,7 +26,6 @@ class Checkpoint extends Model
         'detection_radius' => 'integer',
     ];
 
-    // ─── Relationships ────────────────────────────────────────────
 
     public function tourPackage(): BelongsTo
     {
@@ -42,15 +42,7 @@ class Checkpoint extends Model
         return $this->hasMany(CheckpointProgress::class);
     }
 
-    // ─── Haversine Distance ───────────────────────────────────────
 
-    /**
-     * Geodesic distance from this checkpoint to a GPS point, in metres.
-     *
-     *   a = sin²(Δφ/2) + cos(φ1)·cos(φ2)·sin²(Δλ/2)
-     *   c = 2·atan2(√a, √(1−a))
-     *   d = R·c   (R = 6 371 000 m)
-     */
     public function calculateDistance(float $lat, float $lon): float
     {
         $R  = 6_371_000;
@@ -65,12 +57,6 @@ class Checkpoint extends Model
         return $R * $c;
     }
 
-    // ─── Geofencing ──────────────────────────────────────────────
-
-    /**
-     * Returns true when the GPS point is inside this checkpoint's geofence.
-     * Uses the stored detection_radius (default 50 m).
-     */
     public function isWithinRadius(float $lat, float $lon): bool
     {
         $radius   = $this->detection_radius ?? 50;
@@ -79,7 +65,6 @@ class Checkpoint extends Model
         return $distance <= $radius;
     }
 
-    // ─── Scopes ──────────────────────────────────────────────────
 
     public function scopeOrdered($query)
     {

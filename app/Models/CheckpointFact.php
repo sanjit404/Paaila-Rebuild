@@ -11,8 +11,8 @@ class CheckpointFact extends Model
         'checkpoint_id',
         'title',
         'content',
-        'type',        // historical | cultural | natural | safety | tip | info
-        'icon_class',  // FontAwesome class, e.g. "fas fa-landmark"
+        'type',        
+        'icon_class',  
         'order',
     ];
 
@@ -20,18 +20,12 @@ class CheckpointFact extends Model
         'order' => 'integer',
     ];
 
-    // ─── Relationships ────────────────────────────────────────────
 
     public function checkpoint(): BelongsTo
     {
         return $this->belongsTo(Checkpoint::class);
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────
-
-    /**
-     * Resolve icon class — use stored value or fall back to type defaults.
-     */
     public function getIconClassAttribute(?string $value): string
     {
         if ($value) return $value;
@@ -46,7 +40,6 @@ class CheckpointFact extends Model
         };
     }
 
-    // ─── Scopes ──────────────────────────────────────────────────
 
     public function scopeOrdered($query)
     {

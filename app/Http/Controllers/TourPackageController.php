@@ -18,6 +18,15 @@ class TourPackageController extends Controller
         return view('tours.index', compact('packages'));
     }
 
+     public function foryou()
+    {
+        $packages = TourPackage::where('is_active', true)
+            ->withCount('checkpoints')
+            ->latest()
+            ->get();
+
+        return view('tours.foryou', compact('packages'));
+    }
     
     public function show(TourPackage $package)
     {

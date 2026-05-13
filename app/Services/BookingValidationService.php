@@ -8,11 +8,7 @@ use Illuminate\Validation\ValidationException;
 
 class BookingValidationService
 {
-    /**
-     * Check if user can create a new booking
-     * 
-     * @throws ValidationException
-     */
+    
     public static function validateCanBook(User $user): void
     {
         $activeBooking = TourBooking::where('user_id', $user->id)
@@ -30,9 +26,7 @@ class BookingValidationService
         }
     }
 
-    /**
-     * Auto-complete bookings that have passed their end date
-     */
+   
     public static function autoCompleteExpiredBookings(): int
     {
         $completedCount = 0;

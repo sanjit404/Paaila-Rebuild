@@ -49,7 +49,7 @@ class PaymentController extends Controller
         ->with('success', 'Payment successful!');
 } else {
     $booking->update([
-        'status' => 'cancelled',
+        'status' => 'pending',
         'cancelled_at' => now(),
     ]);
 
@@ -59,65 +59,185 @@ class PaymentController extends Controller
     }
    
     
-    public function esewa(TourBooking $booking)
-    {
-        $this->authorize('view', $booking);
 
-        if (!$booking->isPending()) {
+     public function esewa(TourBooking $booking)
+{
+    $amount = $booking->total_amount;
+    $taxAmount = 0;
+    $serviceCharge = 0;
+    $deliveryCharge = 0;
+
+    $totalAmount = $amount + $taxAmount + $serviceCharge + $deliveryCharge;
+
+    $transactionUuid = 'BOOKING-' . $booking->id . '-' . time();
+
+    $productCode = 'EPAYTEST';
+
+    $message = "total_amount={$totalAmount},transaction_uuid={$transactionUuid},product_code={$productCode}";
+
+    $secret = "8gBm/:&EnhH.1/q";
+
+    $signature = base64_encode(
+        hash_hmac('sha256', $message, $secret, true)
+    );
+
+    $esewaConfig = [
+        'amount' => $amount,
+        'tax_amount' => $taxAmount,
+        'total_amount' => $totalAmount,
+        'transaction_uuid' => $transactionUuid,
+        'product_code' => $productCode,
+        'signature' => $signature,
+        'success_url' => route('payment.esewa.success'),
+        'failure_url' => route('payment.esewa.failure'),
+    ];
+
+    return view('payment.esewa', compact('booking', 'esewaConfig'));
+}
+
+public function esewaSuccess(Request $request)
+{
+    Log::info('eSewa success callback', $request->all());
+
+    try {
+
+        $encodedData = $request->input('data');
+
+        if (!$encodedData) {
+
             return redirect()
-                ->route('bookings.show', $booking)
-                ->with('info', 'This booking has already been processed.');
+                ->route('bookings.index')
+                ->with('error', 'Missing payment response.');
         }
 
-        $esewaConfig = [
-            'merchant_code' => config('services.esewa.merchant_code', 'EPAYTEST'),
-            'success_url' => route('payment.esewa.success'),
-            'failure_url' => route('payment.esewa.failure'),
-        ];
+        // Decode Base64 response
+        $decodedData = base64_decode($encodedData);
 
-        return view('payment.esewa', compact('booking', 'esewaConfig'));
-    }
+        // Convert JSON to array
+        $paymentData = json_decode($decodedData, true);
 
-    public function esewaSuccess(Request $request)
-    {
-        Log::info('eSewa success callback', $request->all());
+        if (!$paymentData) {
 
-        $oid = $request->input('oid');
-        $refId = $request->input('refId');
-        $amt = $request->input('amt');
+            return redirect()
+                ->route('bookings.index')
+                ->with('error', 'Invalid payment response.');
+        }
 
-        $booking = TourBooking::where('booking_number', $oid)->first();
+        Log::info('Decoded eSewa response', $paymentData);
+
+        // Verify signature
+        $signedFields = explode(',', $paymentData['signed_field_names']);
+
+        $messageParts = [];
+
+        foreach ($signedFields as $field) {
+
+            if (isset($paymentData[$field])) {
+
+                $messageParts[] =
+                    $field . '=' . $paymentData[$field];
+            }
+        }
+
+        $message = implode(',', $messageParts);
+
+        $secret = "8gBm/:&EnhH.1/q";
+
+        $generatedSignature = base64_encode(
+            hash_hmac('sha256', $message, $secret, true)
+        );
+
+        if ($generatedSignature !== $paymentData['signature']) {
+
+            Log::error('eSewa signature verification failed', [
+                'expected' => $generatedSignature,
+                'received' => $paymentData['signature'],
+            ]);
+
+            return redirect()
+                ->route('bookings.index')
+                ->with('error', 'Invalid payment signature.');
+        }
+
+        // Verify payment status
+        if (($paymentData['status'] ?? null) !== 'COMPLETE') {
+
+            return redirect()
+                ->route('bookings.index')
+                ->with('error', 'Payment not completed.');
+        }
+
+        // Extract booking ID
+        $transactionUuid = $paymentData['transaction_uuid'];
+
+        $parts = explode('-', $transactionUuid);
+
+        $bookingId = $parts[1] ?? null;
+
+        if (!$bookingId) {
+
+            return redirect()
+                ->route('bookings.index')
+                ->with('error', 'Invalid transaction reference.');
+        }
+
+        // Find booking
+        $booking = TourBooking::find($bookingId);
 
         if (!$booking) {
-            Log::error('eSewa: Booking not found', ['oid' => $oid]);
+
             return redirect()
                 ->route('bookings.index')
                 ->with('error', 'Booking not found.');
         }
 
-        if ((float)$amt !== (float)$booking->total_amount) {
-            Log::error('eSewa: Amount mismatch', [
+        // Verify amount
+        if ((float)$paymentData['total_amount'] !== (float)$booking->total_amount) {
+
+            Log::error('eSewa amount mismatch', [
+                'booking_id' => $booking->id,
                 'expected' => $booking->total_amount,
-                'received' => $amt,
+                'received' => $paymentData['total_amount'],
             ]);
-            
+
             return redirect()
                 ->route('bookings.show', $booking)
-                ->with('error', 'Payment amount mismatch. Please contact support.');
+                ->with('error', 'Payment amount mismatch.');
         }
 
-        $booking->markAsConfirmed();
+        // Prevent duplicate confirmation
+        if ($booking->status !== 'confirmed') {
 
-        Log::info('eSewa payment confirmed', [
-            'booking_id' => $booking->id,
-            'refId' => $refId,
+            $booking->update([
+                'status' => 'confirmed',
+                'confirmed_at' => now(),
+                'payment_status' => 'paid',
+                'payment_method' => 'esewa',
+                'payment_reference' => $paymentData['transaction_code'],
+            ]);
+
+            Log::info('eSewa payment confirmed', [
+                'booking_id' => $booking->id,
+                'transaction_code' => $paymentData['transaction_code'],
+            ]);
+        }
+
+        return redirect(route('bookings.show', $booking))
+            ->with('success', 'Payment successful via eSewa!');
+
+    } catch (\Exception $e) {
+
+        Log::error('eSewa success error', [
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
         ]);
 
         return redirect()
-            ->route('bookings.show', $booking)
-            ->with('success', 'Payment successful via eSewa! Your booking is confirmed.');
+            ->route('bookings.index')
+            ->with('error', 'Something went wrong during payment verification.');
     }
-
+}
     public function esewaFailure(Request $request)
     {
         Log::warning('eSewa payment failed', $request->all());

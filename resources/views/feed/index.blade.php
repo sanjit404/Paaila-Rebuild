@@ -23,8 +23,12 @@
                 News
             </a>
             <a href="{{ route('feed.index', ['trending' => 1]) }}" 
-               class="filter-btn {{ request('trending') ? 'tactive' : '' }} shiny-tbg" style="background:transparent;">
-                <i class="fas fa-fire"></i> Trending
+               class="filter-btn {{ request('trending') ? 'tactive' : '' }} shiny-tbg " style=" background:transparent;">
+                <i class="fas fa-fire" ></i> Trending Feed
+            </a>
+            <a href="{{ route('tour.foryou') }}" 
+               class="filter-btn {{ request('trending') ? 'tactive' : '' }} shiny-bg" style="background:var(--color-primary)">
+                <i class="fas fa-heart fa-fade" style="color:white;"></i><font color="white">Special For You</font>
             </a>
         </div>
     </div>
@@ -85,6 +89,7 @@
             <div class="grid grid-2" style="gap: var(--space-lg);">
                 @foreach($posts as $post)
                     <div class="card feed-card">
+                        <a href="{{ route('feed.show', $post) }}" style="text-decoration:none;">
                         <!-- Image -->
                         <div style="position: relative; overflow: hidden; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
                             <img 
@@ -124,26 +129,23 @@
                                     <i class="fas fa-heart" style="color: {{ in_array($post->id, $likedPostIds) ? '#E53935' : 'currentColor' }};"></i>
                                     <span>{{ $post->likes_count }}</span>
                                 </div>
-
-                                <div class="flex" style="align-items: center; gap: 4px;">
-                                    <i class="fas fa-star" style="color: #FFA000;"></i>
-                                    <span>{{ number_format($post->rating_avg, 1) }}</span>
-                                    <span style="opacity: 0.6;">({{ $post->rating_count }})</span>
-                                </div>
                             </div>
 
-                            <div class="flex gap-sm">
-                                <a href="{{ route('feed.show', $post) }}" class="btn btn-primary btn-sm" style="flex: 1;">
-                                    View Details
-                                </a>
+                            
+                                
                                 
                                 @if($post->trek_id)
+                                <span style="font-size: 14px; color: var(--color-text-light); margin-bottom: var(--space-md); line-height: 1.6;">
+                                This post includes a trek
+                            </span>
                                     <a href="{{ route('tours.show', $post->trek_id) }}" class="btn btn-cta btn-sm">
-                                        Book
+                                        Book Now
                                     </a>
                                 @endif
-                            </div>
+                            
                         </div>
+                                </a>
+
                     </div>
                 @endforeach
             </div>
@@ -216,7 +218,7 @@
 
     }
     
-
+   
 .shiny-bg {
     position: relative;
     overflow: hidden;

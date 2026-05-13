@@ -17,14 +17,10 @@ class TrackingPin extends Model
         'expires_at' => 'datetime',
     ];
 
-    // ─── Relationships ────────────────────────────────────────────
-
     public function tourBooking(): BelongsTo
     {
         return $this->belongsTo(TourBooking::class);
     }
-
-    // ─── Helpers ─────────────────────────────────────────────────
 
     public function isExpired(): bool
     {
@@ -36,9 +32,6 @@ class TrackingPin extends Model
         return ! $this->isExpired();
     }
 
-    /**
-     * Find a non-expired PIN.
-     */
     public static function findByPin(string $pin): ?self
     {
         return self::where('pin', $pin)

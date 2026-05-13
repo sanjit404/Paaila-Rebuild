@@ -18,7 +18,6 @@
                         </p>
                     </div>
 
-                    <!-- Booking Summary -->
                     <div style="padding: var(--space-lg); background: #F5F5F5; border-radius: var(--radius-md); margin-bottom: var(--space-xl);">
                         <div class="flex-between" style="margin-bottom: var(--space-md);">
                             <span>Booking Number</span>
@@ -36,7 +35,6 @@
                         </div>
                     </div>
 
-                    <!-- Khalti Button -->
                     <button id="khaltiPayButton" class="btn btn-lg btn-block" style="background: #5C2D91; color: white; padding: var(--space-lg);">
                         <i class="fas fa-mobile-alt"></i>
                         Pay with Khalti
@@ -66,7 +64,6 @@
             onSuccess(payload) {
                 console.log('Khalti payment success:', payload);
                 
-                // Verify payment with backend
                 fetch("{{ route('payment.khalti.verify', $booking) }}", {
                     method: 'POST',
                     headers: {

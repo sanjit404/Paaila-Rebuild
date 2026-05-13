@@ -6,16 +6,13 @@
 <section class="section" style="background: var(--color-bg);">
     <div class="container">
         <div style="max-width: 900px; margin: 0 auto;">
-            <!-- Back Button -->
             <div style="margin-bottom: var(--space-lg);">
                 <a href="{{ route('feed.index') }}" style="color: var(--color-text-light); text-decoration: none; font-size: 14px;">
                     <i class="fas fa-arrow-left"></i> Back to Feed
                 </a>
             </div>
 
-            <!-- Main Card -->
             <div class="card">
-                <!-- Featured Image -->
                 @if($post->image)
                     <img 
                         src="{{ $post->image }}" 
@@ -25,7 +22,6 @@
                 @endif
 
                 <div class="card-body" style="padding: var(--space-xl);">
-                    <!-- Type Badge -->
                     <div style="margin-bottom: var(--space-md);">
                         @if($post->type === 'trek')
                             <span class="badge badge-primary">
@@ -42,14 +38,11 @@
                         @endif
                     </div>
 
-                    <!-- Title -->
                     <h1 style="font-size: 32px; font-weight: 700; margin-bottom: var(--space-lg); color: var(--color-text);">
                         {{ $post->title }}
                     </h1>
 
-                    <!-- Engagement Bar -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-md) 0; border-top: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; margin-bottom: var(--space-xl);">
-                        <!-- Like Button -->
                         <button 
                             onclick="toggleLike({{ $post->id }})"
                             id="likeBtn"
@@ -60,31 +53,13 @@
                             <span id="likesCount">{{ $post->likes_count }}</span> Likes
                         </button>
 
-                        <!-- Rating -->
-                        <div class="flex" style="align-items: center; gap: var(--space-md);">
-                            <div style="display: flex; gap: 4px;" id="ratingStars">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i 
-                                        class="fas fa-star rating-star" 
-                                        data-rating="{{ $i }}"
-                                        onclick="ratePost({{ $post->id }}, {{ $i }})"
-                                        style="font-size: 24px; color: {{ $userRating >= $i ? '#FFA000' : '#E0E0E0' }}; cursor: pointer; transition: color 0.2s;"
-                                    ></i>
-                                @endfor
-                            </div>
-                            <div style="font-size: 14px; color: var(--color-text-light);">
-                                <strong id="ratingAvg">{{ number_format($post->rating_avg, 1) }}</strong>
-                                (<span id="ratingCount">{{ $post->rating_count }}</span> ratings)
-                            </div>
-                        </div>
+                        
                     </div>
 
-                    <!-- Content -->
                     <div style="font-size: 16px; line-height: 1.8; color: var(--color-text); margin-bottom: var(--space-xl);">
                         {!! nl2br(e($post->content)) !!}
                     </div>
 
-                    <!-- Trek CTA -->
                     @if($post->trek)
                         <div style="padding: var(--space-xl); background: #E8F5E9; border-radius: var(--radius-md); border-left: 4px solid var(--color-primary);">
                             <h3 style="font-size: 18px; font-weight: 700; margin-bottom: var(--space-md); color: var(--color-text);">
@@ -118,9 +93,7 @@
 <script>
     const identifier = '{{ $identifier }}';
     let hasLiked = {{ $hasLiked ? 'true' : 'false' }};
-    let userRating = {{ $userRating ?? 0 }};
 
-    // Toggle Like
     async function toggleLike(postId) {
         try {
             const response = await fetch(`/feed/${postId}/like`, {
@@ -136,7 +109,6 @@
             if (data.success) {
                 hasLiked = data.action === 'liked';
                 
-                // Update UI
                 const btn = document.getElementById('likeBtn');
                 btn.style.background = hasLiked ? '#FFEBEE' : '#F5F5F5';
                 btn.style.color = hasLiked ? '#E53935' : 'var(--color-text)';
@@ -148,53 +120,7 @@
         }
     }
 
-    // Rate Post
-    async function ratePost(postId, rating) {
-        try {
-            const response = await fetch(`/feed/${postId}/rate`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ rating })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                userRating = rating;
-                
-                // Update stars
-                document.querySelectorAll('.rating-star').forEach((star, index) => {
-                    star.style.color = (index + 1) <= rating ? '#FFA000' : '#E0E0E0';
-                });
-
-                // Update stats
-                document.getElementById('ratingAvg').textContent = parseFloat(data.rating_avg).toFixed(1);
-                document.getElementById('ratingCount').textContent = data.rating_count;
-            }
-        } catch (error) {
-            console.error('Rating error:', error);
-        }
-    }
-
-    // Hover effect on stars
-    document.querySelectorAll('.rating-star').forEach(star => {
-        star.addEventListener('mouseenter', function() {
-            const rating = parseInt(this.dataset.rating);
-            document.querySelectorAll('.rating-star').forEach((s, i) => {
-                s.style.color = (i + 1) <= rating ? '#FFA000' : '#E0E0E0';
-            });
-        });
-    });
-
-    document.getElementById('ratingStars').addEventListener('mouseleave', function() {
-        document.querySelectorAll('.rating-star').forEach((s, i) => {
-            s.style.color = (i + 1) <= userRating ? '#FFA000' : '#E0E0E0';
-        });
-    });
+    
 </script>
 
 @push('styles')

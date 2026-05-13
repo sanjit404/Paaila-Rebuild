@@ -142,7 +142,7 @@ class BookingController extends Controller
     private function redirectToPayment(TourBooking $booking)
     {
         $routes = [
-            'esewa' => 'payment.test',
+            'esewa' => 'payment.esewa',
             'khalti' => 'payment.test',
             'stripe' => 'payment.stripe',
         ];
@@ -171,6 +171,7 @@ class BookingController extends Controller
         return view('bookings.index', compact('bookings'));
     }
 
+ 
   
     public function show(TourBooking $booking)
     {

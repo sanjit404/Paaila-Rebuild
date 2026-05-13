@@ -94,10 +94,7 @@
                         <i class="fas fa-list"></i>
                         View Posts
                     </a>
-                    <a href="{{ route('home') }}" class="btn btn-secondary btn-block" target="_blank">
-                        <i class="fas fa-external-link-alt"></i>
-                        View Site
-                    </a>
+                    
                 </div>
             </div>
         </div>

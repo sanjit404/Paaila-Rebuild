@@ -2,53 +2,109 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-   
-    public function edit(Request $request): View
+    public function show()
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        $user = auth()->user();
+
+        $preferences = \App\Models\UserPreference::forUser($user->id);
+
+        $stats = [
+            'total' => \App\Models\TourBooking::where('user_id', $user->id)->count(),
+            'completed' => \App\Models\TourBooking::where('user_id', $user->id)->where('status', 'completed')->count(),
+            'active' => \App\Models\TourBooking::where('user_id', $user->id)->where('status', 'active')->count(),
+            'ratings' => \App\Models\TrekRating::where('user_id', $user->id)->count(),
+        ];
+
+        $recentBookings = \App\Models\TourBooking::where('user_id', $user->id)
+            ->with('tourPackage')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $myRatings = \App\Models\TrekRating::where('user_id', $user->id)
+            ->with('tourPackage')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('profile.show', compact('user', 'preferences', 'stats', 'recentBookings', 'myRatings'));
     }
 
-    
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request)
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'address' => ['nullable', 'string'],
+            
+        ]);
+
+        if (!empty($validated['email']) && !empty($user->email) && $validated['email'] !== $user->email) {
+            return back()->withErrors([
+                'email' => 'Email cannot be changed after it has been set.',
+            ])->withInput();
         }
 
-        $request->user()->save();
+        if (!empty($validated['phone']) && !empty($user->phone) && $validated['phone'] !== $user->phone) {
+            return back()->withErrors([
+                'phone' => 'Phone cannot be changed after it has been set.',
+            ])->withInput();
+        }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user->update([
+            'name' => $validated['name'],
+            'email' => empty($user->email) ? ($validated['email'] ?? null) : $user->email,
+            'phone' => empty($user->phone) ? ($validated['phone'] ?? null) : $user->phone,
+            'address' => $validated['address'] ?? null,
+           
+        ]);
+
+        return back()->with('success', 'Profile updated successfully.');
     }
 
-    
-    public function destroy(Request $request): RedirectResponse
+    public function updatePassword(Request $request)
     {
-        $request->validateWithBag('userDeletion', [
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Password updated successfully.');
+    }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
             'password' => ['required', 'current_password'],
         ]);
 
         $user = $request->user();
 
         Auth::logout();
-
         $user->delete();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        return redirect('/')->with('success', 'Account deleted successfully.');
     }
 }
