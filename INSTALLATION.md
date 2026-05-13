@@ -17,8 +17,8 @@ Before installing the application, ensure the following software and tools are i
 ## Required Software
 
 1. PHP 8.0 or higher
-2. Composer (Latest Stable Version)
-3. php8.2-xml & php-pdo [See Here](#enable-php-xml-extension)
+2. Composer (Latest / Stable Version)
+3. php8.2-xml & php-pdo [See Here](#enable-extension)
 4. XAMPP Control Panel
 5. MySQL
 6. Node.js and NPM
@@ -55,53 +55,25 @@ code .
 
 ---
 
-# Environment Configuration
-
-## Step 4: Install PHP Dependencies
-
-Run the following command:
-
+# Step 4: Pre-setup Requirement Check
+Run:
 ```bash
-composer install
+php check.php
 ```
 
 ---
-
-## Step 5: Install Node Dependencies
-
+# Step 4: Setup wizard
+Run:
 ```bash
-npm install
+php artisan paaila:setup
 ```
 
----
-
-## Step 6: Create Environment File
-
-Copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
-If the above command does not work on Windows CMD:
-
-```bash
-copy .env.example .env
-```
-
----
-
-## Step 7: Generate Application Key
-
-```bash
-php artisan key:generate
-```
 
 ---
 
 # Database Configuration
 
-## Step 8: Start XAMPP Services
+## Step 5: Start XAMPP Services
 
 Open XAMPP Control Panel and start:
 
@@ -110,7 +82,7 @@ Open XAMPP Control Panel and start:
 
 ---
 
-## Step 9: Create Database
+## Step 6: Create Database
 
 Open XAMPP Shell or MySQL terminal and run:
 
@@ -134,7 +106,7 @@ exit;
 
 ---
 
-## Step 10: Configure Database Credentials
+## Step 7: Configure Database Credentials
 
 Open the `.env` file and update database configuration:
 
@@ -151,7 +123,7 @@ DB_PASSWORD=
 
 # Database Migration and Seeding
 
-## Step 11: Run Migrations
+## Step 8: Run Migrations
 
 ```bash
 php artisan migrate
@@ -159,41 +131,16 @@ php artisan migrate
 
 ---
 
-## Step 12: Seed the Database
+## Step 9: Seed the Database
 
 ```bash
 php artisan db:seed
 ```
-
----
-
-# Storage Linking
-
-## Step 13: Create Storage Symlink
-
-```bash
-php artisan storage:link
-```
-
-This command enables public access to uploaded images and files.
-
----
-
-# Frontend Compilation
-
-## Step 14: Run Vite Development Server
-
-```bash
-npm run dev
-```
-
-Keep this terminal running while using the application.
-
 ---
 
 # Running the Application
 
-## Step 15: Start Laravel Development Server
+## Step 10: Start Laravel Development Server
 
 Open another terminal and run:
 
@@ -210,9 +157,6 @@ http://127.0.0.1:8000
 ---
 
 # Admin Login Credentials
-
-## Default Administrator Account
-
 ### Admin Login
 
 ```text
@@ -220,31 +164,6 @@ Email: admin@paaila.com
 Password: password
 ```
 
----
-
-# Optional Commands
-
-## Clear Application Cache
-
-```bash
-php artisan optimize:clear
-```
-
----
-
-## Restart Queue Worker
-
-```bash
-php artisan queue:work
-```
-
----
-
-## Run Tests
-
-```bash
-php artisan test
-```
 
 ---
 
@@ -268,99 +187,11 @@ Verify:
 
 ---
 
-## Images Not Loading
 
-Run:
-
+# Enable Extension 
+Run and follow the instructions:
 ```bash
-php artisan storage:link
-```
-
----
-
-## Vite Assets Not Loading
-
-Ensure:
-
-```bash
-npm run dev
-```
-
-is running in a separate terminal.
-
----
-
-# Enable PHP XML Extension 
-
-## Install XML Extension
-
-### Ubuntu / Debian
-
-```bash
-sudo apt update
-sudo apt install php-xml
-```
-
-For a specific PHP version:
-
-```bash
-sudo apt install php8.2-xml
-```
-
----
-
-# Edit php.ini
-
-Open php.ini:
-
-```bash
-sudo nano /etc/php/8.2/apache2/php.ini
-```
-
-For PHP CLI:
-
-```bash
-sudo nano /etc/php/8.2/cli/php.ini
-```
-
----
-
-# Enable XML Extensions
-
-Make sure these lines exist and are NOT commented:
-
-```ini
-extension=xml
-extension=dom
-extension=simplexml
-extension=xmlreader
-extension=xmlwriter
-```
-
-If lines start with `;`, remove the semicolon:
-
-```ini
-;extension=xml
-```
-
-Change to:
-
-```ini
-extension=xml
-```
-
----
-
-# Restart Apache
-
-```bash
-sudo systemctl restart apache2
-```
-
-For PHP-FPM:
-
-```bash
-sudo systemctl restart php8.2-fpm
+php check.php
 ```
 
 ---
@@ -380,24 +211,7 @@ xmlreader
 xmlwriter
 ```
 
----
 
-# Production Deployment Notes
-
-For production deployment:
-
-1. Set `APP_ENV=production`
-2. Set `APP_DEBUG=false`
-3. Configure proper database credentials
-4. Configure mail services
-5. Configure payment gateway credentials
-6. Run optimization commands:
-
-```bash
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
 
 ---
 
