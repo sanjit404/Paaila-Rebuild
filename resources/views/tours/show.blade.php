@@ -264,16 +264,16 @@
 
                                         @if($checkpoint->facts->count() > 0)
                                             <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: 12px;">
-                                                @foreach($checkpoint->facts->take(2) as $fact)
+                                                @foreach($checkpoint->facts->take(3) as $fact)
                                                     <span class="badge badge-primary">
                                                         <i class="{{ $fact->icon_class }}"></i>
                                                         {{ Str::limit($fact->title, 30) }}
                                                     </span>
                                                 @endforeach
 
-                                                @if($checkpoint->facts->count() > 2)
+                                                @if($checkpoint->facts->count() > 3)
                                                     <span class="badge" style="background: #E0E0E0; color: var(--color-text);">
-                                                        +{{ $checkpoint->facts->count() - 2 }} more facts
+                                                        +{{ $checkpoint->facts->count() - 3 }} more facts
                                                     </span>
                                                 @endif
                                             </div>
@@ -298,6 +298,52 @@
             <p style="color: var(--color-text-light);">No checkpoints added yet.</p>
         @endif
     </div>
+            <br><br>
+            <center>
+            <div class="card" style="background: var(--color-primary-dark); max-width: 555px; box-shadow: var(--shadow-md); animation:pulseSoft 2s infinite;">
+                <div class="card-body">
+                    <div style="text-align: center; margin-bottom: var(--space-lg);">
+                        <div style="font-size: 14px; color: white; margin-bottom: var(--space-xs);">
+                            Just at
+                        </div>
+                        <div style="font-size: 36px; font-weight: 700; color: white;">
+                            Rs. {{ number_format($package->price, 0) }}
+                                    </div>
+                                    <div style="font-size: 13px; color: white;">
+                                        per person
+                                    </div>
+                                </div>
+
+                                <a href="{{ route('bookings.create', $package) }}" class="shiny-tbg btn btn-cta btn-block btn-lg">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    Book This Trek Now
+                                </a>
+
+                                <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid #E0E0E0; font-size: 13px; color: white;">
+                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                                        <i class="fas fa-check-circle" style="color: white;"></i>
+                                        <span>Real-time GPS tracking</span>
+                                    </div>
+                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                                        <i class="fas fa-check-circle" style="color:white;"></i>
+                                        <span>Ready accomodation</span>
+                                    </div>
+                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                                        <i class="fas fa-check-circle" style="color: white;"></i>
+                                        <span>Well managed</span>
+                                    </div>
+                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                                        <i class="fas fa-check-circle" style="color: white;"></i>
+                                        <span>Expert local guide</span>
+                                    </div>
+                                    <div class="flex" style="align-items: center; gap: var(--space-sm);">
+                                        <i class="fas fa-check-circle" style="color: white;"></i>
+                                        <span>Safety monitoring</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </center>
 </section>
 
 
@@ -305,6 +351,20 @@
 
 @push('styles')
 <style>
+@keyframes pulseSoft {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 12px 34px rgba(27, 94, 32, 0.10);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+}
 .map-select option {
     padding: 10px;
     background-color: white;
