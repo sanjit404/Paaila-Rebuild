@@ -3,12 +3,13 @@
 @section('title', isset($preferences) ? 'Edit Preferences' : 'What Do You Prefer?')
 
 @php
-    $isEditing = isset($preferences) && $preferences;
+    $isEditing = request()->routeIs('preferences.edit') || (isset($preferences) && $preferences?->preferences_set);
 @endphp
 
 @section('content')
 <div style="background: var(--color-bg); min-height: calc(100vh - 70px); padding: var(--space-xl) var(--space-md);">
     <div style="max-width: 720px; margin: 0 auto;">
+
         <div style="text-align: center; margin-bottom: var(--space-xl);">
             <div style="width: 72px; height: 72px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-lg);">
                 <i class="fas fa-mountain" style="font-size: 32px; color: white;"></i>
@@ -28,23 +29,13 @@
             @endif
         </div>
 
-        @if($errors->any())
-            <div class="alert alert-error" style="margin-bottom: var(--space-xl);">
-                <i class="fas fa-exclamation-circle"></i>
-                <div>
-                    @foreach($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
 
         <form method="POST"
-              action="{{ $isEditing ? route('preferences.edit') : route('preferences.store') }}"
+              action="{{ $isEditing ? route('preferences.update') : route('preferences.store') }}"
               id="preferenceForm">
             @csrf
             @if($isEditing)
-                @method('POST')
+                @method('PUT')
             @endif
 
             <div class="pref-section" style="margin-bottom: var(--space-xl);">
@@ -354,7 +345,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 0);
         });
     });
-
     document.querySelectorAll('.single-option-label').forEach(function (label) {
         label.addEventListener('click', function () {
             var input = this.querySelector('.single-input');

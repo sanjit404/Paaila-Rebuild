@@ -13,23 +13,16 @@
             <a href="#recomm"
                        style="font-size: 14px; color: var(--color-primary); text-decoration: underline; font-weight: 600; white-space: nowrap;">
                        View Recommended Treks <i class="fa-solid fa-person-hiking fa-shake"></i>
-                    </a>
+            </a>
+            <br>
+            <a href="{{ route('tour.foryou') }}"
+                       style="font-size: 14px; color: var(--color-primary); text-decoration: underline; font-weight: 600; white-space: nowrap;">
+                       View Trending Treks <i class="fa-solid fa-fire fa-shake"></i>
+            </a>
         @endif
         </div>
 
-        @if(session('success'))
-            <div class="alert alert-success" style="margin-bottom: var(--space-xl);">
-                <i class="fas fa-check-circle"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-        @endif
 
-        @if(session('error'))
-            <div class="alert alert-error" style="margin-bottom: var(--space-xl);">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ session('error') }}</span>
-            </div>
-        @endif
 
         @if($bookings->isEmpty())
             <div class="card">
@@ -219,7 +212,13 @@
                                 <a href="{{ route('bookings.show', $booking) }}" class="btn btn-secondary btn-sm">
                                     <i class="fas fa-eye"></i> View Details
                                 </a>
-
+                                @if($booking->status === 'completed')
+                                        <button
+                                            onclick="reliveTrip({{ $booking->id }})"
+                                            class="btn btn-relive btn-sm">
+                                            <i class="fas fa-film"></i> Relive This Trip
+                                        </button>
+                                    @endif
                                 @if($booking->status === 'active')
                                     <a href="{{ route('tracking.traveler', $booking) }}" class="btn btn-primary btn-sm">
                                         <i class="fas fa-map-marker-alt"></i> Continue Tracking
@@ -249,10 +248,8 @@
                 @endforeach
 
             </div>
-            {{-- end booking cards --}}
-
+            @include('bookings.partials.relive-modal')
         @endif
-        {{-- end @if bookings empty --}}
 
         @php
             $likedEarlier = \App\Services\RecommendationService::getLikedEarlier(auth()->id(), 4);

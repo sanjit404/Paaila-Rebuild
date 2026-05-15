@@ -101,6 +101,7 @@
 
 <div id="checkpointModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; padding: var(--space-lg);">
     <div style="background: white; border-radius: var(--radius-lg); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; animation: modalAppear 0.3s ease;">
+        <!-- Modal Header -->
         <div style="padding: var(--space-xl); background: var(--color-primary); color: white; border-radius: var(--radius-lg) var(--radius-lg) 0 0; position: relative;">
             <button onclick="closeCheckpointModal()" style="position: absolute; top: var(--space-md); right: var(--space-md); background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; transition: background 0.2s;">&times;</button>
             <div style="text-align: center;">
@@ -109,6 +110,7 @@
             </div>
         </div>
 
+        <!-- Modal Body -->
         <div style="padding: var(--space-xl);">
             <h3 id="checkpointName" style="font-size: 20px; font-weight: 700; margin-bottom: var(--space-sm);"></h3>
             <p id="checkpointDescription" style="color: var(--color-text-light); margin-bottom: var(--space-xl);"></p>
@@ -212,7 +214,7 @@
 @include('components.routing-helper')
 
 @php
-     <script>
+    // Pre-compute all PHP data here so @json() stays on ONE line inside <script>
     $jsCheckpoints = $booking->tourPackage->checkpoints->map(fn($c) => [
         'id'               => $c->id,
         'name'             => $c->name,
@@ -248,7 +250,8 @@ let userToStartLayer = null;
 let startReached = false;
 
 let map, userMarker, userCircle, watchId = null, routeDrawn = false;
-
+// Track which checkpoints have already triggered a modal this session
+// (prevents re-firing if server and client get out of sync momentarily)
 const shownCheckpoints = new Set(
     PROGRESS.filter(p => p.reached_at).map(p => p.checkpoint_id)
 );
@@ -261,6 +264,7 @@ async function initMap() {
         style:  'streets',
     });
 
+    // Build waypoints: start → checkpoints → end
     const waypoints = [
         { lat: START_LAT, lng: START_LNG },
         ...CHECKPOINTS.map(c => ({ lat: c.latitude, lng: c.longitude })),
@@ -331,6 +335,7 @@ async function onPositionUpdate(position) {
 
     setGPSStatus('active', `<i class="fas fa-satellite-dish"></i><span>GPS Active • ±${Math.round(accuracy ?? 0)}m</span>`);
 
+    // Update / create user marker
     if (userMarker) {
         userMarker.setLatLng([lat, lng]);
         if (userCircle) {
@@ -517,7 +522,7 @@ async function markFactsViewed(checkpointId) {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': CSRF_TOKEN },
         });
-    } catch (e) { }
+    } catch (e) { /* non-critical */ }
 }
 
 

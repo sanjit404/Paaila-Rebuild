@@ -21,6 +21,7 @@
                 <p style="color: var(--color-text-light); font-size: 14px; margin: 0;">
                     {{ $subtitle ?? ($showReason ? 'Personalised based on your preferences and history' : 'Explore these treks') }}
                 </p>
+                <br>
             </div>
             
 

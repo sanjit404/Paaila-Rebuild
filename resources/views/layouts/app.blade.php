@@ -495,10 +495,11 @@
             </a>
 
             <ul class="navbar-menu">
-            <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed <sup ><i class="fa-solid fa-circle fa-beat-fade fa-2xs"></i></sup></a></li>
+            <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed </a></li>
             <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
             
             @auth
+                <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup ><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup> </a></li>
                 <li><a href="{{ route('bookings.index') }}" class="navbar-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}">My Bookings</a></li>
                 <li><a href="{{ route('profile.show') }}" class="navbar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a></li>
                 
@@ -563,7 +564,7 @@
                 </div>
             </div>
             <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2025 Paaila. Trek safely with GPS tracking.</p>
+                <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2026 Paaila. Trek safely with GPS tracking.</p>
             </div>
         </div>
     </footer>
