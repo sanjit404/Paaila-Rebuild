@@ -60,7 +60,10 @@ Run:
 ```bash
 php check.php
 ```
-
+then:
+```bash
+composer install
+```
 ---
 # Step 4: Setup wizard
 Run:
