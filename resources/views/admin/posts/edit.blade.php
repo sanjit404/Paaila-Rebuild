@@ -71,7 +71,7 @@
 
                         <div class="form-group">
                             <label class="form-label">{{ $post->image ? 'Replace Image' : 'Featured Image' }}</label>
-                            <input type="text" name="image" class="form-input" >
+                            <input type="text" name="image" class="form-input" value="{{ old('image', $post->image) }}" >
                             @error('image')
                                 <div class="form-error">{{ $message }}</div>
                             @enderror

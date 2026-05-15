@@ -108,7 +108,7 @@
                 Trek Nepal with Paaila<br>Real-Time GPS Tracking
             </h1>
             <p style="font-size: 18px; color: rgba(255,255,255,0.9); margin-bottom: var(--space-xl); line-height: 1.6;">
-                Explore the Himalayas safely. Every step tracked. Every checkpoint monitored. Your loved ones always know where you are.
+                Use PAAILA, do nothing. <br>Explore the Himalayas safely. Every step tracked. Every checkpoint monitored. Your loved ones always know where you are.
             </p>
             <div class="flex gap-md" style="flex-wrap: wrap;">
                 <a href="#treks" class="btn btn-cta btn-lg" >
@@ -197,10 +197,12 @@
                                 <div style="
                                 color: var(--color-primary-dark); padding: 3px 8px; border-radius: 12px;
                                 font-size: 12px; font-weight: 600;
-                                display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px);">
+                                display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px);"
+                                >
+                                <span class="badge badge-success" style="opacity: 0.75; font-size: 11px;">
                                 <i class="fas fa-star" style="color: #FFC107; font-size: 11px;"></i>
                                 {{ number_format($package->rating_avg, 1) }}
-                                <span style="opacity: 0.75; font-size: 11px;">({{ $package->rating_count }})</span>
+                                ({{ $package->rating_count }})</span>
                                 </div>
                                  @endif
                                  @if($package->trek_type ?? false)
@@ -212,7 +214,7 @@
                                         {{ $package->trek_type }}
                                     </span>
                                 </div>
-                            @endif
+                                @endif
                             </div>
                             
 
@@ -229,6 +231,14 @@
                                     <i class="fas fa-map-marker-alt" style="color: var(--color-primary);"></i>
                                     <span>{{ $package->checkpoints->count() }} Stops</span>
                                 </div>
+                                @if($package->region ?? false)
+                                <span style="color: var(--color-primary);
+                                             text-transform: capitalize;"
+                                            >
+                                <i class="fas fa-map-pin"></i> 
+                                {{ $package->region }}
+                                </span>
+                                 @endif
                             </div>
                             
 
