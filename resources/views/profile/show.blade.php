@@ -130,7 +130,7 @@
                                         <div class="mini-label">Trek Types</div>
                                         <div class="chip-wrap">
                                             @foreach($preferences->trek_types as $type)
-                                                <span class="chip">{{ $type }}</span>
+                                                <span class="chip">{{ ucfirst($type) }}</span>
                                             @endforeach
                                         </div>
                                     </div>

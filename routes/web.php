@@ -68,7 +68,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/preferences', [PreferenceController::class, 'create'])->name('preferences.create');
     Route::post('/preferences', [PreferenceController::class, 'store'])->name('preferences.store');
-    Route::match(['get', 'post'], '/preferences/edit', [PreferenceController::class, 'edit'])->name('preferences.edit');
+    Route::get('/preferences/edit',  [PreferenceController::class, 'edit'])->name('preferences.edit');
+    Route::put('/preferences/edit',  [PreferenceController::class, 'update'])->name('preferences.update');
 
     Route::post('/bookings/{booking}/rate', [TrekRatingController::class, 'store'])->name('trek.rate');
 });

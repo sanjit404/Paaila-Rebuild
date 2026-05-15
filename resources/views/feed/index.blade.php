@@ -24,12 +24,9 @@
             </a>
             <a href="{{ route('feed.index', ['trending' => 1]) }}" 
                class="filter-btn {{ request('trending') ? 'tactive' : '' }} shiny-tbg " style=" background:transparent;">
-                <i class="fas fa-fire" ></i> Trending Feed
+                <i class="fas fa-fire" ></i> Trending
             </a>
-            <a href="{{ route('tour.foryou') }}" 
-               class="filter-btn {{ request('trending') ? 'tactive' : '' }} shiny-bg" style="background:var(--color-primary)">
-                <i class="fas fa-heart fa-fade" style="color:white;"></i><font color="white">Special For You</font>
-            </a>
+            
         </div>
     </div>
 </section>

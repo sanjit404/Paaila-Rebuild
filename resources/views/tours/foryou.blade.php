@@ -26,9 +26,9 @@
             transform: translateY(15px);
             animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
+        .delay-1 { animation-delay: 0.3s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.5s; }
 
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
@@ -41,7 +41,7 @@
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
             padding: 20px 24px;
             margin: var(--space-xl) auto;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.6s ease;
         }
         .pref-card:hover {
             transform: translateY(-2px);
@@ -74,7 +74,7 @@
         }
 
         #packagesGrid {
-            transition: opacity 0.3s ease;
+            transition: opacity 0.6s ease;
         }
         
         .see-all-link {
@@ -87,29 +87,12 @@
             gap: 6px;
             padding: 8px 16px;
             border-radius: 8px;
-            transition: background 0.2s ease;
+            transition: background 0.6s ease;
         }
         .see-all-link:hover {
             background: rgba(0,0,0,0.03);
         }
     </style>
-
-    @if(session('success') || session('error'))
-        <div class="container fade-in-up" style="padding-top: var(--space-lg);">
-            @if(session('success'))
-                <div class="alert alert-success" style="border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); border: none; background: #EDF7ED; color: #1E4620;">
-                    <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
-                    <span style="font-weight: 500;">{{ session('success') }}</span>
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-error" style="border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); border: none; background: #FDEDED; color: #5F2120;">
-                    <i class="fas fa-exclamation-circle" style="color: #F44336;"></i>
-                    <span style="font-weight: 500;">{{ session('error') }}</span>
-                </div>
-            @endif
-        </div>
-    @endif
 
     @auth
         @if(!$hasPrefs)
@@ -144,7 +127,7 @@
             <x-recommendations
                 :recommendations="$recommendations"
                 title="Recommended for You"
-                subtitle="Curated picks based on your unique travel style"
+                subtitle="Curated based on your travel style"
                 reason-icon="fa-compass"
                 reason-color="#2E7D32"
                 reason-bg="#E8F5E9"
