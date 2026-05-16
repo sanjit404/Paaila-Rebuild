@@ -276,7 +276,7 @@
 
     </div>
 </section>
-
+<br>
 <center>
 <div class="vibe-card-wrap ">
     <div class="vibe-card shiny-tbg">
