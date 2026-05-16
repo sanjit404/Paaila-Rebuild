@@ -17,11 +17,11 @@ return new class extends Migration
                 $table->text('image')->nullable();
                 $table->decimal('latitude', 10, 8);
                 $table->decimal('longitude', 11, 8);
-                $table->unsignedInteger('estimated_time_from_previous')->default(0);
-                $table->unsignedInteger('order')->default(0);
-                $table->unsignedInteger('radius')->default(50); // meters
+                $table->integer('estimated_time_from_previous')->default(0);
+                $table->integer('order')->default(0);                       
+                $table->integer('radius')->default(50);                      
                 $table->timestamps();
-                
+
                 $table->index(['tour_package_id', 'order']);
                 $table->index(['latitude', 'longitude']);
             });

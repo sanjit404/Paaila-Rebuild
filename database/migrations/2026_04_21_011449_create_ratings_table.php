@@ -12,11 +12,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
             $table->string('identifier', 255);
-            $table->unsignedTinyInteger('rating'); 
+            $table->smallInteger('rating'); 
             $table->timestamps();
-            
+
             $table->unique(['post_id', 'identifier'], 'unique_rating_per_user');
-            
             $table->index('identifier');
         });
     }

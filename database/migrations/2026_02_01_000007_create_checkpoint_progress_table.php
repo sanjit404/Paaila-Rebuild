@@ -15,10 +15,9 @@ return new class extends Migration
                 $table->foreignId('checkpoint_id')->constrained()->onDelete('cascade');
                 $table->timestamp('reached_at')->nullable();
                 $table->boolean('facts_viewed')->default(false);
-                $table->decimal('distance_from_checkpoint', 10, 2)->nullable(); // Real-time distance in meters
+                $table->decimal('distance_from_checkpoint', 10, 2)->nullable();
                 $table->timestamps();
-                
-                // Ensure one progress record per checkpoint per booking
+
                 $table->unique(['tour_booking_id', 'checkpoint_id'], 'unique_progress');
                 $table->index('tour_booking_id');
                 $table->index('checkpoint_id');

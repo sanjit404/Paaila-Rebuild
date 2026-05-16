@@ -15,9 +15,10 @@ return new class extends Migration
                 $table->string('pin', 6);
                 $table->timestamp('expires_at');
                 $table->timestamp('last_accessed_at')->nullable()->default(null);
-                $table->integer('access_count')->default(0);
-                $table->timestamps();
+                $table->integer('access_count')->default(0);  
                 $table->boolean('is_active')->default(true);
+                $table->timestamps();
+
                 $table->unique('pin');
                 $table->index('tour_booking_id');
                 $table->index('expires_at');

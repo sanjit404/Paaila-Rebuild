@@ -14,11 +14,11 @@ return new class extends Migration
                 $table->foreignId('checkpoint_id')->constrained()->onDelete('cascade');
                 $table->string('title');
                 $table->text('content');
-                $table->string('type')->default('info'); // historical, cultural, natural, safety, tip, info
+                $table->string('type')->default('info'); 
                 $table->string('icon_class')->nullable();
-                $table->unsignedInteger('order')->default(0);
+                $table->integer('order')->default(0);   
                 $table->timestamps();
-                
+
                 $table->index(['checkpoint_id', 'order']);
             });
         }

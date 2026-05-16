@@ -4,6 +4,9 @@
 
 @section('content')
 <style>
+        html{
+            scroll-behavior: smooth;
+        }
         .fade-in-up {
             opacity: 0;
             transform: translateY(15px);

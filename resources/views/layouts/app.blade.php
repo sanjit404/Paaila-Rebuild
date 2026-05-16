@@ -170,8 +170,18 @@
             box-shadow: var(--shadow-sm);
             overflow: hidden;
             transition: all 0.3s ease;
+            animation: appear linear;
+            animation-timeline: view();
         }
-
+        @keyframes appear{
+            0%{
+                opacity: 0.6;
+                scale: 0.85;
+            }45%{
+                opacity: 1;
+                scale: 1;
+            }
+        }
         .card:hover {
             box-shadow: var(--shadow-md);
             transform: translateY(-2px);
