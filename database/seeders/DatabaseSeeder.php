@@ -9,8 +9,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            CheckpointsTableSeeder::class,
-            TourPackagesTableSeeder::class,
+            // UserSeeder::class,
+            // TourPackagesTableSeeder::class,
+            // CheckpointsTableSeeder::class,
+            PgSeeder::class,
+            PostSeeder::class
         ]);
     }
 }

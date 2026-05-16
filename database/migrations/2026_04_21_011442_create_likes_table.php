@@ -13,9 +13,8 @@ return new class extends Migration
             $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
             $table->string('identifier', 255);
             $table->timestamps();
-            
+
             $table->unique(['post_id', 'identifier'], 'unique_like_per_user');
-            
             $table->index('identifier');
         });
     }

@@ -23,16 +23,16 @@ return new class extends Migration
                 $table->string('region', 100)->nullable()->after('season');
             }
             if (!Schema::hasColumn('tour_packages', 'views_count')) {
-                $table->unsignedInteger('views_count')->default(0)->after('region');
+                $table->integer('views_count')->default(0)->after('region');   
             }
             if (!Schema::hasColumn('tour_packages', 'bookings_count')) {
-                $table->unsignedInteger('bookings_count')->default(0)->after('views_count');
+                $table->integer('bookings_count')->default(0)->after('views_count');
             }
             if (!Schema::hasColumn('tour_packages', 'rating_avg')) {
                 $table->decimal('rating_avg', 3, 2)->default(0.00)->after('bookings_count');
             }
             if (!Schema::hasColumn('tour_packages', 'rating_count')) {
-                $table->unsignedInteger('rating_count')->default(0)->after('rating_avg');
+                $table->integer('rating_count')->default(0)->after('rating_avg');
             }
         });
     }
