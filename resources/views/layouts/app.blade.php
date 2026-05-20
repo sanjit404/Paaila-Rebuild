@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Paaila') - Trek with Confidence</title>
-    
+    <link rel="icon" type="image/png" href="{{ asset('images/paailaLogo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -15,8 +15,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-       
-        :root {
+    @import url('https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Jim+Nightshade&family=Tangerine&display=swap');
+        
+        :root{
             --color-primary: #1B5E20;
             --color-primary-dark: #144416;
             --color-primary-light: #2E7D32;
@@ -85,6 +86,49 @@
         p {
             margin-bottom: var(--space-md);
             color: var(--color-text-light);
+        }
+
+        .allura-regular {
+        font-family: "Allura", cursive;
+        font-weight: 400;
+        font-style: normal;
+        }
+
+
+        .tangerine-regular {
+        font-family: "Tangerine", cursive;
+        font-weight: 400;
+        font-style: normal;
+        }
+
+        .almendra-regular {
+        font-family: "Almendra", serif;
+        font-weight: 400;
+        font-style: normal;
+        }
+
+        .almendra-bold {
+        font-family: "Almendra", serif;
+        font-weight: 700;
+        font-style: normal;
+        }
+
+        .almendra-regular-italic {
+        font-family: "Almendra", serif;
+        font-weight: 400;
+        font-style: italic;
+        }
+
+        .almendra-bold-italic {
+        font-family: "Almendra", serif;
+        font-weight: 700;
+        font-style: italic;
+        }
+
+        .jim-nightshade-regular {
+        font-family: "Jim Nightshade", cursive;
+        font-weight: 400;
+        font-style: normal;
         }
 
       
@@ -172,11 +216,12 @@
             transition: all 0.3s ease;
             animation: appear linear;
             animation-timeline: view();
+            animation-range: entry -20% cover 60%;
         }
         @keyframes appear{
             0%{
-                opacity: 0.6;
-                scale: 0.85;
+                opacity: 0.2;
+                scale: 0.2;
             }45%{
                 opacity: 1;
                 scale: 1;
@@ -245,7 +290,7 @@
         }
 
         .navbar-logo {
-            font-family: var(--font-heading);
+            font-family: "Almendra", serif;
             font-size: 24px;
             font-weight: 800;
             color: var(--color-primary-light);
@@ -501,7 +546,7 @@
         <div class="navbar-container">
             <a href="{{ route('home') }}" class="navbar-brand">
                 <div class="navbar-logo"><img src="{{ asset('images/paailaLogo.png')}}" alt="Logo" class="navbar-logo"></div>
-                <div class="navbar-logo">Paaila</div>
+                <div class="navbar-logo almendra-bold">Paaila</div>
             </a>
 
             <ul class="navbar-menu">
@@ -559,7 +604,13 @@
             <div class="grid grid-3">
                 <div>
                     <h3 style="color: var(--color-white); margin-bottom: var(--space-md);">Paaila</h3>
-                    <p style="color: rgba(255,255,255,0.7); font-size: 14px;">Trek with confidence. Real-time GPS tracking for your safety.</p>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 14px;">
+                        Trek with confidence.
+                        <br>
+                        सर्वे भवन्तु सुखिनः । सर्वे सन्तु निरामयाः ॥
+                        <br>
+                        𑐫𑐵𑐬𑐸 𑐳𑐸𑐏𑐸𑐫𑑂 𑐥𑐵𑐫𑑂:
+                    </p>
                 </div>
                 <div>
                     <h4 style="color: var(--color-white); margin-bottom: var(--space-md); font-size: 16px;">Quick Links</h4>
@@ -574,7 +625,7 @@
                 </div>
             </div>
             <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2026 Paaila. Trek safely with GPS tracking.</p>
+                <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2026 Paaila | पाइला | 𑐥𑐵𑐂𑐮𑑂𑐴 </p>
             </div>
         </div>
     </footer>
