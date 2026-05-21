@@ -578,7 +578,7 @@ function sharePin() {
 }
 
 
-@if(config('app.debug'))
+@if(true)
 function jumpToCheckpoint(lat, lng) {
     if (watchId) { navigator.geolocation.clearWatch(watchId); watchId = null; }
     onPositionUpdate({
