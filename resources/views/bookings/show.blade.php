@@ -31,7 +31,13 @@
                 </div>
                 <div class="detail-row">
                     <span>Payment Method:</span>
-                    <strong>{{ ucfirst($booking->payment_method) }}</strong>
+                    <strong>
+                        @if($booking->payment_method=="khalti")
+                            Test Mode
+                        @else
+                            {{ ucfirst($booking->payment_method) }}
+                        @endif
+                    </strong>
                 </div>
                 <div class="detail-row">
                     <span>Booked On:</span>
