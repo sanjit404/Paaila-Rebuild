@@ -632,7 +632,7 @@
                         <br>
                         𑐫𑐵𑐬𑐸 𑐳𑐸𑐏𑐸𑐫𑑂 𑐥𑐵𑐫𑑂:
                     </p>
-                <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img ">
+                <i class="fas fa-solid fa-flip"><img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img "></i>
                 <img src="{{ asset('images/Flag_of_Nepal.gif') }}" alt="Paaila logo" class="hero-logo-img ">
                 </div>
                 <div>
