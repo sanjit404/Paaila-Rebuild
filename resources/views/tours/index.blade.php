@@ -190,7 +190,7 @@
 
     </div>
 </section>
-
+<br>
 <center>
 <div class="vibe-card-wrap ">
     <div class="vibe-card shiny-tbg" style="background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/bg_wall_trek.jpg') }}') center/cover;">
@@ -202,7 +202,8 @@
     </div>
 </div>
 </center>
-<br><br><br>
+<br>
+
 <section class="section" style="background: white; padding: var(--space-xl) 0;">
     <div class="container">
         <div class="grid grid-4">
