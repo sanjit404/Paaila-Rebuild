@@ -42,7 +42,9 @@
 @section('content')
 <div class="profile-page">
     <div class="container profile-wrap">
-        <div class="profile-header card">
+        <div class="profile-header card" style="
+            background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/lake_side.jpg') }}') center/cover;
+            ">
             <div class="card-body">
                 <div class="profile-top">
                     <div class="profile-avatar">

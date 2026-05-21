@@ -10,6 +10,7 @@
             <div class="hero-logo-row">
                 <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img ">
                 <h1 class="hero-wordmark almendra-bold">Paaila </h1>
+                <img src="{{ asset('images/Flag_of_Nepal.gif') }}" alt="Paaila logo" class="hero-logo-img ">
             </div>
 
             <p class="hero-tagline tangerine-regular">because every step matters</p>
@@ -23,7 +24,7 @@
 
             <div class="hero-rule" aria-hidden="true"></div>
 
-            <p class="hero-desc" style="margin-left:130px;">
+            <p class="hero-desc" style="margin-left:130px;color:white;">
               पाइला  |  𑐥𑐵𑐂𑐮𑑂𑐴 
             </p>
 
@@ -192,11 +193,11 @@
 <br>
 <center>
 <div class="vibe-card-wrap ">
-    <div class="vibe-card shiny-tbg">
+    <div class="vibe-card shiny-tbg" style="background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/bg_wall_trek.jpg') }}') center/cover;">
         <p class="vibe-text">Can’t find a trek that matches your vibe?</p>
 
         <a href="{{ route('tour.foryou') }}" class="vibe-link">
-             <i class="fas fa-heart fa-fade" style="color:var(--color-primary-dark);"></i>Click here to find the perfect trek for you.
+             <i class="fas fa-heart fa-fade" style="color:white;"></i>Click here to find the perfect trek for you.
         </a>
     </div>
 </div>
@@ -348,21 +349,7 @@
             padding: 72px 0 80px;
         }
 
-        .hero-logo-row {
-            display: flex;
-            align-items: flex-end;
-            gap: 14px;
-            margin-bottom: 4px;
-        }
-
-        .hero-logo-img {
-            height: 64px;
-            width: 46px;
-            object-fit: contain;
-            flex-shrink: 0;
-            margin-bottom: 6px;
-            opacity: 0.92;
-        }
+        
 
         .hero-wordmark {
             font-family: 'Almendra', Georgia, serif;
@@ -393,7 +380,7 @@
 
         .hero-desc {
             font-size: 15px;
-            color: rgba(255, 255, 255, 0.50);
+            color: rgba(198, 197, 197, 0.69);
             line-height: 1.72;
             max-width: 400px;
             margin: 0 0 32px;
@@ -434,7 +421,7 @@
             font-weight: 500;
             padding: 11px 26px;
             border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.86);
             text-decoration: none;
             transition: border-color 0.15s, color 0.15s, transform 0.10s;
             letter-spacing: 0.2px;
@@ -510,8 +497,8 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            color: var(--color-primary-dark);
-            background: white;
+            color: #ffffff;
+            background: #1a7b24;
             text-decoration: none;
             font-size: 14px;
             font-weight: 700;
