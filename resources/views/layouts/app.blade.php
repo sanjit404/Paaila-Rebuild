@@ -29,6 +29,7 @@
             --color-white: #FFFFFF;
             --color-text: #263238;
             --color-text-light: #546E7A;
+            --color-text-light-booking: #ffffff;
             
             --color-success: #2E7D32;
             --color-warning: #ED6C02;
@@ -59,7 +60,11 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+        
+        html{
+            scroll-behavior:smooth;
+        }
+        
         body {
             font-family: var(--font-body);
             font-size: 16px;
@@ -131,6 +136,21 @@
         font-style: normal;
         }
 
+        .hero-logo-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            margin-bottom: 4px;
+        }
+
+        .hero-logo-img {
+            height: 64px;
+            width: 46px;
+            object-fit: contain;
+            flex-shrink: 0;
+            margin-bottom: 6px;
+            opacity: 0.92;
+        }
       
         .btn {
             display: inline-flex;
@@ -552,6 +572,7 @@
             <ul class="navbar-menu">
             <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed </a></li>
             <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
+            <li><a href="#footer" class="navbar-link">About Us</a></li>
             
             @auth
                 <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup ><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup> </a></li>
@@ -599,7 +620,7 @@
         @yield('content')
     </main>
 
-    <footer style="background: var(--color-primary-dark); color: var(--color-white); padding: var(--space-2xl) 0; margin-top: var(--space-2xl);">
+    <footer id="footer" style="background: linear-gradient(135deg, rgba(4, 11, 4, 0.95) 0%, rgba(1, 9, 1, 0.3) 100%), url('{{ asset('images/TrekWall.jpg') }}') center/cover; padding: var(--space-2xl) 0; ">
         <div class="container">
             <div class="grid grid-3">
                 <div>
@@ -611,6 +632,8 @@
                         <br>
                         𑐫𑐵𑐬𑐸 𑐳𑐸𑐏𑐸𑐫𑑂 𑐥𑐵𑐫𑑂:
                     </p>
+                <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img ">
+                <img src="{{ asset('images/Flag_of_Nepal.gif') }}" alt="Paaila logo" class="hero-logo-img ">
                 </div>
                 <div>
                     <h4 style="color: var(--color-white); margin-bottom: var(--space-md); font-size: 16px;">Quick Links</h4>
@@ -624,8 +647,8 @@
                     <p style="color: rgba(255,255,255,0.7); font-size: 14px;">Email: info@paaila.com<br>Phone: +977-123-4567</p>
                 </div>
             </div>
-            <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2026 Paaila | पाइला | 𑐥𑐵𑐂𑐮𑑂𑐴 </p>
+            <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgb(255, 255, 255); text-align: center;">
+                <p style="color: rgba(255, 255, 255, 0.88); font-size: 13px; margin: 0;">© 2026 Paaila | पाइला | 𑐥𑐵𑐂𑐮𑑂𑐴 </p>
             </div>
         </div>
     </footer>
