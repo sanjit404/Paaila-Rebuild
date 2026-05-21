@@ -57,10 +57,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/payment/esewa/{booking}', [PaymentController::class, 'esewa'])->name('payment.esewa');
 
     Route::get('/payment/khalti/{booking}', [PaymentController::class, 'khalti'])->name('payment.khalti');
-    Route::post('/payment/khalti/{booking}/verify', [PaymentController::class, 'khaltiVerify'])->name('payment.khalti.verify');
+    Route::get('/payment/khalti/{booking}/verify', [PaymentController::class, 'khaltiVerify'])->name('payment.khalti.verify');
 
     Route::get('/payment/stripe/{booking}', [PaymentController::class, 'stripe'])->name('payment.stripe');
-    Route::post('/payment/stripe/{booking}/process', [PaymentController::class, 'stripeProcess'])->name('payment.stripe.process');
+    Route::post('/payment/stripe/{booking}/verify', [PaymentController::class, 'stripeVerify'])->name('payment.stripe.verify');
 
     Route::get('/my-tour/{booking}', [TrackingController::class, 'traveler'])->name('tracking.traveler');
     Route::post('/api/tracking/{booking}/location', [TrackingController::class, 'updateLocation'])->name('tracking.update');

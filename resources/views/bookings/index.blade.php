@@ -97,11 +97,16 @@
                                 @endif
                             </div>
 
-                            {{-- Trek details row --}}
                             <div style="display: flex; gap: var(--space-xl); flex-wrap: wrap; font-size: 14px; color: var(--color-text-light-booking); margin-bottom: var(--space-lg);">
                                 <span><i class="fas fa-calendar"></i> {{ $booking->tour_date->format('M d, Y') }}</span>
                                 <span><i class="fas fa-users"></i> {{ $booking->participants }} {{ Str::plural('person', $booking->participants) }}</span>
-                                <span><i class="fas fa-credit-card"></i> {{ ucfirst($booking->payment_method) }}</span>
+                                <span><i class="fas fa-credit-card"></i>
+                                @if($booking->payment_method=="khalti")
+                                 Test Mode
+                                 @else
+                                 {{ ucfirst($booking->payment_method) }}
+                                 @endif
+                                </span>
                                 <span style="font-weight: 600; color: var(--color-text-light-booking);">
                                     <i class="fas fa-money-bill"></i> Rs. {{ number_format($booking->total_amount, 0) }}
                                 </span>
@@ -251,9 +256,15 @@
                                 @endif
 
                                 @if($booking->status === 'pending')
+                                @if(!$booking->payment_method="khalti")
                                     <a href="{{ route('payment.' . $booking->payment_method, $booking) }}" class="btn btn-cta btn-sm">
                                         <i class="fas fa-credit-card"></i> Complete Payment
                                     </a>
+                                @else
+                                <a href="{{ route('payment.test', $booking) }}" class="btn btn-cta btn-sm">
+                                        <i class="fas fa-credit-card"></i> Complete Payment
+                                    </a>
+                                @endif
                                 @endif
                             </div>
 

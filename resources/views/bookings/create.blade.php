@@ -125,7 +125,7 @@
                                     <input type="radio" name="payment_method" value="khalti" {{ old('payment_method') == 'khalti' ? 'checked' : '' }}>
                                     <div class="option-content">
                                         <i class="fas fa-mobile-alt" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
-                                        <span>Khalti</span>
+                                        <span>Instant</span>
                                     </div>
                                 </label>
 

@@ -34,5 +34,13 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'khalti' => [
+    'public_key' => env('KHALTI_PUBLIC_KEY'),
+    'secret_key' => env('KHALTI_SECRET_KEY'),
+    ],
+    'stripe' => [
+    'public_key' => env('STRIPE_PUBLIC_KEY'),
+    'secret_key' => env('STRIPE_SECRET_KEY'),
+    ],
 
 ];
