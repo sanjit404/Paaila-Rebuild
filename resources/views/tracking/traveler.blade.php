@@ -127,7 +127,7 @@
     </div>
 </div>
 
-@if(config('app.debug'))
+@if(true)
 <div style="position: fixed; bottom: 20px; left: 20px; background: var(--color-primary-dark); color: white; padding: var(--space-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 2000; max-width: 280px; max-height: 80vh; overflow-y: auto;">
     <div style="display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-md);">
         <i class="fas fa-flask"></i>
