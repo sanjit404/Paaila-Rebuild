@@ -7,10 +7,8 @@
 
     <div class="auth-left">
         <div class="auth-left-inner">
-            <a href="{{ route('home') }}" class="auth-logo">
-                <div class="auth-logo-icon">
-                    <div class="navbar-logo"><img src="{{ asset('images/paailaLogo.png')}}" alt="Logo" class="navbar-logo"></div>
-                </div>
+            <a href="{{ route('home') }}" class="auth-logo">                
+                    <div class="navbar-logo"><img src="{{ asset('images/paailaLogo.png')}}" alt="Logo" style="height:100px;" class="navbar-logo"></div>
                 <span>Paaila</span>
             </a>
 
