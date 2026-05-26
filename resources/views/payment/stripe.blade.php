@@ -9,16 +9,11 @@
             <div class="card">
                 <div class="card-body" style="padding: var(--space-xl);">
                     <div class="text-center" style="margin-bottom: var(--space-xl);">
-                        <div style="display: flex; justify-content: center; gap: var(--space-md); margin-bottom: var(--space-md);">
-                            <i class="fab fa-cc-visa" style="font-size: 40px; color: #1A1F71;"></i>
-                            <i class="fab fa-cc-mastercard" style="font-size: 40px; color: #EB001B;"></i>
-                            <i class="fab fa-cc-amex" style="font-size: 40px; color: #006FCF;"></i>
-                        </div>
                         <h2 style="font-size: 24px; font-weight: 700; margin-bottom: var(--space-sm);">
-                            Card Payment
+                            Pay with Card
                         </h2>
                         <p style="color: var(--color-text-light); margin: 0;">
-                            Secure payment via Stripe
+                            Secure payment powered by Stripe
                         </p>
                     </div>
 
@@ -39,23 +34,24 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('payment.stripe.process', $booking) }}" id="stripeForm">
-                        @csrf
-                        
-                        <div class="form-group">
-                            <label class="form-label">Card Number</label>
-                            <div id="card-element" style="padding: 12px; border: 2px solid #E0E0E0; border-radius: var(--radius-md);">
-                            </div>
-                            <div id="card-errors" class="form-error" style="margin-top: 8px;"></div>
+                    {{-- Error message --}}
+                    <div id="payment-error" style="display:none; color: #dc3545; margin-bottom: var(--space-md); padding: var(--space-md); background: #fff0f0; border-radius: var(--radius-md);"></div>
+
+                    {{-- Stripe Card Element --}}
+                    <div style="margin-bottom: var(--space-lg);">
+                        <label style="display: block; font-weight: 600; margin-bottom: var(--space-sm);">Card Details</label>
+                        <div id="card-element" style="padding: 12px; border: 1px solid #E0E0E0; border-radius: var(--radius-md); background: white;">
                         </div>
+                    </div>
 
-                        <input type="hidden" name="stripeToken" id="stripeToken">
-
-                        <button type="submit" class="btn btn-cta btn-lg btn-block" id="submitButton">
+                    <button id="pay-button" class="btn btn-lg btn-block"
+                        style="background: var(--color-primary); color: white; padding: var(--space-lg); width: 100%; border: none; border-radius: var(--radius-md); cursor: pointer; font-size: 16px; font-weight: 600;">
+                        <span id="pay-button-text">
                             <i class="fas fa-lock"></i>
                             Pay Rs. {{ number_format($booking->total_amount, 2) }}
-                        </button>
-                    </form>
+                        </span>
+                        <span id="pay-button-loading" style="display:none;">Processing...</span>
+                    </button>
 
                     <div class="text-center" style="margin-top: var(--space-lg);">
                         <a href="{{ route('bookings.show', $booking) }}" style="color: var(--color-text-light); text-decoration: none; font-size: 14px;">
@@ -71,55 +67,62 @@
 @push('scripts')
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    var stripe = Stripe('{{ $stripeConfig["publishable_key"] }}');
-    var elements = stripe.elements();
+    const stripe = Stripe('{{ $publicKey }}');
+    const elements = stripe.elements();
 
-    var cardElement = elements.create('card', {
+    const cardElement = elements.create('card', {
         style: {
             base: {
                 fontSize: '16px',
-                color: '#32325d',
-                fontFamily: '"Inter", sans-serif',
-                '::placeholder': {
-                    color: '#aab7c4'
-                }
+                color: '#424770',
+                '::placeholder': { color: '#aab7c4' }
             },
-            invalid: {
-                color: '#fa755a',
-                iconColor: '#fa755a'
-            }
+            invalid: { color: '#9e2146' }
         }
     });
 
     cardElement.mount('#card-element');
 
-    cardElement.on('change', function(event) {
-        var displayError = document.getElementById('card-errors');
-        if (event.error) {
-            displayError.textContent = event.error.message;
-        } else {
-            displayError.textContent = '';
-        }
-    });
+    document.getElementById('pay-button').addEventListener('click', async function () {
+        const button = this;
+        button.disabled = true;
+        document.getElementById('pay-button-text').style.display = 'none';
+        document.getElementById('pay-button-loading').style.display = 'inline';
+        document.getElementById('payment-error').style.display = 'none';
 
-    var form = document.getElementById('stripeForm');
-    var submitButton = document.getElementById('submitButton');
-
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        submitButton.disabled = true;
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-        const {token, error} = await stripe.createToken(cardElement);
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        });
 
         if (error) {
-            document.getElementById('card-errors').textContent = error.message;
-            submitButton.disabled = false;
-            submitButton.innerHTML = '<i class="fas fa-lock"></i> Pay Rs. {{ number_format($booking->total_amount, 2) }}';
+            document.getElementById('payment-error').style.display = 'block';
+            document.getElementById('payment-error').textContent = error.message;
+            button.disabled = false;
+            document.getElementById('pay-button-text').style.display = 'inline';
+            document.getElementById('pay-button-loading').style.display = 'none';
+            return;
+        }
+
+        const response = await fetch('{{ route('payment.stripe.verify', $booking) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ payment_method_id: paymentMethod.id })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            window.location.href = data.redirect;
         } else {
-            document.getElementById('stripeToken').value = token.id;
-            form.submit();
+            document.getElementById('payment-error').style.display = 'block';
+            document.getElementById('payment-error').textContent = data.message;
+            button.disabled = false;
+            document.getElementById('pay-button-text').style.display = 'inline';
+            document.getElementById('pay-button-loading').style.display = 'none';
         }
     });
 </script>

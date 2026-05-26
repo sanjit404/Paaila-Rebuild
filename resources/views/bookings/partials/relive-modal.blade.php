@@ -9,7 +9,6 @@
                 'trackingPin',
             ]);
 
-            // Build checkpoint events sorted by reached_at
             $checkpointEvents = $booking->checkpointProgress
                 ->filter(fn($p) => $p->reached_at && $p->checkpoint)
                 ->sortBy('reached_at')
@@ -21,7 +20,6 @@
                     'reached_human' => $p->reached_at->format('g:i A'),
                 ]);
 
-            // Calculate trek duration
             $duration = null;
             if ($booking->started_at && $booking->completed_at) {
                 $mins = $booking->started_at->diffInMinutes($booking->completed_at);
@@ -554,7 +552,7 @@
                 title: 'Trek Began',
                 desc:  'GPS tracking started. ' +
                     (b.pin ? 'Family tracking PIN: <strong>' + b.pin + '</strong>' : 'The adventure was underway.'),
-                tags:  [{ text: '🗺️ Live GPS Active', bg: '#FFF8E1', color: '#F9A825' }],
+                tags:  [{ text: 'Live GPS Active', bg: '#FFF8E1', color: '#F9A825' }],
             });
         }
 
@@ -578,11 +576,11 @@
                 type:  'finish',
                 icon:  'fas fa-flag-checkered',
                 time:  b.completed_human,
-                title: '🎉 Trek Complete!',
+                title: 'Trek Complete!',
                 desc:  'You completed ' + b.package_name + '.' +
                     (b.trek_duration ? ' Total time: ' + b.trek_duration + '.' : '') +
                     (b.my_rating ? ' You gave it ' + b.my_rating + ' stars.' : ''),
-                tags:  [{ text: '🏅 Adventure Complete', bg: '#E8F5E9', color: '#1B5E20' }],
+                tags:  [{ text: ' Adventure Complete', bg: '#E8F5E9', color: '#1B5E20' }],
             });
         }
 

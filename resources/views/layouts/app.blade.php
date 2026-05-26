@@ -52,7 +52,11 @@
         html {
         scroll-behavior: smooth; 
         }
-
+        
+        html{
+            scroll-behavior:smooth;
+        }
+        
         body {
             font-family: var(--font-body);
             font-size: 16px;

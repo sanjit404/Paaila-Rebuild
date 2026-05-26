@@ -317,6 +317,7 @@
     }
 
     .field-wrap input {
+        caret-color: var(--color-primary-dark);
         width: 100%;
         padding: 12px 44px 12px 42px;
         border: 2px solid #E8ECEF;
@@ -365,13 +366,14 @@
 
     .remember-label input[type="checkbox"] { display: none; }
 
-    .remember-box {
+    .remember-box, input[type="checkbox"] {
         width: 18px; height: 18px;
         border: 2px solid #D0D7DE;
         border-radius: 5px;
         display: flex; align-items: center; justify-content: center;
         flex-shrink: 0;
         transition: all 0.15s;
+        clip-path: circle(50%);
         background: white;
     }
 

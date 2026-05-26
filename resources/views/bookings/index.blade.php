@@ -55,19 +55,21 @@
                     $accentColor = $statusColors[$booking->status] ?? '#ccc';
                 @endphp
 
-                <div class="card" style="overflow: hidden;">
+                <div class="card" style="overflow: hidden;
+            background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url(' {{ $booking->tourPackage->image }}') center/cover;
+            ">
                     <div style="display: flex;">
 
-                        <div style="width: 5px; flex-shrink: 0; background: {{ $accentColor }};"></div>
+                        <div style="width: 5px; flex-shrink: 0; background: #7f4118eb;"></div>
 
                         <div style="flex: 1; padding: var(--space-xl); min-width: 0;">
 
                             <div class="flex-between" style="flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg); align-items: flex-start;">
                                 <div>
-                                    <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">
+                                    <div style="font-size: 12px; color: var(--color-text-light-booking); margin-bottom: 4px;">
                                         {{ $booking->booking_number }}
                                     </div>
-                                    <h3 style="font-size: 18px; font-weight: 700; margin: 0;">
+                                    <h3 style="font-size: 18px; color: var(--color-text-light-booking); font-weight: 700; margin: 0;">
                                         {{ $booking->tourPackage->name }}
                                     </h3>
                                 </div>
@@ -95,49 +97,60 @@
                                 @endif
                             </div>
 
-                            {{-- Trek details row --}}
-                            <div style="display: flex; gap: var(--space-xl); flex-wrap: wrap; font-size: 14px; color: var(--color-text-light); margin-bottom: var(--space-lg);">
+                            <div style="display: flex; gap: var(--space-xl); flex-wrap: wrap; font-size: 14px; color: var(--color-text-light-booking); margin-bottom: var(--space-lg);">
                                 <span><i class="fas fa-calendar"></i> {{ $booking->tour_date->format('M d, Y') }}</span>
                                 <span><i class="fas fa-users"></i> {{ $booking->participants }} {{ Str::plural('person', $booking->participants) }}</span>
-                                <span><i class="fas fa-credit-card"></i> {{ ucfirst($booking->payment_method) }}</span>
-                                <span style="font-weight: 600; color: var(--color-primary);">
+                                <span><i class="fas fa-credit-card"></i>
+                                @if($booking->payment_method=="khalti")
+                                 Test Mode
+                                 @else
+                                 {{ ucfirst($booking->payment_method) }}
+                                 @endif
+                                </span>
+                                <span style="font-weight: 600; color: var(--color-text-light-booking);">
                                     <i class="fas fa-money-bill"></i> Rs. {{ number_format($booking->total_amount, 0) }}
                                 </span>
                             </div>
 
                             @if($booking->status === 'completed')
-                                <div style="padding: var(--space-lg); background: #F9F9F9; border: 1px solid #E8E8E8; border-radius: var(--radius-md); margin-bottom: var(--space-lg);">
+                                <div style="padding: var(--space-lg); 
+                                background: #f9f9f937; 
+                                border: 1px solid #E8E8E8; 
+                                border-radius: var(--radius-md); 
+                                margin-bottom: var(--space-lg);
+                                backdrop-filter:blur(10px);
+                                ">
 
                                     @if($myRating)
                                         {{-- READ state — immutable --}}
                                         <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: var(--space-md);">
                                             <div>
-                                                <div style="font-size: 12px; color: var(--color-text-light); font-weight: 600; text-transform: uppercase; margin-bottom: var(--space-sm);">
+                                                <div style="font-size: 12px; color: var(--color-text-light-booking); font-weight: 600; text-transform: uppercase; margin-bottom: var(--space-sm);">
                                                     Your Rating
                                                 </div>
                                                 <div style="display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
                                                     @for($i = 1; $i <= 5; $i++)
                                                         <i class="fas fa-star" style="font-size: 22px; color: {{ $i <= $myRating->rating ? '#FFC107' : '#E0E0E0' }};"></i>
                                                     @endfor
-                                                    <span style="font-size: 16px; font-weight: 700; color: var(--color-text);">
+                                                    <span style="font-size: 16px; font-weight: 700; color: var(--color-text-light-booking);">
                                                         {{ $myRating->rating }}/5
                                                     </span>
-                                                    <span style="font-size: 13px; color: var(--color-text-light);">
+                                                    <span style="font-size: 13px; color: var(--color-text-light-booking);">
                                                         — {{ $myRating->star_label }}
                                                     </span>
                                                 </div>
                                                 @if($myRating->review)
-                                                    <p style="font-size: 14px; color: var(--color-text-light); margin: 0; font-style: italic; line-height: 1.5;">
+                                                    <p style="font-size: 14px; color: var(--color-text-light-booking); margin: 0; font-style: italic; line-height: 1.5;">
                                                         "{{ $myRating->review }}"
                                                     </p>
                                                 @endif
                                             </div>
                                             <div style="text-align: right; flex-shrink: 0;">
-                                                <div style="font-size: 11px; color: var(--color-text-light);">
+                                                <div style="font-size: 11px; color: var(--color-text-light-booking);">
                                                     <i class="fas fa-lock"></i>
                                                     Rated {{ $myRating->created_at->format('M d, Y') }}
                                                 </div>
-                                                <div style="font-size: 11px; color: var(--color-text-light); margin-top: 2px;">
+                                                <div style="font-size: 11px; color: var(--color-text-light-booking); margin-top: 2px;">
                                                     Cannot be changed
                                                 </div>
                                             </div>
@@ -145,8 +158,8 @@
 
                                     @elseif($canRate)
                                         <div>
-                                            <div style="font-size: 14px; font-weight: 600; margin-bottom: var(--space-md); color: var(--color-text);">
-                                                <i class="fas fa-star" style="color: #FFC107;"></i>
+                                            <div style="font-size: 14px; font-weight: 600; margin-bottom: var(--space-md); color: var(--color-text-light-booking);">
+                                                <i class="fas fa-star" style="color: #ffffff;"></i>
                                                 How was your trek? Rate it once — helps other trekkers.
                                             </div>
 
@@ -173,7 +186,7 @@
                                                            id="ratingVal{{ $booking->id }}"
                                                            value="">
                                                     <span id="ratingLbl{{ $booking->id }}"
-                                                          style="font-size: 14px; color: var(--color-text-light); margin-left: var(--space-sm);">
+                                                          style="font-size: 14px; color: var(--color-text-light-booking); margin-left: var(--space-sm);">
                                                         Select a rating
                                                     </span>
                                                 </div>
@@ -183,7 +196,15 @@
                                                     placeholder="Share your experience (optional) — max 1000 characters"
                                                     maxlength="1000"
                                                     rows="2"
-                                                    style="width: 100%; padding: var(--space-md); border: 2px solid #E0E0E0; border-radius: var(--radius-md); font-size: 14px; resize: vertical; font-family: inherit; color: var(--color-text); margin-bottom: var(--space-md); box-sizing: border-box;"
+                                                    style="width: 100%; 
+                                                    padding: var(--space-md); 
+                                                    border: 2px solid #E0E0E0; 
+                                                    border-radius: var(--radius-md); 
+                                                    font-size: 14px; resize: vertical; 
+                                                    font-family: inherit; 
+                                                    color: var(--color-text-light); 
+                                                    margin-bottom: var(--space-md); 
+                                                    box-sizing: border-box;"
                                                     onfocus="this.style.borderColor='var(--color-primary)'"
                                                     onblur="this.style.borderColor='#E0E0E0'"
                                                 ></textarea>
@@ -196,7 +217,7 @@
                                                             style="opacity: 0.45; cursor: not-allowed;">
                                                         <i class="fas fa-paper-plane"></i> Submit Rating
                                                     </button>
-                                                    <span style="font-size: 12px; color: var(--color-text-light);">
+                                                    <span style="font-size: 12px; color: var(--color-text-light-booking);">
                                                         <i class="fas fa-lock"></i>
                                                         Cannot be changed after submission
                                                     </span>
@@ -235,9 +256,15 @@
                                 @endif
 
                                 @if($booking->status === 'pending')
+                                @if(!$booking->payment_method="khalti")
                                     <a href="{{ route('payment.' . $booking->payment_method, $booking) }}" class="btn btn-cta btn-sm">
                                         <i class="fas fa-credit-card"></i> Complete Payment
                                     </a>
+                                @else
+                                <a href="{{ route('payment.test', $booking) }}" class="btn btn-cta btn-sm">
+                                        <i class="fas fa-credit-card"></i> Complete Payment
+                                    </a>
+                                @endif
                                 @endif
                             </div>
 

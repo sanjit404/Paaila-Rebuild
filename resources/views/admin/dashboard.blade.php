@@ -9,9 +9,10 @@
             <h1 style="font-size: 28px; font-weight: 700; margin-bottom: var(--space-sm);">Admin Dashboard</h1>
             <p style="color: var(--color-text-light); margin: 0;">Manage treks, monitor bookings, and oversee operations</p>
         </div>
-
         <div class="grid grid-4" style="margin-bottom: var(--space-xl);">
-            <div class="card">
+            <div class="card" style="
+            background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/mns_try.jpg') }}') center/cover;
+            ">
                 <div class="card-body">
                     <div class="flex-between" style="margin-bottom: var(--space-md);">
                         <div style="width: 50px; height: 50px; background: #E8F5E9; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -19,14 +20,16 @@
                         </div>
                         <span class="badge badge-primary">{{ $stats['active_packages'] }} active</span>
                     </div>
-                    <div style="font-size: 32px; font-weight: 700; color: var(--color-text); margin-bottom: var(--space-xs);">
+                    <div style="font-size: 32px; font-weight: 700; color: white; margin-bottom: var(--space-xs);">
                         {{ $stats['total_packages'] }}
                     </div>
-                    <div style="font-size: 13px; color: var(--color-text-light);">Trek Packages</div>
+                    <div style="font-size: 13px; color: white;">Trek Packages</div>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" style="
+            background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/lake_side.jpg') }}') center/cover;
+            ">
                 <div class="card-body">
                     <div class="flex-between" style="margin-bottom: var(--space-md);">
                         <div style="width: 50px; height: 50px; background: #FFF3E0; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -34,14 +37,16 @@
                         </div>
                         <span class="badge badge-warning">{{ $stats['pending_bookings'] }} pending</span>
                     </div>
-                    <div style="font-size: 32px; font-weight: 700; color: var(--color-text); margin-bottom: var(--space-xs);">
+                    <div style="font-size: 32px; font-weight: 700; color: white; margin-bottom: var(--space-xs);">
                         {{ $stats['total_bookings'] }}
                     </div>
-                    <div style="font-size: 13px; color: var(--color-text-light);">Total Bookings</div>
+                    <div style="font-size: 13px; color: white;">Total Bookings</div>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" style="
+            background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/pashupatinath_temple.jpg') }}') center/cover;
+            ">
                 <div class="card-body">
                     <div class="flex-between" style="margin-bottom: var(--space-md);">
                         <div style="width: 50px; height: 50px; background: #E3F2FD; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -49,14 +54,16 @@
                         </div>
                         <span class="badge" style="background: #E3F2FD; color: #1976D2;">{{ $stats['completed_tours'] }} done</span>
                     </div>
-                    <div style="font-size: 32px; font-weight: 700; color: var(--color-text); margin-bottom: var(--space-xs);">
+                    <div style="font-size: 32px; font-weight: 700; color: white; margin-bottom: var(--space-xs);">
                         {{ $stats['active_tours'] }}
                     </div>
-                    <div style="font-size: 13px; color: var(--color-text-light);">Active Treks</div>
+                    <div style="font-size: 13px; color: white;">Active Treks</div>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" style="
+            background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/patan_durbar.jpg') }}') center/cover;
+            ">
                 <div class="card-body">
                     <div class="flex-between" style="margin-bottom: var(--space-md);">
                         <div style="width: 50px; height: 50px; background: #E8F5E9; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -64,10 +71,10 @@
                         </div>
                         <span class="badge badge-success">This month</span>
                     </div>
-                    <div style="font-size: 28px; font-weight: 700; color: var(--color-text); margin-bottom: var(--space-xs);">
+                    <div style="font-size: 28px; font-weight: 700; color: white; margin-bottom: var(--space-xs);">
                         Rs. {{ number_format($stats['total_revenue'], 0) }}
                     </div>
-                    <div style="font-size: 13px; color: var(--color-text-light);">Total Revenue</div>
+                    <div style="font-size: 13px; color: white;">Total Revenue</div>
                 </div>
             </div>
         </div>
@@ -100,7 +107,7 @@
         </div>
 
         <div class="grid grid-2">
-            <div class="card">
+            <div class="card" >
                 <div class="card-body" style="padding: var(--space-xl);">
                     <div class="flex-between" style="margin-bottom: var(--space-lg);">
                         <h3 style="font-size: 18px; font-weight: 700; margin: 0;">

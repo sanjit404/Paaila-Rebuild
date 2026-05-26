@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TourBooking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -258,111 +259,131 @@ public function esewaSuccess(Request $request)
 
     
     
-    public function khalti(TourBooking $booking)
-    {
-        $this->authorize('view', $booking);
+   public function khalti(TourBooking $booking)
+{
+    $this->authorize('view', $booking);
 
-        if (!$booking->isPending()) {
-            return redirect()
-                ->route('bookings.show', $booking)
-                ->with('info', 'This booking has already been processed.');
-        }
-
-        $khaltiConfig = [
-            'public_key' => config('services.khalti.public_key', 'test_public_key'),
-            'amount' => $booking->total_amount * 100, 
-            'product_identity' => $booking->booking_number,
-            'product_name' => $booking->tourPackage->name,
-        ];
-
-        return view('payment.khalti', compact('booking', 'khaltiConfig'));
+    if (!$booking->isPending()) {
+        return redirect()
+            ->route('bookings.show', $booking)
+            ->with('info', 'This booking has already been processed.');
     }
 
-    public function khaltiVerify(Request $request, TourBooking $booking)
-    {
-        $this->authorize('view', $booking);
+    // Initiate payment from backend
+    $response = Http::withHeaders([
+        'Authorization' => 'Key ' . config('services.khalti.secret_key'),
+        'Content-Type'  => 'application/json',
+    ])->post('https://a.khalti.com/api/v2/epayment/initiate/', [
+        'return_url'       => route('payment.khalti.verify', $booking),
+        'website_url'      => url('/'),
+        'amount'           => $booking->total_amount * 100,
+        'purchase_order_id'=> $booking->booking_number,
+        'purchase_order_name' => $booking->tourPackage->name,
+    ]);
 
-        Log::info('Khalti verification request', [
-            'booking_id' => $booking->id,
-            'token' => $request->input('token'),
+    if ($response->successful()) {
+        // Redirect user to Khalti payment page
+        return redirect($response->json()['payment_url']);
+    }
+
+    Log::error('Khalti initiation failed', $response->json());
+
+    return redirect()
+        ->route('bookings.show', $booking)
+        ->with('error', 'Could not initiate Khalti payment. Please try again.');
+}
+
+public function khaltiVerify(Request $request, TourBooking $booking)
+{
+    $this->authorize('view', $booking);
+
+    $pidx = $request->input('pidx');
+
+    // Lookup the payment status
+    $response = Http::withHeaders([
+        'Authorization' => 'Key ' . config('services.khalti.secret_key'),
+        'Content-Type'  => 'application/json',
+    ])->post('https://a.khalti.com/api/v2/epayment/lookup/', [
+        'pidx' => $pidx,
+    ]);
+
+    Log::info('Khalti lookup response', $response->json());
+
+    if ($response->successful() && $response->json()['status'] === 'Completed') {
+        $booking->markAsConfirmed();
+
+        return redirect()
+            ->route('bookings.show', $booking)
+            ->with('success', 'Payment successful! Your booking is confirmed.');
+    }
+
+    return redirect()
+        ->route('bookings.show', $booking)
+        ->with('error', 'Payment verification failed. Please contact support.');
+}
+
+    
+    
+   public function stripe(TourBooking $booking)
+{
+    $this->authorize('view', $booking);
+
+    if (!$booking->isPending()) {
+        return redirect()
+            ->route('bookings.show', $booking)
+            ->with('info', 'This booking has already been processed.');
+    }
+
+    return view('payment.stripe', [
+        'booking'   => $booking,
+        'publicKey' => config('services.stripe.public_key'),
+    ]);
+}
+
+public function stripeVerify(Request $request, TourBooking $booking)
+{
+    $this->authorize('view', $booking);
+
+    \Stripe\Stripe::setApiKey(config('services.stripe.secret_key'));
+
+    try {
+        $paymentIntent = \Stripe\PaymentIntent::create([
+            'amount'         => $booking->total_amount * 100,
+            'currency'       => 'usd',
+            'payment_method' => $request->input('payment_method_id'),
+            'confirm'        => true,
+            'return_url'     => route('bookings.show', $booking),
         ]);
 
-        $token = $request->input('token');
-        $amount = $request->input('amount');
-
-      
-        
-        if ($amount == ($booking->total_amount * 100)) {
+        if ($paymentIntent->status === 'succeeded') {
             $booking->markAsConfirmed();
 
+            session()->flash('success', 'Payment successful! Your booking is confirmed.');
+
             return response()->json([
-                'success' => true,
+                'success'  => true,
                 'redirect' => route('bookings.show', $booking),
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Payment verification failed.',
+            'message' => 'Payment was not completed.',
         ], 400);
+
+    } catch (\Stripe\Exception\CardException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+        ], 400);
+    } catch (\Exception $e) {
+        Log::error('Stripe payment failed', ['error' => $e->getMessage()]);
+        return response()->json([
+            'success' => false,
+            'message' => 'Payment failed. Please try again.',
+        ], 500);
     }
-
-    
-    
-    public function stripe(TourBooking $booking)
-    {
-        $this->authorize('view', $booking);
-
-        if (!$booking->isPending()) {
-            return redirect()
-                ->route('bookings.show', $booking)
-                ->with('info', 'This booking has already been processed.');
-        }
-
-        $stripeConfig = [
-            'publishable_key' => config('services.stripe.key', 'pk_test_51SI1L3EyK7O5YZFDdxOuAPEgU26g4dtOygkh3ASOfa0B0xfTSrxTSirHtfdYn5hipZkrNqw6UcuoYVlD5X7QwWOh00H5TFAboD'),
-            'amount' => $booking->total_amount,
-            'currency' => 'NPR',
-        ];
-
-        return view('payment.stripe', compact('booking', 'stripeConfig'));
-    }
-
-    public function stripeProcess(Request $request, TourBooking $booking)
-    {
-        $this->authorize('view', $booking);
-
-        Log::info('Stripe payment processing', [
-            'booking_id' => $booking->id,
-        ]);
-
-       
-        
-        $request->validate([
-            'stripeToken' => 'required',
-        ]);
-
-        try {
-            Stripe::setApiKey(config('services.stripe.secret'));
-
-            $booking->markAsConfirmed();
-
-            return redirect()
-                ->route('bookings.show', $booking)
-                ->with('success', 'Payment successful via Stripe! Your booking is confirmed.');
-
-        } catch (\Exception $e) {
-            Log::error('Stripe payment failed', [
-                'booking_id' => $booking->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            return back()
-                ->with('error', 'Payment failed. Please try again.')
-                ->withInput();
-        }
-    }
-
+}
     
     
     private function authorize($ability, $booking)

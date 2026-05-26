@@ -35,10 +35,19 @@
                         </div>
                     </div>
 
-                    <button id="khaltiPayButton" class="btn btn-lg btn-block" style="background: #5C2D91; color: white; padding: var(--space-lg);">
+                    {{-- Show any errors --}}
+                    @if(session('error'))
+                        <div class="alert alert-danger" style="margin-bottom: var(--space-lg);">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <a href="{{ route('payment.khalti', $booking) }}"
+                        class="btn btn-lg btn-block"
+                        style="background: #5C2D91; color: white; padding: var(--space-lg); text-align: center; display: block; text-decoration: none; border-radius: var(--radius-md);">
                         <i class="fas fa-mobile-alt"></i>
                         Pay with Khalti
-                    </button>
+                    </a>
 
                     <div class="text-center" style="margin-top: var(--space-lg);">
                         <a href="{{ route('bookings.show', $booking) }}" style="color: var(--color-text-light); text-decoration: none; font-size: 14px;">
@@ -50,59 +59,4 @@
         </div>
     </div>
 </section>
-
-@push('scripts')
-<script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
-<script>
-    var config = {
-        publicKey: "{{ $khaltiConfig['public_key'] }}",
-        productIdentity: "{{ $khaltiConfig['product_identity'] }}",
-        productName: "{{ $khaltiConfig['product_name'] }}",
-        productUrl: "{{ url('/') }}",
-        paymentPreference: ["KHALTI", "EBANKING", "MOBILE_BANKING", "CONNECT_IPS", "SCT"],
-        eventHandler: {
-            onSuccess(payload) {
-                console.log('Khalti payment success:', payload);
-                
-                fetch("{{ route('payment.khalti.verify', $booking) }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        token: payload.token,
-                        amount: payload.amount
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = data.redirect;
-                    } else {
-                        alert('Payment verification failed: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Verification error:', error);
-                    alert('Payment verification failed. Please contact support.');
-                });
-            },
-            onError(error) {
-                console.error('Khalti error:', error);
-                alert('Payment failed. Please try again.');
-            },
-            onClose() {
-                console.log('Khalti widget closed');
-            }
-        }
-    };
-
-    var checkout = new KhaltiCheckout(config);
-    
-    document.getElementById('khaltiPayButton').addEventListener('click', function() {
-        checkout.show({ amount: {{ $khaltiConfig['amount'] }} });
-    });
-</script>
-@endpush
 @endsection

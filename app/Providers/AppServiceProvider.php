@@ -9,14 +9,11 @@ use App\Policies\TourBookingPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
-    
-    public function register(): void
-    {
-    }
-
-    
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+        \URL::forceScheme('https');
+    }
         Gate::policy(\App\Models\Location::class, \App\Policies\LocationPolicy::class);
         Gate::policy(\App\Models\Geofence::class, \App\Policies\GeofencePolicy::class);
         Gate::policy(TourBooking::class, TourBookingPolicy::class);

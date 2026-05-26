@@ -42,7 +42,9 @@
 @section('content')
 <div class="profile-page">
     <div class="container profile-wrap">
-        <div class="profile-header card">
+        <div class="profile-header card" style="
+            background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/lake_side.jpg') }}') center/cover;
+            ">
             <div class="card-body">
                 <div class="profile-top">
                     <div class="profile-avatar">
@@ -52,17 +54,17 @@
                         @endif
                     </div>
 
-                    <div class="profile-meta">
-                        <h1>{{ $user->name }}</h1>
-                        <p>{{ $user->email }}</p>
-                        <span>Member since {{ optional($user->created_at)->format('F Y') }}</span><br>
+                    <div class="profile-meta" >
+                        <h1 style="color: white;">{{ $user->name }}</h1>
+                        <p style="color: #c2c2c2;" > {{ $user->email }}</p>
+                        <span style="color: #c2c2c2;">Member since {{ optional($user->created_at)->format('F Y') }}</span><br>
 
                         @if(count($missingFields))
-                            <span style="color:red;">
+                            <span style="color:red; background:white; border-radius:10px; padding:5px;" >
                                 Please set your {{ implode(' and ', $missingFields) }}
                                 <a href="#settings" onclick="switchTab('settings'); return false;" style="text-decoration:none;">
-                                    here
-                                </a>.
+                                    HERE
+                                </a>
                             </span>
                         @endif
                     </div>
