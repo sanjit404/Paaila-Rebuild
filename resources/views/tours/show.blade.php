@@ -5,31 +5,26 @@
 @section('content')
 <section style="background: white; border-bottom: 1px solid #E0E0E0;">
     <div class="container" style="padding-top: var(--space-lg); padding-bottom: var(--space-lg);">
-        <div style="display: grid; grid-template-columns: 1fr auto; gap: var(--space-xl); align-items: start;">
-            <div>
-                <div style="margin-bottom: var(--space-md);">
-                    <a href="{{ route('home') }}" style="color: var(--color-text-light); text-decoration: none; font-size: 14px;">
-                        <i class="fas fa-arrow-left"></i> Back to Treks
-                    </a>
-                </div>
 
+        <div style="margin-bottom: var(--space-md);">
+            <a href="{{ route('home') }}" style="color: var(--color-text-light); text-decoration: none; font-size: 14px;">
+                <i class="fas fa-arrow-left"></i> Back to Treks
+            </a>
+        </div>
+
+        <div class="hero-grid">
+            <div class="hero-main">
                 <div style="margin-bottom: var(--space-sm);">
                     @if($package->difficulty_level === 'easy')
-                        <span class="badge badge-success">
-                            <i class="fas fa-circle"></i> Easy Trek
-                        </span>
+                        <span class="badge badge-success"><i class="fas fa-circle"></i> Easy Trek</span>
                     @elseif($package->difficulty_level === 'moderate')
-                        <span class="badge badge-warning">
-                            <i class="fas fa-circle"></i> Moderate Trek
-                        </span>
+                        <span class="badge badge-warning"><i class="fas fa-circle"></i> Moderate Trek</span>
                     @else
-                        <span class="badge badge-error">
-                            <i class="fas fa-circle"></i> Hard Trek
-                        </span>
+                        <span class="badge badge-error"><i class="fas fa-circle"></i> Hard Trek</span>
                     @endif
                 </div>
 
-                <h1 style="font-size: 32px; font-weight: 700; margin-bottom: var(--space-md); color: var(--color-text);">
+                <h1 style="font-size: clamp(22px, 5vw, 32px); font-weight: 700; margin-bottom: var(--space-md); color: var(--color-text);">
                     {{ $package->name }}
                 </h1>
 
@@ -43,8 +38,7 @@
                     </div>
                 @endif
 
-                <div class="flex gap-lg" style="flex-wrap: wrap; font-size: 14px; color: var(--color-text-light);">
-                    
+                <div style="display: flex; flex-wrap: wrap; gap: var(--space-md); font-size: 14px; color: var(--color-text-light); margin-bottom: var(--space-md);">
                     <div class="flex" style="align-items: center; gap: var(--space-sm);">
                         <i class="fas fa-calendar" style="color: var(--color-primary);"></i>
                         <span>{{ $package->duration_days }} {{ Str::plural('Day', $package->duration_days) }}</span>
@@ -71,52 +65,32 @@
                         <span>{{ ucfirst($package->trek_type) }}</span>
                     </div>
                 </div>
-                    @if(!empty($package->tags))
-                    @php
-                        $rawTags = is_string($package->tags)
-                            ? json_decode($package->tags, true)
-                            : $package->tags;
 
+                @if(!empty($package->tags))
+                    @php
+                        $rawTags = is_string($package->tags) ? json_decode($package->tags, true) : $package->tags;
                         $tags = collect($rawTags ?? [])
                             ->filter()
-                            ->map(function ($tag) {
-                                $tag = trim($tag);
-                                $tag = trim($tag, '[]"\'');
-
-                                return '#' . ltrim($tag, '#');
-                            })
+                            ->map(fn($tag) => '#' . ltrim(trim(trim($tag, '[]"\'')), '#'))
                             ->implode(' ');
                     @endphp
-
                     @if(!empty($tags))
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-                            <span style="color: var(--color-text-light); font-size: 16px;">
-                                <i class="fas fa-tags" style="color: var(--color-text-light);"></i>
-                                Tags:
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: var(--space-sm);">
+                            <span style="color: var(--color-text-light); font-size: 15px;">
+                                <i class="fas fa-tags"></i> Tags:
                             </span>
-
-                            <span style="color: var(--color-text-light); font-size: 16px;">
-                                {{ $tags }}
-                            </span>
+                            <span style="color: var(--color-text-light); font-size: 15px;">{{ $tags }}</span>
                         </div>
                     @endif
                 @endif
+
                 @if(!empty($package->season))
                     @php
-                        $rawSeason = is_string($package->season)
-                            ? json_decode($package->season, true)
-                            : $package->season;
-
-                        $seasonText = collect($rawSeason ?? [])
-                            ->filter()
-                            ->map(function ($item) {
-                                return ucfirst(trim($item));
-                            })
-                            ->implode(', ');
+                        $rawSeason = is_string($package->season) ? json_decode($package->season, true) : $package->season;
+                        $seasonText = collect($rawSeason ?? [])->filter()->map(fn($i) => ucfirst(trim($i)))->implode(', ');
                     @endphp
-
                     @if(!empty($seasonText))
-                        <div style="font-size: 16px; color: var(--color-text-light); margin-bottom: var(--space-md);">
+                        <div style="font-size: 15px; color: var(--color-text-light); margin-bottom: var(--space-md);">
                             <i class="fas fa-sun" style="color: #FFA000;"></i>
                             Best time to visit: {{ $seasonText }}
                         </div>
@@ -124,37 +98,30 @@
                 @endif
             </div>
 
-            <div class="card" style="min-width: 300px; box-shadow: var(--shadow-md);">
-                <div class="card-body">
-                    <div style="text-align: center; margin-bottom: var(--space-lg);">
-                        <div style="font-size: 14px; color: var(--color-text-light); margin-bottom: var(--space-xs);">
-                            Starting from
+            <div class="booking-sidebar">
+                <div class="card" style="box-shadow: var(--shadow-md);">
+                    <div class="card-body" style="padding: var(--space-md);">
+                        <div style="text-align: center; margin-bottom: var(--space-md);">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 2px;">Starting from</div>
+                            <div style="font-size: 26px; font-weight: 700; color: var(--color-primary);">Rs. {{ number_format($package->price, 0) }}</div>
+                            <div style="font-size: 12px; color: var(--color-text-light);">per person</div>
                         </div>
-                        <div style="font-size: 36px; font-weight: 700; color: var(--color-primary);">
-                            Rs. {{ number_format($package->price, 0) }}
-                        </div>
-                        <div style="font-size: 13px; color: var(--color-text-light);">
-                            per person
-                        </div>
-                    </div>
-
-                    <a href="{{ route('bookings.create', $package) }}" class="shiny-tbg btn btn-cta btn-block btn-lg">
-                        <i class="fas fa-ticket-alt"></i>
-                        Book This Trek
-                    </a>
-
-                    <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid #E0E0E0; font-size: 13px; color: var(--color-text-light);">
-                        <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
-                            <i class="fas fa-check-circle" style="color: var(--color-success);"></i>
-                            <span>Real-time GPS tracking</span>
-                        </div>
-                        <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
-                            <i class="fas fa-check-circle" style="color: var(--color-success);"></i>
-                            <span>Expert local guide</span>
-                        </div>
-                        <div class="flex" style="align-items: center; gap: var(--space-sm);">
-                            <i class="fas fa-check-circle" style="color: var(--color-success);"></i>
-                            <span>Safety monitoring</span>
+                        <a href="{{ route('bookings.create', $package) }}" class="shiny-tbg btn btn-cta btn-block" style="font-size: 14px; padding: 11px 16px;">
+                            <i class="fas fa-ticket-alt"></i> Book This Trek
+                        </a>
+                        <div style="margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid #E0E0E0; font-size: 12px; color: var(--color-text-light);">
+                            <div class="flex" style="align-items: center; gap: 6px; margin-bottom: 6px;">
+                                <i class="fas fa-check-circle" style="color: var(--color-success);"></i>
+                                <span>GPS tracking</span>
+                            </div>
+                            <div class="flex" style="align-items: center; gap: 6px; margin-bottom: 6px;">
+                                <i class="fas fa-check-circle" style="color: var(--color-success);"></i>
+                                <span>Expert guide</span>
+                            </div>
+                            <div class="flex" style="align-items: center; gap: 6px;">
+                                <i class="fas fa-check-circle" style="color: var(--color-success);"></i>
+                                <span>Safety monitoring</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -163,9 +130,20 @@
     </div>
 </section>
 
+<div class="mobile-book-bar">
+    <div style="flex: 1;">
+        <div style="font-size: 11px; color: rgba(255,255,255,0.75); line-height: 1;">Starting from</div>
+        <div style="font-size: 20px; font-weight: 700; color: white; line-height: 1.2;">Rs. {{ number_format($package->price, 0) }}</div>
+        <div style="font-size: 11px; color: rgba(255,255,255,0.75);">per person</div>
+    </div>
+    <a href="{{ route('bookings.create', $package) }}" class="shiny-tbg btn btn-cta" style="font-size: 14px; padding: 12px 24px; white-space: nowrap;">
+        <i class="fas fa-ticket-alt"></i> Book Now
+    </a>
+</div>
+
 <section class="section" style="background: white;">
     <div class="container">
-        <h2 style="font-size: 24px; font-weight: 700; margin-bottom: var(--space-lg);">
+        <h2 style="font-size: clamp(18px, 4vw, 24px); font-weight: 700; margin-bottom: var(--space-lg);">
             <i class="fas fa-route"></i> Trek Route & Checkpoints
         </h2>
 
@@ -177,35 +155,27 @@
         </select>
 
         <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md);">
-            <div id="tourMap" style="height: 500px; width: 100%;"></div>
+            <div id="tourMap" style="height: 420px; width: 100%;"></div>
         </div>
 
         <div style="margin-top: var(--space-lg); padding: var(--space-lg); background: #F5F5F5; border-radius: var(--radius-md);">
-            <div class="grid grid-3">
+            <div class="route-stats-grid">
                 <div class="flex" style="align-items: center; gap: var(--space-md);">
-                    <div style="width: 40px; height: 40px; background: #1B5E20; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                        S
-                    </div>
+                    <div style="width: 40px; height: 40px; background: #1B5E20; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">S</div>
                     <div>
                         <div style="font-size: 12px; color: var(--color-text-light);">Start Point</div>
                         <div style="font-weight: 600; font-size: 14px;">{{ $package->start_location_name }}</div>
                     </div>
                 </div>
-
                 <div class="flex" style="align-items: center; gap: var(--space-md);">
-                    <div style="width: 40px; height: 40px; background: #1B5E20; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                        {{ $package->checkpoints->count() }}
-                    </div>
+                    <div style="width: 40px; height: 40px; background: #1B5E20; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">{{ $package->checkpoints->count() }}</div>
                     <div>
                         <div style="font-size: 12px; color: var(--color-text-light);">Checkpoints</div>
                         <div style="font-weight: 600; font-size: 14px;">Auto-tracked</div>
                     </div>
                 </div>
-
                 <div class="flex" style="align-items: center; gap: var(--space-md);">
-                    <div style="width: 40px; height: 40px; background: #D32F2F; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                        E
-                    </div>
+                    <div style="width: 40px; height: 40px; background: #D32F2F; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">E</div>
                     <div>
                         <div style="font-size: 12px; color: var(--color-text-light);">End Point</div>
                         <div style="font-weight: 600; font-size: 14px;">{{ $package->end_location_name }}</div>
@@ -219,18 +189,15 @@
 <section class="section" style="background: var(--color-bg);">
     <div class="container">
         <div style="max-width: 800px;">
-            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: var(--space-lg);">About This Trek</h2>
-            <p style="font-size: 16px; line-height: 1.8; color: var(--color-text);">
-                {{ $package->description }}
-            </p>
-               
+            <h2 style="font-size: clamp(18px, 4vw, 24px); font-weight: 700; margin-bottom: var(--space-lg);">About This Trek</h2>
+            <p style="font-size: 16px; line-height: 1.8; color: var(--color-text);">{{ $package->description }}</p>
         </div>
     </div>
 </section>
 
 <section class="section" style="background: white;">
     <div class="container">
-        <h2 style="font-size: 24px; font-weight: 700; margin-bottom: var(--space-lg);">
+        <h2 style="font-size: clamp(18px, 4vw, 24px); font-weight: 700; margin-bottom: var(--space-lg);">
             <i class="fas fa-list"></i> What You'll Experience
         </h2>
 
@@ -239,16 +206,13 @@
                 @foreach($package->checkpoints->sortBy('order') as $checkpoint)
                     <div class="card" style="border-left: 4px solid var(--color-primary);">
                         <div class="card-body">
-                            <div class="flex-between" style="align-items: start;">
-                                <div class="flex" style="gap: var(--space-lg); align-items: start;">
+                            <div class="checkpoint-inner">
+                                <div class="flex" style="gap: var(--space-lg); align-items: start; flex: 1;">
                                     <div style="width: 50px; height: 50px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; flex-shrink: 0;">
                                         {{ $checkpoint->order }}
                                     </div>
-
-                                    <div style="flex: 1;">
-                                        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: var(--space-sm);">
-                                            {{ $checkpoint->name }}
-                                        </h3>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: var(--space-sm);">{{ $checkpoint->name }}</h3>
 
                                         @if($checkpoint->image)
                                             <img
@@ -258,9 +222,7 @@
                                             >
                                         @endif
 
-                                        <p style="color: var(--color-text-light); font-size: 14px; line-height: 1.7; margin: 0;">
-                                            {{ $checkpoint->description }}
-                                        </p>
+                                        <p style="color: var(--color-text-light); font-size: 14px; line-height: 1.7; margin: 0;">{{ $checkpoint->description }}</p>
 
                                         @if($checkpoint->facts->count() > 0)
                                             <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: 12px;">
@@ -270,11 +232,8 @@
                                                         {{ Str::limit($fact->title, 30) }}
                                                     </span>
                                                 @endforeach
-
                                                 @if($checkpoint->facts->count() > 3)
-                                                    <span class="badge" style="background: #E0E0E0; color: var(--color-text);">
-                                                        +{{ $checkpoint->facts->count() - 3 }} more facts
-                                                    </span>
+                                                    <span class="badge" style="background: #E0E0E0; color: var(--color-text);">+{{ $checkpoint->facts->count() - 3 }} more facts</span>
                                                 @endif
                                             </div>
                                         @endif
@@ -282,11 +241,9 @@
                                 </div>
 
                                 @if($checkpoint->estimated_time_from_previous)
-                                    <div style="text-align: right; min-width: 120px;">
+                                    <div class="checkpoint-time">
                                         <div style="font-size: 12px; color: var(--color-text-light);">From previous</div>
-                                        <div style="font-size: 16px; font-weight: 600; color: var(--color-primary);">
-                                            {{ $checkpoint->estimated_time_from_previous }} mins
-                                        </div>
+                                        <div style="font-size: 16px; font-weight: 600; color: var(--color-primary);">{{ $checkpoint->estimated_time_from_previous }} mins</div>
                                     </div>
                                 @endif
                             </div>
@@ -298,78 +255,47 @@
             <p style="color: var(--color-text-light);">No checkpoints added yet.</p>
         @endif
     </div>
-            <br><br>
-            <center>
-            <div class="card" style="background: var(--color-primary-dark); max-width: 555px; box-shadow: var(--shadow-md); animation:pulseSoft 2s infinite;">
-                <div class="card-body">
-                    <div style="text-align: center; margin-bottom: var(--space-lg);">
-                        <div style="font-size: 14px; color: white; margin-bottom: var(--space-xs);">
-                            Just at
-                        </div>
-                        <div style="font-size: 36px; font-weight: 700; color: white;">
-                            Rs. {{ number_format($package->price, 0) }}
-                                    </div>
-                                    <div style="font-size: 13px; color: white;">
-                                        per person
-                                    </div>
-                                </div>
 
-                                <a href="{{ route('bookings.create', $package) }}" class="shiny-tbg btn btn-cta btn-block btn-lg">
-                                    <i class="fas fa-ticket-alt"></i>
-                                    Book This Trek Now
-                                </a>
-
-                                <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid #E0E0E0; font-size: 13px; color: white;">
-                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
-                                        <i class="fas fa-check-circle" style="color: white;"></i>
-                                        <span>Real-time GPS tracking</span>
-                                    </div>
-                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
-                                        <i class="fas fa-check-circle" style="color:white;"></i>
-                                        <span>Ready accomodation</span>
-                                    </div>
-                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
-                                        <i class="fas fa-check-circle" style="color: white;"></i>
-                                        <span>Well managed</span>
-                                    </div>
-                                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
-                                        <i class="fas fa-check-circle" style="color: white;"></i>
-                                        <span>Expert local guide</span>
-                                    </div>
-                                    <div class="flex" style="align-items: center; gap: var(--space-sm);">
-                                        <i class="fas fa-check-circle" style="color: white;"></i>
-                                        <span>Safety monitoring</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-            </center>
+    <div style="display: flex; justify-content: center; margin-top: var(--space-2xl); padding: 0 var(--space-lg);">
+        <div class="card" style="background: var(--color-primary-dark); width: 100%; max-width: 555px; box-shadow: var(--shadow-md); animation: pulseSoft 2s infinite;">
+            <div class="card-body">
+                <div style="text-align: center; margin-bottom: var(--space-lg);">
+                    <div style="font-size: 14px; color: white; margin-bottom: var(--space-xs);">Just at</div>
+                    <div style="font-size: 36px; font-weight: 700; color: white;">Rs. {{ number_format($package->price, 0) }}</div>
+                    <div style="font-size: 13px; color: white;">per person</div>
+                </div>
+                <a href="{{ route('bookings.create', $package) }}" class="shiny-tbg btn btn-cta btn-block btn-lg">
+                    <i class="fas fa-ticket-alt"></i> Book This Trek Now
+                </a>
+                <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid #E0E0E0; font-size: 13px; color: white;">
+                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                        <i class="fas fa-check-circle"></i><span>Real-time GPS tracking</span>
+                    </div>
+                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                        <i class="fas fa-check-circle"></i><span>Ready accommodation</span>
+                    </div>
+                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                        <i class="fas fa-check-circle"></i><span>Well managed</span>
+                    </div>
+                    <div class="flex" style="align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                        <i class="fas fa-check-circle"></i><span>Expert local guide</span>
+                    </div>
+                    <div class="flex" style="align-items: center; gap: var(--space-sm);">
+                        <i class="fas fa-check-circle"></i><span>Safety monitoring</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-
-
 @endsection
 
 @push('styles')
 <style>
 @keyframes pulseSoft {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-    50% {
-        transform: scale(1.05);
-        box-shadow: 0 12px 34px rgba(27, 94, 32, 0.10);
-    }
-    100% {
-        transform: scale(1);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-}
-.map-select option {
-    padding: 10px;
-    background-color: white;
-    color: var(--color-text);
-    font-size: 14px;
+    0%   { transform: scale(1);    box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    50%  { transform: scale(1.05); box-shadow: 0 12px 34px rgba(27,94,32,0.10); }
+    100% { transform: scale(1);    box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 }
 
 .map-label {
@@ -398,7 +324,14 @@
 .map-select:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+    box-shadow: 0 0 0 3px rgba(27,94,32,0.1);
+}
+
+.map-select option {
+    padding: 10px;
+    background-color: white;
+    color: var(--color-text);
+    font-size: 14px;
 }
 
 .shiny-tbg {
@@ -413,19 +346,103 @@
     left: -150%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
+    background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
     transform: skewX(-25deg);
     animation: shine 2.5s infinite;
 }
 
 @keyframes shine {
-    0% { left: -150%; }
+    0%   { left: -150%; }
     100% { left: 150%; }
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+.hero-main {
+    min-width: 0;
+}
+
+.booking-sidebar {
+    position: sticky;
+    top: 80px;
+}
+
+.mobile-book-bar {
+    display: none;
+}
+
+.route-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+}
+
+.checkpoint-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: var(--space-md);
+}
+
+.checkpoint-time {
+    text-align: right;
+    min-width: 110px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-sidebar {
+        display: none;
+    }
+
+    .mobile-book-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-md);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        background: var(--color-primary-dark);
+        padding: 12px var(--space-lg);
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.18);
+    }
+
+    body {
+        padding-bottom: 76px;
+    }
+
+    .route-stats-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+}
+
+@media (max-width: 640px) {
+    #tourMap {
+        height: 280px !important;
+    }
+
+    .checkpoint-inner {
+        flex-direction: column;
+    }
+
+    .checkpoint-time {
+        text-align: left;
+        min-width: unset;
+        padding-left: calc(50px + var(--space-lg));
+    }
 }
 </style>
 @endpush
@@ -462,7 +479,7 @@
 
         L.marker([data.package.start_lat, data.package.start_lng], {
             icon: L.divIcon({
-                html: '<div style="background: #1B5E20; color: white; padding: 8px 12px; border-radius: 8px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">START</div>',
+                html: '<div style="background:#1B5E20;color:white;padding:8px 12px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.2);">START</div>',
                 className: '',
                 iconSize: [60, 30]
             })
@@ -471,7 +488,7 @@
         data.checkpoints.forEach((checkpoint) => {
             L.marker([checkpoint.latitude, checkpoint.longitude], {
                 icon: L.divIcon({
-                    html: `<div style="background: #1B5E20; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">${checkpoint.order}</div>`,
+                    html: `<div style="background:#1B5E20;color:white;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);">${checkpoint.order}</div>`,
                     className: '',
                     iconSize: [40, 40]
                 })
@@ -480,7 +497,7 @@
 
         L.marker([data.package.end_lat, data.package.end_lng], {
             icon: L.divIcon({
-                html: '<div style="background: #D32F2F; color: white; padding: 8px 12px; border-radius: 8px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">END</div>',
+                html: '<div style="background:#D32F2F;color:white;padding:8px 12px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.2);">END</div>',
                 className: '',
                 iconSize: [60, 30]
             })
@@ -494,7 +511,6 @@
         if (!routeDrawn) {
             const result = await drawSmartRoute(waypoints, map);
             routeDrawn = true;
-
             if (result && result.distance) {
                 document.getElementById('routeDistance').textContent = result.distance + ' km route';
             }
