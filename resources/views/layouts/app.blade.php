@@ -583,3 +583,45 @@
     @stack('scripts')
 </body>
 </html>
+{{-- SUCCESS MESSAGE SECTION --}}
+{{-- Checks if a success message exists in session --}}
+{{-- If yes, displays a green success alert box --}}
+{{-- Icon: check-circle --}}
+{{-- Shows session('success') text --}}
+
+{{-- ERROR MESSAGE SECTION --}}
+{{-- Checks if an error message exists in session --}}
+{{-- If yes, displays a red error alert box --}}
+{{-- Icon: exclamation-circle --}}
+{{-- Shows session('error') text --}}
+
+{{-- MAIN CONTENT AREA --}}
+{{-- This is where child pages inject their content using @yield('content') --}}
+
+{{-- FOOTER SECTION --}}
+{{-- Main footer container with primary dark background --}}
+
+{{-- FOOTER COLUMN 1: BRAND INFO --}}
+{{-- Displays app name "Paaila" --}}
+{{-- Short description about GPS trekking safety system --}}
+
+{{-- FOOTER COLUMN 2: QUICK LINKS --}}
+{{-- Link to Browse Treks (route: home) --}}
+{{-- Link to Track Someone (route: tracking.pin.entry) --}}
+
+{{-- FOOTER COLUMN 3: CONTACT INFO --}}
+{{-- Email: info@paaila.com --}}
+{{-- Phone: +977-123-4567 --}}
+
+{{-- FOOTER BOTTOM BAR --}}
+{{-- Copyright text for 2026 Paaila --}}
+{{-- Tagline: Trek safely with GPS tracking --}}
+
+{{-- LEAFLET JS LIBRARY --}}
+{{-- External script for map functionality --}}
+{{-- https://unpkg.com/leaflet@1.9.4/dist/leaflet.js --}}
+
+{{-- STACKED SCRIPTS --}}
+{{-- Allows pushing page-specific scripts from child views --}}
+
+{{-- END OF LAYOUT FILE --}}
