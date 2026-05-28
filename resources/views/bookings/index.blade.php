@@ -422,3 +422,5 @@ function confirmRating(event, bookingId) {
 </script>
 @endpush
 @endsection
+{{-- Added comments and minor updates to bookings page --}}
+{{-- Date: May 2026 --}}
