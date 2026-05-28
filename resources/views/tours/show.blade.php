@@ -252,7 +252,7 @@
                 @endforeach
             </div>
         @else
-            <p style="color: var(--color-text-light);">No checkpoints added yet.</p>
+            <p style="color: var(--color-text-light);">No checkpoints yet.</p>
         @endif
     </div>
 
