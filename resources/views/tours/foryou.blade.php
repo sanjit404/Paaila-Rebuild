@@ -26,9 +26,9 @@
             transform: translateY(15px);
             animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-        .delay-1 { animation-delay: 0.3s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.5s; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.4s; }
 
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
@@ -49,17 +49,24 @@
         }
 
         .filter-scroll-wrapper {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding-bottom: 12px;
-            margin-bottom: -12px;
-            -ms-overflow-style: none;
-            scrollbar-width: none; 
-            scroll-behavior: smooth;
-            -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
-            mask-image: linear-gradient(to right, black 90%, transparent 100%);
-        }
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 12px;
+    margin-bottom: -12px;
+
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+
+    will-change: transform;
+}
 
         .filter-scroll-wrapper::-webkit-scrollbar {
             display: none;
@@ -74,7 +81,7 @@
         }
 
         #packagesGrid {
-            transition: opacity 0.6s ease;
+            transition: opacity 0.5s ease;
         }
         
         .see-all-link {
@@ -87,7 +94,7 @@
             gap: 6px;
             padding: 8px 16px;
             border-radius: 8px;
-            transition: background 0.6s ease;
+            transition: background 0.5s ease;
         }
         .see-all-link:hover {
             background: rgba(0,0,0,0.03);
