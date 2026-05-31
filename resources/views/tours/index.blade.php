@@ -25,7 +25,7 @@
             <div class="hero-rule" aria-hidden="true"></div>
 
             <p class="hero-desc" style="margin-left:130px;color:white;">
-              पाइला  |  𑐥𑐵𑐂𑐮𑑂𑐴 
+              पाइला  |  𑐥𑐵𑐂𑐮𑑂𑐴
             </p>
 
             <div class="hero-actions">
@@ -40,6 +40,7 @@
             </div>
 
         </div>
+    </div>
 </section>
 
 
@@ -49,7 +50,7 @@
         <div style="margin-bottom: 32px;">
             <h2 class="section-title">Discover All Treks</h2>
             <p style="color: #717171; font-size: 15px; ">Find your perfect adventure by category.</p>
-           
+
             <div class="filter-scroll-wrapper">
                 @php
                     $types = [
@@ -77,10 +78,10 @@
         @if($packages->count() > 0)
             <div class="grid grid-3" id="packagesGrid">
                 @foreach($packages as $package)
-                        <a 
+                        <a
                         style="text-decoration:none; "
-                        href="{{ route('tours.show', $package) }}" 
-                        class="card shiny-tbg package-item" 
+                        href="{{ route('tours.show', $package) }}"
+                        class="card shiny-tbg package-item"
                         data-type="{{ $package->trek_type }}">
                         @if($package->image == null)
                         <img
@@ -133,7 +134,7 @@
                                 </div>
                                 @endif
                             </div>
-                            
+
 
                             <h3 class="card-title">{{ $package->name }}</h3>
 
@@ -152,12 +153,12 @@
                                 <span style="color: var(--color-primary);
                                              text-transform: capitalize;"
                                             >
-                                <i class="fas fa-map-pin"></i> 
+                                <i class="fas fa-map-pin"></i>
                                 {{ $package->region }}
                                 </span>
                                  @endif
                             </div>
-                            
+
 
                             <div class="flex-between" style="margin-top: var(--space-lg);">
                                 <div>
@@ -245,32 +246,12 @@
         html{
             scroll-behavior: smooth;
         }
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(15px);
-            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
 
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .pref-card {
-            background: linear-gradient(135deg, #FFFDF7 0%, #FFF8E1 100%);
-            border: 1px solid rgba(245, 127, 23, 0.15);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-            padding: 20px 24px;
-            margin: var(--space-xl) auto;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .pref-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(245, 127, 23, 0.08);
-        }
+
 
         .filter-scroll-wrapper {
             display: flex;
@@ -279,13 +260,13 @@
             padding-bottom: 12px;
             margin-bottom: -12px;
             -ms-overflow-style: none;
-            scrollbar-width: none; 
+            scrollbar-width: none;
             scroll-behavior: smooth;
             -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
             mask-image: linear-gradient(to right, black 90%, transparent 100%);
         }
         .filter-scroll-wrapper::-webkit-scrollbar {
-            display: none; 
+            display: none;
         }
 
         .filter-chip {
@@ -300,7 +281,7 @@
             background: #FFFFFF;
             color: #555555;
         }
-        
+
         .filter-chip:hover {
             background: #F7F7F7;
             border-color: #DDDDDD;
@@ -308,7 +289,7 @@
         }
 
         .filter-chip.active {
-            background: var(--color-primary); 
+            background: var(--color-primary);
             color: #FFFFFF;
             border-color: #222222;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -325,14 +306,14 @@
         #packagesGrid {
             transition: opacity 0.3s ease;
         }
-        
+
         .see-all-link {
-            font-size: 15px; 
-            color: var(--color-primary); 
-            text-decoration: none; 
-            font-weight: 600; 
-            display: inline-flex; 
-            align-items: center; 
+            font-size: 15px;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
             gap: 6px;
             padding: 8px 16px;
             border-radius: 8px;
@@ -349,7 +330,7 @@
             padding: 72px 0 80px;
         }
 
-        
+
 
         .hero-wordmark {
             font-family: 'Almendra', Georgia, serif;
@@ -399,7 +380,7 @@
             gap: 8px;
             background: #16631b;
             color: #ffffff;
-            font-size: 14.5px;
+            font-size: 14px;
             font-weight: 600;
             padding: 11px 26px;
             border-radius: 5px;
@@ -417,7 +398,7 @@
             gap: 10px;
             background: transparent;
             color: rgba(255, 255, 255, 0.72);
-            font-size: 14.5px;
+            font-size: 14px;
             font-weight: 500;
             padding: 11px 26px;
             border-radius: 5px;
@@ -456,7 +437,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 28px 28px 0px 0px;
+            margin: 28px 28px 0 0;
             padding: 0 16px;
         }
 

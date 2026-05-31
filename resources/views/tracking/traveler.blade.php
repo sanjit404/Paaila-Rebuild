@@ -3,171 +3,225 @@
 @section('title', 'Live Tracking - ' . $booking->tourPackage->name)
 
 @section('content')
-<div style="display: flex; height: calc(100vh - 70px); position: relative;">
-    <div id="map" style="flex: 1; position: relative;"></div>
-
-    <div style="width: 380px; background: white; box-shadow: -2px 0 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden;">
-        <div style="padding: var(--space-lg); background: var(--color-primary); color: white;">
-            <div style="font-size: 12px; opacity: 0.9; margin-bottom: var(--space-xs);">LIVE TRACKING</div>
-            <h2 style="font-size: 18px; font-weight: 700; color: white; margin: 0;">{{ $booking->tourPackage->name }}</h2>
+    <div class="tracking-wrapper">
+        <div class="tracking-map">
+            <div id="map"></div>
         </div>
 
-        <div style="flex: 1; overflow-y: auto;">
+        <div class="tracking-sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <div class="header-label">LIVE TRACKING</div>
+                    <h2 class="header-title">{{ $booking->tourPackage->name }}</h2>
+                </div>
 
-            <div id="gpsStatus" class="gps-status searching" style="padding: var(--space-md) var(--space-lg); display: flex; align-items: center; gap: var(--space-md); border-bottom: 1px solid #E0E0E0; font-weight: 500; font-size: 14px;">
-                <i class="fas fa-spinner fa-spin"></i>
-                <span>Searching for GPS...</span>
-            </div>
 
-            <div style="padding: var(--space-lg); border-bottom: 1px solid #E0E0E0;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-lg);">
-                    <div style="text-align: center; padding: var(--space-md); background: #F5F5F5; border-radius: var(--radius-md);">
-                        <div style="font-size: 28px; font-weight: 700; color: var(--color-primary);" id="completedCount">
-                            {{ $booking->completed_checkpoints }}
-                        </div>
-                        <div style="font-size: 12px; color: var(--color-text-light); margin-top: var(--space-xs);">CHECKPOINTS</div>
+                <div class="sidebar-body">
+                    <div id="gpsStatus" class="gps-status searching">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Searching for GPS...</span>
                     </div>
-                    <div style="text-align: center; padding: var(--space-md); background: #F5F5F5; border-radius: var(--radius-md);">
-                        <div style="font-size: 28px; font-weight: 700; color: var(--color-primary);" id="progressPercent">
-                            {{ $booking->progress_percentage }}%
+
+                    <div class="progress-section">
+                        <div class="progress-stats">
+                            <div class="stat-card">
+                                <div class="stat-value" id="completedCount">{{ $booking->completed_checkpoints }}</div>
+                                <div class="stat-label">CHECKPOINTS</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="progressPercent">{{ $booking->progress_percentage }}%</div>
+                                <div class="stat-label">COMPLETE</div>
+                            </div>
                         </div>
-                        <div style="font-size: 12px; color: var(--color-text-light); margin-top: var(--space-xs);">COMPLETE</div>
-                    </div>
-                </div>
 
-                <div style="background: #E0E0E0; height: 8px; border-radius: 4px; overflow: hidden;">
-                    <div id="progressBar" style="height: 100%; background: var(--color-primary); width: {{ $booking->progress_percentage }}%; transition: width 0.5s ease;"></div>
-                </div>
-                <p id="progressText" style="text-align: center; font-size: 13px; color: var(--color-text-light); margin: var(--space-sm) 0 0 0;">
-                    {{ $booking->completed_checkpoints }} of {{ $booking->total_checkpoints }} reached
-                </p>
-            </div>
-
-            <div style="padding: var(--space-lg); background: #E8F5E9; border-bottom: 1px solid #C8E6C9;">
-                <div style="display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-sm);">
-                    <i class="fas fa-shield-alt" style="color: var(--color-success); font-size: 20px;"></i>
-                    <div>
-                        <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 2px;">TRACKING PIN</div>
-                        <div style="font-size: 24px; font-weight: 700; color: var(--color-success); letter-spacing: 3px;">
-                            {{ $booking->trackingPin->pin }}
+                        <div class="progress-bar-container">
+                            <div id="progressBar" class="progress-bar"></div>
                         </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--space-sm);">
-                    <button onclick="copyPin()" class="btn btn-secondary btn-sm copy-pin-btn" style="flex: 1; font-size: 13px;">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                    <button onclick="sharePin()" class="btn btn-secondary btn-sm" style="flex: 1; font-size: 13px;">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
-                </div>
-            </div>
-
-            <div style="padding: var(--space-md) var(--space-lg); background: #E8F5E9; border-bottom: 1px solid #C8E6C9; display: flex; align-items: center; gap: var(--space-md);">
-                <span style="width: 10px; height: 10px; background: var(--color-success); border-radius: 50%; animation: pulse 2s infinite;"></span>
-                <span style="font-size: 13px; font-weight: 600; color: var(--color-success);">You are visible to trackers</span>
-            </div>
-
-            <div id="nextCheckpoint" style="padding: var(--space-lg); border-bottom: 1px solid #E0E0E0;">
-                <div style="display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-md);">
-                    <i class="fas fa-compass" style="color: var(--color-primary);"></i>
-                    <h4 style="font-size: 14px; font-weight: 700; margin: 0; text-transform: uppercase; color: var(--color-text-light);">Next Stop</h4>
-                </div>
-                <p style="color: var(--color-text-light); font-size: 14px; margin: 0;">Continue along the route...</p>
-            </div>
-
-            <div style="padding: var(--space-lg); background: #FFF3E0; border-bottom: 1px solid #FFE0B2;">
-                <div style="display: flex; gap: var(--space-md);">
-                    <i class="fas fa-info-circle" style="color: var(--color-warning); font-size: 20px; flex-shrink: 0;"></i>
-                    <div>
-                        <div style="font-weight: 600; font-size: 14px; margin-bottom: var(--space-xs); color: var(--color-text);">Safety Reminder</div>
-                        <p style="font-size: 13px; color: var(--color-text-light); margin: 0; line-height: 1.5;">
-                            GPS updates every 5 seconds. Family can track you with your PIN. Stay on the marked route.
+                        <p id="progressText" class="progress-text">
+                            {{ $booking->completed_checkpoints }} of {{ $booking->total_checkpoints }} reached
                         </p>
                     </div>
+
+                    <div class="map-layer-selector">
+                        <label for="style" class="map-label">Map Layer</label>
+                        <select name="style" id="style" onchange="initMap()" class="map-select">
+                            <option value="hybrid">Satellite 🛰️</option>
+                            <option value="street">Street 🗺️</option>
+                            <option value="outdoor">Trek ⛷️</option>
+                        </select>
+                    </div>
+
+                    <div class="pin-section">
+                        <div class="pin-display">
+                            <i class="fas fa-shield-alt"></i>
+                            <div class="pin-info">
+                                <div class="pin-label">TRACKING PIN</div>
+                                <div class="pin-value">{{ $booking->trackingPin->pin }}</div>
+                            </div>
+                        </div>
+                        <div class="pin-actions">
+                            <button onclick="copyPin()" class="btn btn-secondary btn-sm copy-pin-btn">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <button onclick="sharePin()" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="visibility-status">
+                        <span class="pulse-dot"></span>
+                        <span>You are visible to trackers</span>
+                    </div>
+
+                    <div id="nextCheckpoint" class="next-checkpoint">
+                        <div class="next-header">
+                            <i class="fas fa-compass"></i>
+                            <h4>Next Stop</h4>
+                        </div>
+                        <p class="next-message">Continue along the route...</p>
+                    </div>
+
+                    <div class="safety-reminder">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="reminder-content">
+                            <div class="reminder-title">Safety Reminder</div>
+                            <p class="reminder-text">
+                                GPS updates every 5 seconds. Family can track you with your PIN. Stay on the marked route.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-footer">
+                        <a href="{{ route('bookings.show', $booking) }}" class="btn btn-secondary btn-block">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Booking
+                        </a>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div style="padding: var(--space-lg);">
-                <a href="{{ route('bookings.show', $booking) }}" class="btn btn-secondary btn-block">
-                    <i class="fas fa-arrow-left"></i>
-                    Back to Booking
-                </a>
+    <div id="checkpointModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button onclick="closeCheckpointModal()" class="modal-close">&times;</button>
+                <div class="modal-icon">
+                    <i class="fas fa-flag-checkered"></i>
+                </div>
+                <h2>Checkpoint Reached!</h2>
+            </div>
+
+            <div class="modal-body">
+                <h3 id="checkpointName"></h3>
+                <p id="checkpointDescription"></p>
+                <div id="checkpointFacts"></div>
+
+                <div class="modal-footer">
+                    <button onclick="closeCheckpointModal()" class="btn btn-primary btn-lg btn-block">
+                        <i class="fas fa-hiking"></i>
+                        Continue Trek
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-
-<div id="checkpointModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; padding: var(--space-lg);">
-    <div style="background: white; border-radius: var(--radius-lg); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; animation: modalAppear 0.3s ease;">
-        <!-- Modal Header -->
-        <div style="padding: var(--space-xl); background: var(--color-primary); color: white; border-radius: var(--radius-lg) var(--radius-lg) 0 0; position: relative;">
-            <button onclick="closeCheckpointModal()" style="position: absolute; top: var(--space-md); right: var(--space-md); background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; transition: background 0.2s;">&times;</button>
-            <div style="text-align: center;">
-                <i class="fas fa-flag-checkered" style="font-size: 48px; margin-bottom: var(--space-md); opacity: 0.9;"></i>
-                <h2 style="font-size: 24px; font-weight: 700; color: white; margin: 0;">Checkpoint Reached!</h2>
-            </div>
+    @if(true)
+    <div class="test-controls">
+        <div class="test-header">
+            <i class="fas fa-flask"></i>
+            <div>TEST CONTROLS</div>
         </div>
+        <p class="test-description">Debug mode active</p>
 
-        <!-- Modal Body -->
-        <div style="padding: var(--space-xl);">
-            <h3 id="checkpointName" style="font-size: 20px; font-weight: 700; margin-bottom: var(--space-sm);"></h3>
-            <p id="checkpointDescription" style="color: var(--color-text-light); margin-bottom: var(--space-xl);"></p>
-
-            <div id="checkpointFacts"></div>
-
-            <div style="margin-top: var(--space-xl);">
-                <button onclick="closeCheckpointModal()" class="btn btn-primary btn-lg btn-block">
-                    <i class="fas fa-hiking"></i>
-                    Continue Trek
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if(true)
-<div style="position: fixed; bottom: 20px; left: 20px; background: var(--color-primary-dark); color: white; padding: var(--space-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 2000; max-width: 280px; max-height: 80vh; overflow-y: auto;">
-    <div style="display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-md);">
-        <i class="fas fa-flask"></i>
-        <div style="font-weight: 700; font-size: 14px;">TEST CONTROLS</div>
-    </div>
-    <p style="color:white; font-size: 12px; opacity: 0.9; margin-bottom: var(--space-md);">Debug mode active</p>
-
-    <button onclick="resetGPS()" class="btn btn-block" style="background: white; color: var(--color-primary-light); margin-bottom: var(--space-md); font-size: 13px;">
-        <i class="fas fa-redo"></i> Reset GPS
-    </button>
-
-    <div style="font-size: 12px; font-weight: 600; margin-bottom: var(--space-sm); opacity: 0.9;">Jump to Checkpoint:</div>
-<button onclick="jumpToCheckpoint(START_LAT, START_LNG)" class="btn btn-block" style="background: white; color: var(--color-text); margin-bottom: var(--space-xs); font-size: 12px; padding: 8px 12px;">Jump to START</button>
-    @foreach($booking->tourPackage->checkpoints as $checkpoint)
-        <button
-            onclick="jumpToCheckpoint({{ $checkpoint->latitude }}, {{ $checkpoint->longitude }})"
-            class="btn btn-block"
-            style="background: white; color: var(--color-text); margin-bottom: var(--space-xs); font-size: 12px; padding: 8px 12px;">
-            {{ $checkpoint->order }}. {{ $checkpoint->name }}
+        <button onclick="resetGPS()" class="btn btn-block btn-reset">
+            <i class="fas fa-redo"></i> Reset GPS
         </button>
-    @endforeach
-    <button onclick="jumpToCheckpoint(END_LAT, END_LNG)" class="btn btn-block"
-            style="background: white; color: var(--color-text); margin-bottom: var(--space-xs); font-size: 12px; padding: 8px 12px;">Jump to END</button>
-</div>
-@endif
+
+        <div class="jump-label">Jump to Checkpoint:</div>
+        <button onclick="jumpToCheckpoint(START_LAT, START_LNG)" class="btn btn-block btn-jump">
+            Jump to START
+        </button>
+        @foreach($booking->tourPackage->checkpoints as $checkpoint)
+            <button
+                onclick="jumpToCheckpoint({{ $checkpoint->latitude }}, {{ $checkpoint->longitude }})"
+                class="btn btn-block btn-jump">
+                {{ $checkpoint->order }}. {{ $checkpoint->name }}
+            </button>
+        @endforeach
+        <button onclick="jumpToCheckpoint(END_LAT, END_LNG)" class="btn btn-block btn-jump">
+            Jump to END
+        </button>
+    </div>
+    @endif
+
 
 @push('styles')
 <style>
+    .map-label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--color-text-light);
+        letter-spacing: 0.5px;
+        margin-bottom: var(--space-sm);
+        display: block;
+    }
+
+    .map-select {
+        appearance: none;
+        background-color: #F5F5F5;
+        border: 2px solid #E0E0E0;
+        border-radius: var(--radius-md);
+        padding: var(--space-sm) var(--space-md);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-text);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 100%;
+    }
+
+    .map-select:hover {
+        border-color: var(--color-primary);
+    }
+
+    .map-select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+    }
+
+    .map-layer-selector {
+        padding: var(--space-lg);
+        border-bottom: 1px solid #E0E0E0;
+        background: #FAFAFA;
+    }
+
+    .gps-status {
+        padding: var(--space-md) var(--space-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        border-bottom: 1px solid #E0E0E0;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
     .gps-status.searching { background: #FFF3E0; color: var(--color-warning); }
-    .gps-status.active    { background: #E8F5E9; color: var(--color-success); }
-    .gps-status.error     { background: #FFEBEE; color: var(--color-error);   }
+    .gps-status.active   { background: #E8F5E9; color: var(--color-success); }
+    .gps-status.error    { background: #FFEBEE; color: var(--color-error); }
 
     @keyframes pulse {
         0%, 100% { box-shadow: 0 0 0 0 rgba(46,125,50,0.7); }
-        50%       { box-shadow: 0 0 0 8px rgba(46,125,50,0); }
+        50%      { box-shadow: 0 0 0 8px rgba(46,125,50,0); }
     }
 
     @keyframes modalAppear {
         from { opacity: 0; transform: scale(0.95); }
-        to   { opacity: 1; transform: scale(1);    }
+        to   { opacity: 1; transform: scale(1); }
     }
 
     .fact-item {
@@ -178,13 +232,18 @@
         display: flex;
         gap: var(--space-md);
     }
+
     .fact-item:last-child { margin-bottom: 0; }
 
     .fact-icon {
-        width: 40px; height: 40px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 16px; flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
     }
 
     .fact-item.type-historical .fact-icon,
@@ -197,14 +256,497 @@
     .fact-item.type-tip        .fact-icon { background: #F3E5F5; color: #7B1FA2; }
     .fact-item.type-info       .fact-icon { background: #E8F5E9; color: #388E3C; }
 
-    .fact-content h5 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-xs); color: var(--color-text);       }
-    .fact-content p  { font-size: 13px; color: var(--color-text-light); margin: 0; line-height: 1.6; }
+    .fact-content h5 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: var(--space-xs);
+        color: var(--color-text);
+    }
 
-    /* Mobile */
-    @media (max-width: 768px) {
-        div[style*="display: flex; height: calc(100vh - 70px)"] { flex-direction: column; }
-        div[style*="width: 380px"] { width: 100%; height: 50vh; }
-        #map { height: 50vh !important; }
+    .fact-content p {
+        font-size: 13px;
+        color: var(--color-text-light);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .tracking-wrapper {
+        display: flex;
+        height: calc(100vh - 70px);
+        position: relative;
+    }
+
+    .tracking-map {
+        flex: 1;
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .tracking-map #map {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .tracking-sidebar {
+        width: 380px;
+        background: white;
+        box-shadow: -2px 0 12px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        flex-shrink: 0;
+        z-index: 10;
+    }
+
+    .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .sidebar-header {
+        padding: var(--space-lg);
+        background: var(--color-primary);
+        color: white;
+    }
+
+    .header-label {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-bottom: var(--space-xs);
+    }
+
+    .header-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+    }
+
+    .sidebar-body {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .progress-section {
+        padding: var(--space-lg);
+        border-bottom: 1px solid #E0E0E0;
+    }
+
+    .progress-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: var(--space-md);
+        background: #F5F5F5;
+        border-radius: var(--radius-md);
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: var(--color-text-light);
+        margin-top: var(--space-xs);
+    }
+
+    .progress-bar-container {
+        background: #E0E0E0;
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: var(--color-primary);
+        transition: width 0.5s ease;
+    }
+
+    .progress-text {
+        text-align: center;
+        font-size: 13px;
+        color: var(--color-text-light);
+        margin: var(--space-sm) 0 0 0;
+    }
+
+    .pin-section {
+        padding: var(--space-lg);
+        background: #E8F5E9;
+        border-bottom: 1px solid #C8E6C9;
+    }
+
+    .pin-display {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-sm);
+    }
+
+    .pin-display i {
+        color: var(--color-success);
+        font-size: 20px;
+    }
+
+    .pin-info {
+        flex: 1;
+    }
+
+    .pin-label {
+        font-size: 12px;
+        color: var(--color-text-light);
+        margin-bottom: 2px;
+    }
+
+    .pin-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--color-success);
+        letter-spacing: 3px;
+    }
+
+    .pin-actions {
+        display: flex;
+        gap: var(--space-sm);
+    }
+
+    .pin-actions .btn {
+        flex: 1;
+        font-size: 13px;
+    }
+
+    .visibility-status {
+        padding: var(--space-md) var(--space-lg);
+        background: #E8F5E9;
+        border-bottom: 1px solid #C8E6C9;
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-success);
+    }
+
+    .pulse-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--color-success);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    .next-checkpoint {
+        padding: var(--space-lg);
+        border-bottom: 1px solid #E0E0E0;
+    }
+
+    .next-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-md);
+    }
+
+    .next-header i {
+        color: var(--color-primary);
+    }
+
+    .next-header h4 {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0;
+        text-transform: uppercase;
+        color: var(--color-text-light);
+    }
+
+    .next-message {
+        color: var(--color-text-light);
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .safety-reminder {
+        padding: var(--space-lg);
+        background: #FFF3E0;
+        border-bottom: 1px solid #FFE0B2;
+        display: flex;
+        gap: var(--space-md);
+    }
+
+    .safety-reminder i {
+        color: var(--color-warning);
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .reminder-content {
+        flex: 1;
+    }
+
+    .reminder-title {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: var(--space-xs);
+        color: var(--color-text);
+    }
+
+    .reminder-text {
+        font-size: 13px;
+        color: var(--color-text-light);
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .sidebar-footer {
+        padding: var(--space-lg);
+    }
+
+    .btn-block {
+        width: 100%;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-lg);
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: var(--radius-lg);
+        max-width: 600px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modalAppear 0.3s ease;
+    }
+
+    .modal-header {
+        padding: var(--space-xl);
+        background: var(--color-primary);
+        color: white;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        position: relative;
+        text-align: center;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: var(--space-md);
+        right: var(--space-md);
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        transition: background 0.2s;
+    }
+
+    .modal-icon {
+        font-size: 48px;
+        margin-bottom: var(--space-md);
+        opacity: 0.9;
+    }
+
+    .modal-header h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+    }
+
+    .modal-body {
+        padding: var(--space-xl);
+    }
+
+    .modal-body h3 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: var(--space-sm);
+    }
+
+    .modal-body p {
+        color: var(--color-text-light);
+        margin-bottom: var(--space-xl);
+    }
+
+    .modal-footer {
+        margin-top: var(--space-xl);
+    }
+
+    .test-controls {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: var(--color-primary-dark);
+        color: white;
+        padding: var(--space-lg);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        z-index: 2000;
+        max-width: 280px;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .test-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-md);
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .test-description {
+        color: white;
+        font-size: 12px;
+        opacity: 0.9;
+        margin-bottom: var(--space-md);
+    }
+
+    .btn-reset {
+        background: white;
+        color: var(--color-primary);
+        margin-bottom: var(--space-md);
+        font-size: 13px;
+    }
+
+    .jump-label {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: var(--space-sm);
+        opacity: 0.9;
+    }
+
+    .btn-jump {
+        background: white;
+        color: var(--color-text);
+        margin-bottom: var(--space-xs);
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    @media (max-width: 900px) {
+        .tracking-wrapper {
+            flex-direction: column;
+            height: auto;
+            min-height: 100vh;
+        }
+
+        .tracking-map {
+            height: 50vh;
+            min-height: 350px;
+            width: 100%;
+        }
+
+        .tracking-map #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .tracking-sidebar {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .tracking-wrapper {
+            height: auto;
+            min-height: 100vh;
+        }
+
+        .tracking-map {
+            height: 50vh;
+            min-height: 300px;
+            width: 100%;
+        }
+
+        .tracking-map #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .tracking-sidebar {
+            max-height: none;
+            width: 100%;
+        }
+
+        .test-controls {
+            left: 10px !important;
+            bottom: 10px !important;
+            max-width: 240px !important;
+            padding: var(--space-md) !important;
+        }
+
+        .test-controls .btn {
+            font-size: 11px !important;
+            padding: 6px 8px !important;
+        }
+
+        .pin-value {
+            font-size: 20px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+        }
+
+        .header-title {
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .progress-stats {
+            gap: var(--space-sm);
+        }
+
+        .stat-card {
+            padding: var(--space-sm);
+        }
+
+        .stat-value {
+            font-size: 22px;
+        }
+
+        .pin-actions {
+            flex-direction: column;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .modal-body h3 {
+            font-size: 18px;
+        }
     }
 </style>
 @endpush
@@ -214,7 +756,6 @@
 @include('components.routing-helper')
 
 @php
-    // Pre-compute all PHP data here so @json() stays on ONE line inside <script>
     $jsCheckpoints = $booking->tourPackage->checkpoints->map(fn($c) => [
         'id'               => $c->id,
         'name'             => $c->name,
@@ -237,7 +778,6 @@
 @endphp
 
 <script>
-
 const BOOKING_ID   = {{ $booking->id }};
 const CSRF_TOKEN   = '{{ csrf_token() }}';
 const CHECKPOINTS  = @json($jsCheckpoints);
@@ -246,25 +786,33 @@ const START_LAT    = {{ $startLat }};
 const START_LNG    = {{ $startLng }};
 const END_LAT      = {{ $endLat }};
 const END_LNG      = {{ $endLng }};
-let userToStartLayer = null; 
+let userToStartLayer = null;
 let startReached = false;
 
 let map, userMarker, userCircle, watchId = null, routeDrawn = false;
-// Track which checkpoints have already triggered a modal this session
-// (prevents re-firing if server and client get out of sync momentarily)
+let currentLat = null;
+let currentLng = null;
 const shownCheckpoints = new Set(
     PROGRESS.filter(p => p.reached_at).map(p => p.checkpoint_id)
 );
 
-
 async function initMap() {
+    const styleId = document.getElementById('style').value;
+
+    if (map) {
+        const mapCenter = map.getCenter();
+        currentLat = currentLat || mapCenter.lat;
+        currentLng = currentLng || mapCenter.lng;
+        map.remove();
+        routeDrawn = false;
+    }
+
     map = createMap('map', {
         center: [START_LAT, START_LNG],
         zoom:   13,
-        style:  'streets',
+        style:  styleId,
     });
 
-    // Build waypoints: start → checkpoints → end
     const waypoints = [
         { lat: START_LAT, lng: START_LNG },
         ...CHECKPOINTS.map(c => ({ lat: c.latitude, lng: c.longitude })),
@@ -310,9 +858,33 @@ async function initMap() {
         }).addTo(map);
     });
 
+    if (currentLat && currentLng) {
+        restoreUserMarker(currentLat, currentLng);
+    }
+
     startTracking();
 }
 
+function restoreUserMarker(lat, lng) {
+    userMarker = L.marker([lat, lng], {
+        icon: L.divIcon({
+            html: '<div style="background:#012efa;width:20px;height:20px;border-radius:50%;border:3px solid white;box-shadow:0 0 15px rgba(76,175,80,0.8);"></div>',
+            className: 'user-marker-icon',
+            iconSize: [26, 26],
+            iconAnchor: [13, 13],
+        }),
+    }).addTo(map);
+
+    userCircle = L.circle([lat, lng], {
+        radius: 20, 
+        color: '#4c5baf',
+        fillColor: '#4caf68', 
+        fillOpacity: 0.1, 
+        weight: 2,
+    }).addTo(map);
+
+    map.setView([lat, lng], 15);
+}
 
 function startTracking() {
     if (!('geolocation' in navigator)) {
@@ -329,33 +901,22 @@ function startTracking() {
     );
 }
 
-
 async function onPositionUpdate(position) {
     const { latitude: lat, longitude: lng, accuracy, speed, altitude, heading } = position.coords;
 
+    currentLat = lat;
+    currentLng = lng;
+
     setGPSStatus('active', `<i class="fas fa-satellite-dish"></i><span>GPS Active • ±${Math.round(accuracy ?? 0)}m</span>`);
 
-    // Update / create user marker
     if (userMarker) {
         userMarker.setLatLng([lat, lng]);
         if (userCircle) {
             userCircle.setLatLng([lat, lng]);
-            userCircle.setRadius(accuracy ?? 0);
+            userCircle.setRadius(accuracy ?? 20);
         }
     } else {
-        userMarker = L.marker([lat, lng], {
-            icon: L.divIcon({
-                html: '<div style="background:#2196F3;width:18px;height:18px;border-radius:50%;border:3px solid white;box-shadow:0 0 12px rgba(33,150,243,0.6);"></div>',
-                className: '', iconSize: [18, 18],
-            }),
-        }).addTo(map);
-
-        userCircle = L.circle([lat, lng], {
-            radius: accuracy ?? 0, color: '#2196F3',
-            fillColor: '#2196F3', fillOpacity: 0.1, weight: 2,
-        }).addTo(map);
-
-        map.setView([lat, lng], 15);
+        restoreUserMarker(lat, lng);
     }
 
     const userLatLng = L.latLng(lat, lng);
@@ -365,11 +926,8 @@ async function onPositionUpdate(position) {
     }
 
     await updateUserToStartRoute(lat, lng);
-
-    sendLocationToServer({ lat, lng, accuracy, speed, altitude, heading });
+    await sendLocationToServer({lat, lng, accuracy, speed, altitude, heading});
 }
-
-
 
 async function updateUserToStartRoute(userLat, userLng) {
     if (startReached) {
@@ -386,9 +944,8 @@ async function updateUserToStartRoute(userLat, userLng) {
             { lat: START_LAT, lng: START_LNG }
         ];
 
-       
         const newRouteLayer = await drawSmartRoute(waypoints, map, {
-            color: '#2196F3', 
+            color: '#4CAF50',
             weight: 5,
             opacity: 0.7,
         });
@@ -464,7 +1021,6 @@ async function sendLocationToServer({ lat, lng, accuracy, speed, altitude, headi
     }
 }
 
-
 function showCheckpointModal(checkpoint) {
     document.getElementById('checkpointName').textContent        = checkpoint.name;
     document.getElementById('checkpointDescription').textContent = checkpoint.short_description ?? checkpoint.description ?? '';
@@ -498,7 +1054,6 @@ function closeCheckpointModal() {
     document.getElementById('checkpointModal').style.display = 'none';
 }
 
-
 function updateCheckpointMarker(checkpoint) {
     map.eachLayer(layer => {
         if (!(layer instanceof L.Marker)) return;
@@ -515,7 +1070,6 @@ function updateCheckpointMarker(checkpoint) {
     });
 }
 
-
 async function markFactsViewed(checkpointId) {
     try {
         await fetch(`/api/tracking/${BOOKING_ID}/facts-viewed/${checkpointId}`, {
@@ -524,7 +1078,6 @@ async function markFactsViewed(checkpointId) {
         });
     } catch (e) { /* non-critical */ }
 }
-
 
 function onPositionError(error) {
     const messages = {
@@ -548,7 +1101,6 @@ function setGPSStatus(state, html) {
     el.className = `gps-status ${state}`;
     el.innerHTML = html;
 }
-
 
 function copyPin() {
     const pin = '{{ $booking->trackingPin->pin }}';
@@ -577,7 +1129,6 @@ function sharePin() {
     }
 }
 
-
 @if(true)
 function jumpToCheckpoint(lat, lng) {
     if (watchId) { navigator.geolocation.clearWatch(watchId); watchId = null; }
@@ -591,12 +1142,16 @@ function resetGPS() {
     if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
     if (userCircle) { map.removeLayer(userCircle); userCircle = null; }
     if (userToStartLayer) { map.removeLayer(userToStartLayer); userToStartLayer = null; }
+    currentLat = null;
+    currentLng = null;
     startTracking();
 }
 @endif
 
-
 document.addEventListener('DOMContentLoaded', initMap);
+window.addEventListener('load', () => { 
+    if (map) map.invalidateSize(); 
+});
 window.addEventListener('beforeunload', () => { if (watchId) navigator.geolocation.clearWatch(watchId); });
 </script>
 @endpush

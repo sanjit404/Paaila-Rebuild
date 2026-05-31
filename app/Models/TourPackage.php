@@ -22,6 +22,8 @@ class TourPackage extends Model
         'end_lat',
         'end_lng',
         'is_active',
+        'tags',
+        'season'
     ];
 
     protected $casts = [

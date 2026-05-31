@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Paaila') - Trek with Confidence</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/paailaLogo.png') }}">
+    <title>@yield('title', 'Paaila') - Every Step Matters</title>
+    <link rel="icon" type="image/x-icon"    href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicons/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180"    href="{{ asset('favicons/apple-touch-icon.png') }}">
+    <link rel="manifest"                            href="{{ asset('favicons/site.webmanifest') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -45,18 +49,18 @@
             --font-body: 'Inter', sans-serif;
         }
 
-        * { 
-        margin: 0; padding: 0; box-sizing: border-box; 
+        * {
+        margin: 0; padding: 0; box-sizing: border-box;
         }
-        
+
         html {
-        scroll-behavior: smooth; 
+        scroll-behavior: smooth;
         }
-        
+
         html{
             scroll-behavior:smooth;
         }
-        
+
         body {
             font-family: var(--font-body);
             font-size: 16px;
@@ -86,50 +90,50 @@
 
         .tangerine-regular {
         font-family: "Tangerine", cursive;
-        font-weight: 400; 
+        font-weight: 400;
         }
-        
+
         .almendra-regular {
         font-family: "Almendra", serif;
-        font-weight: 400; 
+        font-weight: 400;
         }
-        
-        .almendra-bold { 
+
+        .almendra-bold {
         font-family: "Almendra", serif;
         font-weight: 700;
         }
-        
-        .almendra-regular-italic { 
+
+        .almendra-regular-italic {
         font-family: "Almendra", serif;
-        font-weight: 400; 
+        font-weight: 400;
         font-style: italic;
         }
-        
-        .almendra-bold-italic { 
+
+        .almendra-bold-italic {
         font-family: "Almendra", serif;
-        font-weight: 700; 
-        font-style: italic; 
-        }
-        
-        .jim-nightshade-regular {
-        font-family: "Jim Nightshade", cursive;
-        font-weight: 400; 
+        font-weight: 700;
+        font-style: italic;
         }
 
-        .hero-logo-row { 
+        .jim-nightshade-regular {
+        font-family: "Jim Nightshade", cursive;
+        font-weight: 400;
+        }
+
+        .hero-logo-row {
         display: flex;
         align-items: flex-end;
         gap: 14px;
-        margin-bottom: 4px; 
+        margin-bottom: 4px;
         }
-        
-        .hero-logo-img { 
-        height: 64px; 
-        width: 46px; 
+
+        .hero-logo-img {
+        height: 64px;
+        width: 46px;
         object-fit: contain;
-        flex-shrink: 0; 
-        margin-bottom: 6px; 
-        opacity: 0.92; 
+        flex-shrink: 0;
+        margin-bottom: 6px;
+        opacity: 0.92;
         }
 
         .navbar {
@@ -186,13 +190,13 @@
             white-space: nowrap;
         }
 
-        .navbar-link:hover { 
+        .navbar-link:hover {
         color: var(--color-primary);
         }
-        
-        .navbar-link.active { 
-        color: var(--color-primary); 
-        font-weight: 600; 
+
+        .navbar-link.active {
+        color: var(--color-primary);
+        font-weight: 600;
         }
 
         .navbar-toggle {
@@ -208,8 +212,8 @@
             transition: background 0.2s;
         }
 
-        .navbar-toggle:hover { 
-        background: #F0F0F0; 
+        .navbar-toggle:hover {
+        background: #F0F0F0;
         }
 
         .navbar-mobile-menu {
@@ -222,12 +226,12 @@
             box-shadow: var(--shadow-md);
         }
 
-        .navbar-mobile-menu.open { 
-        display: flex; 
+        .navbar-mobile-menu.open {
+        display: flex;
         }
 
         .navbar-mobile-menu li {
-        list-style: none; 
+        list-style: none;
         }
 
         .navbar-mobile-menu .navbar-link {
@@ -263,15 +267,15 @@
         }
 
         .btn:disabled {
-        			opacity: 0.5; 
-              cursor: not-allowed; 
+        			opacity: 0.5;
+              cursor: not-allowed;
         }
 
         .btn-primary {
-        	background: var(--color-primary); 
-          color: var(--color-white); 
+        	background: var(--color-primary);
+          color: var(--color-white);
           }
-          
+
         .btn-primary:hover:not(:disabled) {
             background: var(--color-primary-dark);
             transform: translateY(-1px);
@@ -453,7 +457,7 @@
     @stack('styles')
 </head>
 <body>
-
+@include('components.loading-screen')
     <nav class="navbar">
         <div class="navbar-container">
             <a href="{{ route('home') }}" class="navbar-brand">
@@ -464,7 +468,6 @@
             <ul class="navbar-menu">
                 <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed</a></li>
                 <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
-                <li><a href="#footer" class="navbar-link">About Us</a></li>
 
                 @auth
                     <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup></a></li>
@@ -482,6 +485,7 @@
                         </form>
                     </li>
                 @else
+                    <li><a href="#footer" class="navbar-link">About Us</a></li>
                     <li><a href="{{ route('login') }}" class="btn btn-secondary btn-sm">Login</a></li>
                     <li><a href="{{ route('register') }}" class="btn btn-primary btn-sm">Sign Up</a></li>
                 @endauth
@@ -496,7 +500,6 @@
             <ul style="list-style:none; display:contents;">
                 <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed</a></li>
                 <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
-                <li><a href="#footer" class="navbar-link">About Us</a></li>
 
                 @auth
                     <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup></a></li>
@@ -514,9 +517,11 @@
                         </form>
                     </li>
                 @else
+                    <li><a href="#footer" class="navbar-link">About Us</a></li>
                     <li><a href="{{ route('login') }}" class="btn btn-secondary btn-block" style="margin-top:8px;">Login</a></li>
                     <li><a href="{{ route('register') }}" class="btn btn-primary btn-block" style="margin-top:8px;">Sign Up</a></li>
                 @endauth
+
             </ul>
         </div>
     </nav>
@@ -575,17 +580,101 @@
             </div>
         </div>
     </footer>
+@auth
+<script>
+(function () {
+    const activeBookingId = @json($activeBooking ? $activeBooking->id : null);
+    if (!activeBookingId) return; // only register if user has active booking
 
+    if (!('serviceWorker' in navigator)) {
+        console.warn('Service Worker not supported.');
+        return;
+    }
+
+    navigator.serviceWorker.register('/tracking-sw.js', {
+        scope: '/'
+    }).then(function (registration) {
+        console.log('Tracking SW registered:', registration.scope);
+
+        // Register periodic sync if supported (optional heartbeat)
+        if ('periodicSync' in registration) {
+            registration.periodicSync
+                .register('paaila-location-heartbeat', {
+                    minInterval: 60_000, // ~1 minute (browser may enforce a minimum)
+                })
+                .catch(function () {
+                    // Periodic sync not supported or denied
+                });
+        }
+
+        // Register BackgroundSync tag
+        if ('sync' in registration) {
+            registration.sync.register('paaila-location-sync');
+        }
+    }).catch(function (err) {
+        console.warn('SW registration failed:', err);
+    });
+
+    // Create a channel to send locations to the SW
+    const messageChannel = new MessageChannel();
+
+    navigator.geolocation.watchPosition(
+        function (position) {
+            const payload = {
+                bookingId: activeBookingId,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: position.coords.accuracy || null,
+                speed: position.coords.speed || null,
+                altitude: position.coords.altitude || null,
+                heading: position.coords.heading || null,
+                battery: null,
+                csrfToken: '{{ csrf_token() }}',
+            };
+
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'LOCATION_UPDATE',
+                    payload: payload,
+                });
+            } else {
+                // Fallback: send directly to server if no SW controller yet
+                fetch(`/api/tracking/${activeBookingId}/location`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                    keepalive: true,
+                }).catch(function (err) {
+                    console.warn('Direct location send failed:', err);
+                });
+            }
+        },
+        function (err) {
+            console.warn('GPS error:', err.message);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 10000,
+        }
+    );
+})();
+</script>
+@endauth
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
         (function () {
-            var toggle = document.getElementById('navToggle');
-            var menu   = document.getElementById('mobileMenu');
-            var icon   = toggle.querySelector('i');
+            let toggle = document.getElementById('navToggle');
+            let menu   = document.getElementById('mobileMenu');
+            let icon   = toggle.querySelector('i');
 
             toggle.addEventListener('click', function () {
-                var open = menu.classList.toggle('open');
+                let open = menu.classList.toggle('open');
                 toggle.setAttribute('aria-expanded', open);
                 icon.className = open ? 'fas fa-times' : 'fas fa-bars';
             });
@@ -603,45 +692,3 @@
     @stack('scripts')
 </body>
 </html>
-{{-- SUCCESS MESSAGE SECTION --}}
-{{-- Checks if a success message exists in session --}}
-{{-- If yes, displays a green success alert box --}}
-{{-- Icon: check-circle --}}
-{{-- Shows session('success') text --}}
-
-{{-- ERROR MESSAGE SECTION --}}
-{{-- Checks if an error message exists in session --}}
-{{-- If yes, displays a red error alert box --}}
-{{-- Icon: exclamation-circle --}}
-{{-- Shows session('error') text --}}
-
-{{-- MAIN CONTENT AREA --}}
-{{-- This is where child pages inject their content using @yield('content') --}}
-
-{{-- FOOTER SECTION --}}
-{{-- Main footer container with primary dark background --}}
-
-{{-- FOOTER COLUMN 1: BRAND INFO --}}
-{{-- Displays app name "Paaila" --}}
-{{-- Short description about GPS trekking safety system --}}
-
-{{-- FOOTER COLUMN 2: QUICK LINKS --}}
-{{-- Link to Browse Treks (route: home) --}}
-{{-- Link to Track Someone (route: tracking.pin.entry) --}}
-
-{{-- FOOTER COLUMN 3: CONTACT INFO --}}
-{{-- Email: info@paaila.com --}}
-{{-- Phone: +977-123-4567 --}}
-
-{{-- FOOTER BOTTOM BAR --}}
-{{-- Copyright text for 2026 Paaila --}}
-{{-- Tagline: Trek safely with GPS tracking --}}
-
-{{-- LEAFLET JS LIBRARY --}}
-{{-- External script for map functionality --}}
-{{-- https://unpkg.com/leaflet@1.9.4/dist/leaflet.js --}}
-
-{{-- STACKED SCRIPTS --}}
-{{-- Allows pushing page-specific scripts from child views --}}
-
-{{-- END OF LAYOUT FILE --}}
