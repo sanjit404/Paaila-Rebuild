@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Paaila — Explore Nepal\'s Finest Treks')
+@section('title', 'Special For You')
 
 @php
     $isLoggedIn = auth()->check();
