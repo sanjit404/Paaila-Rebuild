@@ -180,6 +180,17 @@ class TourBooking extends Model
             return false;
         }
 
+        if ($this->trackingPin) {
+                $this->trackingPin->update([
+                    'expires_at' => now(),
+                ]);
+        }
+ 
+        \Log::info('Tracking PIN expired on completion', [
+            'booking_id' => $this->id,
+            'pin'        => $this->trackingPin->pin,
+        ]);
+
         $this->update([
             'status' => self::STATUS_COMPLETED,
             'completed_at' => now(),
