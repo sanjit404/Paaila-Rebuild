@@ -18,10 +18,11 @@ class Post extends Model
         'rating_count',
         'is_highlighted',
         'trek_id',
+        'is_highlighted'
+
     ];
 
     protected $casts = [
-        'is_highlighted' => 'boolean',
         'likes_count' => 'integer',
         'rating_avg' => 'decimal:2',
         'rating_count' => 'integer',

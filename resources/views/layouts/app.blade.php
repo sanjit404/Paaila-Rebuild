@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Paaila') - Every Step Matters</title>
+    <link rel="icon" href="{{ asset('images/paailaLogo.png') }}">
     <link rel="icon" type="image/x-icon"    href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicons/favicon-16x16.png') }}">
@@ -17,7 +18,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Jim+Nightshade&family=Tangerine&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Jim+Nightshade&family=Tangerine&family=Astloch:wght@400;700&family=Rye&display=swap');
 
         :root {
             --color-primary: #1B5E20;
@@ -575,8 +576,8 @@
                     <p style="color: rgba(255,255,255,0.7); font-size: 14px;">Email: info@paaila.com<br>Phone: +977-123-4567</p>
                 </div>
             </div>
-            <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgba(255,255,255,0.3); text-align: center;">
-                <p style="color: rgba(255,255,255,0.88); font-size: 13px; margin: 0;">© 2026 Paaila | पाइला | 𑐥𑐵𑐂𑐮𑑂𑐴</p>
+            <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgba(255,255,255,0.3); text-align: center;">  
+            <p style="color: rgba(255,255,255,0.88); font-size: 13px; margin: 0;">© 2026 Paaila | पाइला | 𑐥𑐵𑐂𑐮𑑂𑐴 </p>
             </div>
         </div>
     </footer>

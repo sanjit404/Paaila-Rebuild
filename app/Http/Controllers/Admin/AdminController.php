@@ -333,7 +333,8 @@ class AdminController extends BaseController
         if ($booking->isCancelled()) {
             return back()->with('error', 'Cancelled bookings cannot be completed.');
         }
-
+        $booking->load('trackingPin');
+        
         if ($booking->markAsCompleted(true)) {
             return back()->with('success', 'Booking marked as completed!');
         }

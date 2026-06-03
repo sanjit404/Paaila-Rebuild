@@ -1,12 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Paaila Treks')
+@section('title', 'Paaila')
 
 @section('content')
 <section style="background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/bg_wall_trek.jpg') }}') center/cover; padding: 80px 0; color: white;">
-    <div class="container">
+    <div class="container" style="display:flex;">
         <div class="hero-content">
-
             <div class="hero-logo-row">
                 <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img ">
                 <h1 class="hero-wordmark almendra-bold">Paaila </h1>
@@ -18,7 +17,7 @@
 
             <p class="hero-desc">
                 Explore Nepal with planned treks,
-                real-time tracking, and experiences designed to keep every journey safe,
+                real-time tracking, and experiences designed to keep every journey 
                 meaningful, and unforgettable <i class="fas fa-solid fa-heart"></i>
             </p>
 
@@ -40,6 +39,40 @@
             </div>
 
         </div>
+        <div class="trek-carousel-wrapper" aria-label="Featured treks carousel">
+            <div class="trek-carousel-container shiny-tbg" style="top:15%; left:150%;">
+                    <center>
+                    <p style="font-family: 'Tangerine',cursive;
+                     font-size:32px; 
+                     color:white;
+                     border-bottom:1px solid gray;
+                     align-text:centre;">
+                        Experience Nepal With Us
+                    </p>
+                    </center>
+                <div class="carousel-track-wrapper">
+                <x-prayer-flags />  
+                    <div class="carousel-track" id="carouselTrack">
+                        @foreach($packages->take(8) as $package)
+                        <a
+                            href="{{ route('tours.show', $package) }}"
+                            class="carousel-card"
+                            data-name="{{ strtolower($package->name) }}"
+                            @if($package->image == null)
+                                style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop');"
+                            @else
+                                style="background-image: url('{{ $package->image }}');"
+                            @endif
+                        >
+                            <div class="carousel-overlay"></div>
+                            <h2 class="carousel-title">{{ $package->name }}</h2>
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="carousel navigation" style="display:none;"></div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -48,146 +81,164 @@
     <div class="container">
 
         <div style="margin-bottom: 32px;">
-            <h2 class="section-title">Discover All Treks</h2>
-            <p style="color: #717171; font-size: 15px; ">Find your perfect adventure by category.</p>
+        <h2 class="section-title">Discover All Treks</h2>
+        <p style="color: #717171; font-size: 15px;">Find your perfect adventure by category.</p>
 
-            <div class="filter-scroll-wrapper">
-                @php
-                    $types = [
-                        'all'         => 'All Treks',
-                        'nature'      => 'Nature & Scenery',
-                        'historical'  => 'Historical',
-                        'cultural'    => 'Cultural',
-                        'adventure'   => 'Extreme Adventure',
-                        'spiritual'   => 'Spiritual',
-                        'wildlife'    => 'Wildlife',
-                        'village'     => 'Village Tours'
-                    ];
-                @endphp
-                @foreach($types as $value => $label)
-                    <button
-                        onclick="filterTreks('{{ $value }}')"
-                        id="filter-{{ $value }}"
-                        class="filter-chip {{ $value === 'all' ? 'active' : '' }}">
-                        {{ $label }}
-                    </button>
-                @endforeach
+        <div style="display: flex; gap: 12px; align-items: center; margin-top: 12px;">
+            <div style="flex: 1; position: relative; min-width: 200px;">
+                <i class="fas fa-search" style="position: absolute; left: 14px; top: 13px; color: #9E9E9E;"></i>
+                <input
+                    id="treksSearchInput"
+                    type="text"
+                    class="search-input-treks"
+                    placeholder="Search by name"
+                    aria-label="Search treks">
+                <button id="treksSearchClearBtn" style="display: none; position: absolute; right: 10px; top: 8px; border: none; background: transparent; padding: 6px; cursor: pointer; color: #777;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-        </div>
+
+            <div class="filter-scroll-wrapper" style="flex: 0 1 auto;">
+                        @php
+                            $types = [
+                                'all'         => 'All Treks',
+                                'nature'      => 'Nature & Scenery',
+                                'historical'  => 'Historical',
+                                'cultural'    => 'Cultural',
+                                'adventure'   => 'Extreme Adventure',
+                                'spiritual'   => 'Spiritual',
+                                'wildlife'    => 'Wildlife',
+                                'village'     => 'Village Tours'
+                            ];
+                        @endphp
+                        @foreach($types as $value => $label)
+                            <button
+                                onclick="filterTreks('{{ $value }}')"
+                                id="filter-{{ $value }}"
+                                class="filter-chip {{ $value === 'all' ? 'active' : '' }}">
+                                {{ $label }}
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
 
         @if($packages->count() > 0)
-            <div class="grid grid-3" id="packagesGrid">
-                @foreach($packages as $package)
-                        <a
-                        style="text-decoration:none; "
-                        href="{{ route('tours.show', $package) }}"
-                        class="card shiny-tbg package-item"
-                        data-type="{{ $package->trek_type }}">
-                        @if($package->image == null)
-                        <img
-                            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop"
-                            alt="{{ $package->name }}"
-                            class="card-image"
-                        >
-                        @else
-                        <img
-                            src="{{ $package->image }}"
-                            alt="{{ $package->name }}"
-                            class="card-image"
-                        >
-                        @endif
-                        <div class="card-body">
-                            <div style="display:flex; margin-bottom: var(--space-md); ">
-                                @if($package->difficulty_level === 'easy')
-                                    <span class="badge badge-success">
-                                        <i class="fas fa-circle"></i> Easy
-                                    </span>
-                                @elseif($package->difficulty_level === 'moderate')
-                                    <span class="badge badge-warning">
-                                        <i class="fas fa-circle"></i> Moderate
-                                    </span>
-                                @else
-                                    <span class="badge badge-error">
-                                        <i class="fas fa-circle"></i> Hard
-                                    </span>
-                                @endif
-                                @if(($package->rating_count ?? 0) > 0)
-                                <div style="
-                                color: var(--color-primary-dark); padding: 3px 8px; border-radius: 12px;
-                                font-size: 12px; font-weight: 600;
-                                display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px);"
-                                >
-                                <span class="badge badge-success" style="opacity: 0.75; font-size: 11px;">
-                                <i class="fas fa-star" style="color: #FFC107; font-size: 11px;"></i>
-                                {{ number_format($package->rating_avg, 1) }}
-                                ({{ $package->rating_count }})</span>
-                                </div>
-                                 @endif
-                                 @if($package->trek_type ?? false)
-                                <div style="position: absolute; top: 10px; right: 10px;">
-                                    <span style="background: rgba(255,255,255,0.92); color: var(--color-primary);
-                                                padding: 3px 10px; border-radius: 20px;
-                                                font-size: 11px; font-weight: 700;
-                                                text-transform: capitalize;">
-                                        {{ $package->trek_type }}
-                                    </span>
-                                </div>
-                                @endif
-                            </div>
+    <div class="grid grid-3" id="packagesGrid">
+     @php $firstPackage = $packages->first(); @endphp
+        
+        <x-offer-card :package="$firstPackage" />
 
+        @foreach($packages->skip(1) as $package)
+            <a
+            style="text-decoration:none; position: relative;"
+            href="{{ route('tours.show', $package) }}"
+            class="card shiny-tbg package-item"
+            data-type="{{ $package->trek_type }}">
 
-                            <h3 class="card-title">{{ $package->name }}</h3>
-
-                            <p class="card-text">{{ Str::limit($package->description, 100) }}</p>
-
-                            <div style="display: flex; gap: var(--space-lg); margin-bottom: var(--space-md); font-size: 14px; color: var(--color-text-light);">
-                                <div class="flex" style="align-items: center; gap: var(--space-xs);">
-                                    <i class="fas fa-calendar" style="color: var(--color-primary);"></i>
-                                    <span>{{ $package->duration_days }} {{ Str::plural('Day', $package->duration_days) }}</span>
-                                </div>
-                                <div class="flex" style="align-items: center; gap: var(--space-xs);">
-                                    <i class="fas fa-map-marker-alt" style="color: var(--color-primary);"></i>
-                                    <span>{{ $package->checkpoints->count() }} Stops</span>
-                                </div>
-                                @if($package->region ?? false)
-                                <span style="color: var(--color-primary);
-                                             text-transform: capitalize;"
-                                            >
-                                <i class="fas fa-map-pin"></i>
-                                {{ $package->region }}
-                                </span>
-                                 @endif
-                            </div>
-
-
-                            <div class="flex-between" style="margin-top: var(--space-lg);">
-                                <div>
-                                    <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 2px;">From</div>
-                                    <div style="font-size: 24px; font-weight: 700; color: var(--color-primary);">
-                                        Rs. {{ number_format($package->price, 0) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </a>
-
-                @endforeach
+            @if($package->trek_type ?? false)
+            <div style="position: absolute; top: 10px; right: 10px; z-index: 50;">
+                <span style="background: rgba(255,255,255,0.92); color: var(--color-primary);
+                            padding: 3px 10px; border-radius: 20px;
+                            font-size: 11px; font-weight: 700;
+                            text-transform: capitalize;">
+                    {{ $package->trek_type }}
+                </span>
             </div>
+            @endif
 
-            <div id="emptyFilter" style="display:none; text-align: center; padding: 80px 20px; background: #FFFFFF; border-radius: 16px; border: 1px solid #EBEBEB; margin-top: 20px;">
-                <div style="background: #F7F7F7; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
-                    <i class="fas fa-search" style="font-size: 32px; color: #BBBBBB;"></i>
+            @if($package->image == null)
+            <img
+                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop"
+                alt="{{ $package->name }}"
+                class="card-image"
+            >
+            @else
+            <img
+                src="{{ $package->image }}"
+                alt="{{ $package->name }}"
+                class="card-image"
+            >
+            @endif
+            <div class="card-body">
+                <div style="display:flex; margin-bottom: var(--space-md); ">
+                    @if($package->difficulty_level === 'easy')
+                        <span class="badge badge-success">
+                            <i class="fas fa-circle"></i> Easy
+                        </span>
+                    @elseif($package->difficulty_level === 'moderate')
+                        <span class="badge badge-warning">
+                            <i class="fas fa-circle"></i> Moderate
+                        </span>
+                    @else
+                        <span class="badge badge-error">
+                            <i class="fas fa-circle"></i> Hard
+                        </span>
+                    @endif
+                    @if(($package->rating_count ?? 0) > 0)
+                    <div style="
+                    color: var(--color-primary-dark); padding: 3px 8px; border-radius: 12px;
+                    font-size: 12px; font-weight: 600;
+                    display: flex; align-items: center; gap: 4px; backdrop-filter: blur(4px);"
+                    >
+                    <span class="badge badge-success" style="opacity: 0.75; font-size: 11px;">
+                    <i class="fas fa-star" style="color: #FFC107; font-size: 11px;"></i>
+                    {{ number_format($package->rating_avg, 1) }}
+                    ({{ $package->rating_count }})</span>
+                    </div>
+                     @endif
                 </div>
-                <h3 style="font-size: 18px; color: #222222; margin-bottom: 8px;">No treks found</h3>
-                <p style="color: #717171; font-size: 15px; margin: 0;">No packages match this category right now.</p>
+
+                <h3 class="card-title">{{ $package->name }}</h3>
+
+                <p class="card-text">{{ Str::limit($package->description, 100) }}</p>
+
+                <div style="display: flex; gap: var(--space-lg); margin-bottom: var(--space-md); font-size: 14px; color: var(--color-text-light);">
+                    <div class="flex" style="align-items: center; gap: var(--space-xs);">
+                        <i class="fas fa-calendar" style="color: var(--color-primary);"></i>
+                        <span>{{ $package->duration_days }} {{ Str::plural('Day', $package->duration_days) }}</span>
+                    </div>
+                    <div class="flex" style="align-items: center; gap: var(--space-xs);">
+                        <i class="fas fa-map-marker-alt" style="color: var(--color-primary);"></i>
+                        <span>{{ $package->checkpoints->count() }} Stops</span>
+                    </div>
+                    @if($package->region ?? false)
+                    <span style="color: var(--color-primary);
+                                 text-transform: capitalize;"
+                                >
+                    <i class="fas fa-map-pin"></i>
+                    {{ $package->region }}
+                    </span>
+                     @endif
+                </div>
+
+                <div class="flex-between" style="margin-top: var(--space-lg);">
+                    <div>
+                        <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 2px;">From</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--color-primary);">
+                            Rs. {{ number_format($package->price, 0) }}
+                        </div>
+                    </div>
+                </div>
             </div>
-        @else
-            <div style="text-align: center; padding: var(--space-2xl) 0;">
-                <i class="fas fa-mountain" style="font-size: 64px; color: #E0E0E0; margin-bottom: var(--space-md);"></i>
-                <h3 style="margin-bottom: var(--space-sm);">No Treks Available</h3>
-                <p style="color: var(--color-text-light);">Check back soon for new adventures!</p>
-            </div>
-        @endif
+            </a>
+        @endforeach
+    </div>
+
+    <div id="emptyFilter" style="display:none; text-align: center; padding: 80px 20px; background: #FFFFFF; border-radius: 16px; border: 1px solid #EBEBEB; margin-top: 20px;">
+        <div style="background: #F7F7F7; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+            <i class="fas fa-search" style="font-size: 32px; color: #BBBBBB;"></i>
+        </div>
+        <h3 style="font-size: 18px; color: #222222; margin-bottom: 8px;">No treks found</h3>
+        <p style="color: #717171; font-size: 15px; margin: 0;">No packages match this category right now.</p>
+    </div>
+@else
+    <div style="text-align: center; padding: var(--space-2xl) 0;">
+        <i class="fas fa-mountain" style="font-size: 64px; color: #E0E0E0; margin-bottom: var(--space-md);"></i>
+        <h3 style="margin-bottom: var(--space-sm);">No Treks Available</h3>
+        <p style="color: var(--color-text-light);">Check back soon for new adventures!</p>
+    </div>
+@endif
 
     </div>
 </section>
@@ -195,7 +246,7 @@
 <center>
 <div class="vibe-card-wrap ">
     <div class="vibe-card shiny-tbg" style="background: linear-gradient(135deg, rgba(9, 29, 10, 0.95) 0%, rgba(2, 21, 3, 0.3) 100%), url('{{ asset('images/bg_wall_trek.jpg') }}') center/cover;">
-        <p class="vibe-text">Can’t find a trek that matches your vibe?</p>
+        <p class="vibe-text">Can't find a trek that matches your vibe?</p>
 
         <a href="{{ route('tour.foryou') }}" class="vibe-link">
              <i class="fas fa-heart fa-fade" style="color:white;"></i>Click here to find the perfect trek for you.
@@ -240,9 +291,9 @@
     </div>
 </section>
 @endsection
+
 @push('styles')
 <style>
-
         html{
             scroll-behavior: smooth;
         }
@@ -250,8 +301,6 @@
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
         }
-
-
 
         .filter-scroll-wrapper {
             display: flex;
@@ -329,8 +378,6 @@
             max-width: 520px;
             padding: 72px 0 80px;
         }
-
-
 
         .hero-wordmark {
             font-family: 'Almendra', Georgia, serif;
@@ -410,6 +457,93 @@
         .btn-hero-ghost:hover  { border-color: rgba(255,255,255,0.48); color: #fff; transform: translateY(-1px); text-decoration: none; }
         .btn-hero-ghost:active { transform: scale(0.98); }
 
+        .trek-carousel-wrapper {
+            width: 340px;
+            flex-shrink: 0;
+        }
+
+        .trek-carousel-container {
+            background: rgba(67, 65, 65, 0.53);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .carousel-track-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            height: 280px;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.62s cubic-bezier(.22, .9, .32, 1);
+            height: 100%;
+        }
+
+        .carousel-card {
+            flex: 0 0 100%;
+            display: block;
+            text-decoration: none;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .carousel-card:hover {
+            transform: scale(1.02);
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.2) 0%,
+                rgba(0, 0, 0, 0.35) 40%,
+                rgba(0, 0, 0, 0.7) 100%
+            );
+            pointer-events: none;
+        }
+
+        .carousel-title {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Tangerine', cursive;
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            letter-spacing: 1px;
+            width: 90%;
+            line-height: 1;
+            z-index: 2;
+        }
+
+        .search-input-treks {
+            width: 100%;
+            padding: 12px 40px 12px 42px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #E8E8E8;
+            font-size: 14px;
+            color: #222;
+        }
+        .search-input-treks::placeholder {
+            color: #9E9E9E;
+        }
+
         .hero-live-dot {
             display: inline-block;
             width: 7px;
@@ -418,19 +552,6 @@
             background: #7ae87e;
             flex-shrink: 0;
             animation: live-pulse 2s ease-out infinite;
-        }
-        @keyframes live-pulse {
-            0%   { box-shadow: 0 0 0 0 rgba(122, 232, 122, 0.75); }
-            60%  { box-shadow: 0 0 0 6px rgba(232, 201, 122, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(232, 201, 122, 0); }
-        }
-
-        @media (max-width: 576px) {
-            .hero-content    { padding: 52px 0 60px; }
-            .hero-wordmark   { font-size: 46px; letter-spacing: 8px; }
-            .hero-logo-img   { height: 48px; }
-            .btn-hero-primary,
-            .btn-hero-ghost  { padding: 10px 20px; font-size: 14px; }
         }
 
         .vibe-card-wrap {
@@ -452,6 +573,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             animation: pulseSoft 2.8s ease-in-out infinite;
+            position: relative;
         }
 
         .vibe-card::before {
@@ -526,8 +648,10 @@
                 width: 100%;
                 padding: 11px 16px;
             }
+            .trek-carousel-wrapper {
+                display: none;
+            }
         }
-
 
         .shiny-tbg {
             position: relative;
@@ -554,6 +678,41 @@
         @keyframes shine {
             0%   { left: -150%; }
             100% { left: 150%; }
+        }
+
+        @keyframes oc-twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes flag-wave {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        @keyframes live-pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(122, 232, 122, 0.75); }
+            60%  { box-shadow: 0 0 0 6px rgba(232, 201, 122, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(232, 201, 122, 0); }
+        }
+
+        @media (max-width: 576px) {
+            .hero-content    {
+                 padding: 52px 0 60px; 
+                }
+            .hero-wordmark   { 
+                font-size: 46px; letter-spacing: 8px; 
+            }
+            .hero-logo-img   {
+                 height: 48px; 
+                }
+            .btn-hero-primary,.btn-hero-ghost  { 
+                padding: 10px 20px; 
+                font-size: 14px; 
+            }
+            .trek-carousel-wrapper {
+                display: none;
+            }
         }
 
         #packagesGrid {
@@ -605,6 +764,81 @@ function filterTreks(type) {
 
         grid.style.opacity = '1';
     }, 300);
+}
+
+const track = document.getElementById('carouselTrack');
+
+if (track) {
+    const cards = Array.from(track.querySelectorAll('.carousel-card'));
+    const dotsContainer = document.getElementById('carouselDots');
+    let index = 0;
+    let autoTimer = null;
+    const slideInterval = 3500;
+    const allowAuto = cards.length > 1;
+
+    cards.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        btn.setAttribute('aria-label', 'Slide ' + (i + 1));
+        btn.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(btn);
+    });
+    const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+
+    function update() {
+        track.style.transform = `translateX(-${index * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
+
+    function next() {
+        index = (index + 1) % cards.length;
+        update();
+    }
+
+    function startAuto() { if (allowAuto && !autoTimer) autoTimer = setInterval(next, slideInterval); }
+    function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+    function goTo(i) { index = i % cards.length; update(); }
+
+    update();
+    startAuto();
+
+    track.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') { index = (index - 1 + cards.length) % cards.length; update(); }
+        if (e.key === 'ArrowRight') { index = (index + 1) % cards.length; update(); }
+    });
+}
+
+const treksSearchInput = document.getElementById('treksSearchInput');
+const treksSearchClear = document.getElementById('treksSearchClearBtn');
+const packageItems = document.querySelectorAll('.package-item');
+
+function normalizeText(s) {
+    return (s || '').toString().toLowerCase();
+}
+
+if (treksSearchInput) {
+    treksSearchInput.addEventListener('input', function(e) {
+        const q = normalizeText(e.target.value).trim();
+        treksSearchClear.style.display = q ? 'block' : 'none';
+
+        packageItems.forEach(item => {
+            const name = normalizeText(item.querySelector('.card-title')?.textContent);
+            const difficulty = normalizeText(item.querySelector('.badge')?.textContent);
+            const regionText = item.querySelector('span[style*="text-transform: capitalize"]');
+            const region = regionText ? normalizeText(regionText.textContent) : '';
+            const season = normalizeText(item.dataset.season || '');
+            const price = normalizeText(item.querySelector('.card-body div:last-child div:last-child')?.textContent);
+            
+            const combined = [name, difficulty, region, season, price].join(' ');
+            item.style.display = (!q || combined.includes(q)) ? '' : 'none';
+        });
+    });
+
+    treksSearchClear.addEventListener('click', function() {
+        treksSearchInput.value = '';
+        treksSearchClear.style.display = 'none';
+        packageItems.forEach(item => item.style.display = '');
+    });
 }
 </script>
 @endpush

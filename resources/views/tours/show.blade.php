@@ -5,6 +5,7 @@
 @section('content')
 
 <section class="trek-hero">
+    <x-prayer-flags />
     @if($package->image)
         <div class="trek-hero__bg" style="background-image: url('{{ $package->image }}')"></div>
     @else
@@ -41,9 +42,13 @@
             </h2>
             <p class="trek-desc">{{ $package->description }}</p>
             <br>
-            <div class="trek-hero__stats" style="border-top: 1px solid black;">
-            </div>
-
+            <div class="trek-hero__stats" style="border-top: 1px solid black;"></div>
+            <img
+                src="{{ $package->image }}"
+                alt="{{ $package->name }}"
+                class="package__img"
+                loading="lazy"
+            >
             <div class="hstat">
                 <i class="fas fa-calendar"></i>
                 <span>{{ $package->duration_days }} {{ Str::plural('Day', $package->duration_days) }}</span>
@@ -66,6 +71,7 @@
                     <small>({{ $package->rating_count }})</small>
                 </span>
             </div>
+            
 
         @if(!empty($package->season))
             @php
@@ -677,6 +683,14 @@
 .cp-card__img {
     width: 100%;
     max-height: 260px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin: var(--space-sm) 0 var(--space-md);
+}
+
+.package__img {
+    width: 100%;
+    max-height: 100%;
     object-fit: cover;
     border-radius: var(--radius-sm);
     margin: var(--space-sm) 0 var(--space-md);

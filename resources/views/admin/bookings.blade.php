@@ -178,58 +178,58 @@
                                         @endif
                                     </td>
                                     <td style="padding: var(--space-md); text-align: right;">
-<div class="card">
-    <div class="card-body">
-        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: var(--space-lg);">
-            <i class="fas fa-cog"></i> Admin Actions
-        </h3>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: var(--space-lg);">
+                                                    <i class="fas fa-cog"></i> Admin Actions
+                                                </h3>
 
-        @if($booking->status === 'pending')
-            <form method="POST" action="{{ route('admin.bookings.confirm', $booking) }}">
-                @csrf
-                <button type="submit" class="btn btn-success btn-block btn-lg" style="margin-bottom: var(--space-sm);">
-                    <i class="fas fa-check"></i> Confirm Booking
-                </button>
-            </form>
-        @endif
+                                                @if($booking->status === 'pending')
+                                                    <form method="POST" action="{{ route('admin.bookings.confirm', $booking) }}">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success btn-block btn-lg" style="margin-bottom: var(--space-sm);">
+                                                            <i class="fas fa-check"></i> Confirm Booking
+                                                        </button>
+                                                    </form>
+                                                @endif
 
-        @if(in_array($booking->status, ['confirmed', 'active']))
-            <form method="POST" action="{{ route('admin.bookings.complete', $booking) }}">
-                @csrf
-                <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-bottom: var(--space-sm);">
-                    <i class="fas fa-flag-checkered"></i> Mark as Completed
-                </button>
-            </form>
+                                                @if(in_array($booking->status, ['confirmed', 'active']))
+                                                    <form method="POST" action="{{ route('admin.bookings.complete', $booking) }}">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-bottom: var(--space-sm);">
+                                                            <i class="fas fa-flag-checkered"></i> Mark as Completed
+                                                        </button>
+                                                    </form>
 
-            <div style="padding: var(--space-md); background: #E3F2FD; border-radius: var(--radius-md); margin-bottom: var(--space-sm); font-size: 13px; color: #1976D2;">
-                <i class="fas fa-info-circle"></i> 
-                Progress: <strong>{{ $booking->progress_percentage }}%</strong> 
-                ({{ $booking->completed_checkpoints }}/{{ $booking->total_checkpoints }} checkpoints)
-            </div>
+                                                    <div style="padding: var(--space-md); background: #E3F2FD; border-radius: var(--radius-md); margin-bottom: var(--space-sm); font-size: 13px; color: #1976D2;">
+                                                        <i class="fas fa-info-circle"></i> 
+                                                        Progress: <strong>{{ $booking->progress_percentage }}%</strong> 
+                                                        ({{ $booking->completed_checkpoints }}/{{ $booking->total_checkpoints }} checkpoints)
+                                                    </div>
 
-            @if($booking->trackingPin)
-                <a href="{{ route('tracking.parent', $booking) }}" class="btn btn-secondary btn-block" target="_blank">
-                    <i class="fas fa-map-marker-alt"></i> Track Live (PIN: {{ $booking->trackingPin->pin }})
-                </a>
-            @endif
-        @endif
+                                                    @if($booking->trackingPin)
+                                                        <a href="{{ route('tracking.parent', $booking) }}" class="btn btn-secondary btn-block" target="_blank">
+                                                            <i class="fas fa-map-marker-alt"></i> Track Live (PIN: {{ $booking->trackingPin->pin }})
+                                                        </a>
+                                                    @endif
+                                                @endif
 
-        @if($booking->status === 'completed')
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i> This booking is completed
-                @if($booking->admin_verified)
-                    <span class="badge badge-success" style="margin-left: 8px;">Admin Verified</span>
-                @endif
-            </div>
-        @endif
+                                                @if($booking->status === 'completed')
+                                                    <div class="alert alert-success">
+                                                        <i class="fas fa-check-circle"></i> This booking is completed
+                                                        @if($booking->admin_verified)
+                                                            <span class="badge badge-success" style="margin-left: 8px;">Admin Verified</span>
+                                                        @endif
+                                                    </div>
+                                                @endif
 
-        @if(!in_array($booking->status, ['completed', 'cancelled']))
-            <button onclick="showCancelModal()" class="btn btn-block" style="background: #FFEBEE; color: var(--color-error); margin-top: var(--space-sm);">
-                <i class="fas fa-ban"></i> Cancel Booking
-            </button>
-        @endif
-    </div>
-</div>
+                                                @if(!in_array($booking->status, ['completed', 'cancelled']))
+                                                    <button onclick="showCancelModal()" class="btn btn-block" style="background: #FFEBEE; color: var(--color-error); margin-top: var(--space-sm);">
+                                                        <i class="fas fa-ban"></i> Cancel Booking
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
