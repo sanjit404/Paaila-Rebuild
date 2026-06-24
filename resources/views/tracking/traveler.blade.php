@@ -45,9 +45,9 @@
                     <div class="map-layer-selector">
                         <label for="style" class="map-label">Map Layer</label>
                         <select name="style" id="style" onchange="initMap()" class="map-select">
-                            <option value="hybrid">Satellite 🛰️</option>
-                            <option value="street">Street 🗺️</option>
-                            <option value="outdoor">Trek ⛷️</option>
+                            <option value="hybrid">Satellite</option>
+                            <option value="street">Street</option>
+                            <option value="outdoor">Trek</option>
                         </select>
                     </div>
 
@@ -102,6 +102,79 @@
             </div>
         </div>
     </div>
+
+    
+<div class="trek-body">
+    <div class="container trek-layout">
+        @php
+        $package=$booking->tourPackage;
+        @endphp
+
+            <div class="content-block">
+                <h2 class="section-heading">
+                    <span class="section-heading__icon"><i class="fas fa-list-ol"></i></span>
+                    Your Trek Information
+                </h2>
+
+                @if($package->checkpoints->count() > 0)
+                    <div class="checkpoint-timeline">
+                        @foreach($package->checkpoints->sortBy('order') as $i => $checkpoint)
+                            <div class="cp-item" data-cp-id="{{ $checkpoint->id }}" data-cp-order="{{ $checkpoint->order }}">
+                                <div class="cp-spine">
+                                    <div class="cp-number">{{ $checkpoint->order }}</div>
+                                    @if(!$loop->last)
+                                        <div class="cp-line"></div>
+                                    @endif
+                                </div>
+                                <div class="cp-card">
+                                    <div class="cp-card__header">
+                                        <h3 class="cp-card__title">{{ $checkpoint->name }}</h3>
+                                        @if($checkpoint->estimated_time_from_previous)
+                                            <div class="cp-card__time">
+                                                <i class="fas fa-clock"></i>
+                                                {{ $checkpoint->estimated_time_from_previous }} mins from prev
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    @if($checkpoint->image)
+                                        <img
+                                            src="{{ $checkpoint->image }}"
+                                            alt="{{ $checkpoint->name }}"
+                                            class="cp-card__img"
+                                            loading="lazy"
+                                        >
+                                    @endif
+
+                                    <p class="cp-card__desc">{{ $checkpoint->description }}</p>
+
+                                    @if($checkpoint->facts->count() > 0)
+                                        <div class="cp-facts">
+                                            @foreach($checkpoint->facts->take(3) as $fact)
+                                                <span class="cp-fact">
+                                                    <i class="{{ $fact->icon_class }}"></i>
+                                                    {{ Str::limit($fact->title, 30) }}
+                                                </span>
+                                            @endforeach
+                                            @if($checkpoint->facts->count() > 3)
+                                                <span class="cp-fact cp-fact--more">+{{ $checkpoint->facts->count() - 3 }} more</span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="empty-state">No checkpoints listed for this trek yet.</p>
+                @endif
+            </div>
+
+        </div>
+
+        
+    </div>
+</div>
 
     <div id="checkpointModal" class="modal">
         <div class="modal-content">
@@ -651,6 +724,36 @@
         padding: 8px 12px;
     }
 
+    /* ── You Are Here indicator ───────────────────────────── */
+    .cp-you-are-here {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #1565C0;
+        background: #E3F2FD;
+        border: 1px solid #BBDEFB;
+        border-radius: 4px;
+        padding: 2px 8px;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .cp-number--reached {
+        background: var(--color-success) !important;
+    }
+
+    .cp-number--current {
+        background: #1565C0 !important;
+        box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.2);
+    }
+
+    .cp-line--done {
+        background: var(--color-success) !important;
+    }
+
     @media (max-width: 900px) {
         .tracking-wrapper {
             flex-direction: column;
@@ -795,6 +898,49 @@ let currentLng = null;
 const shownCheckpoints = new Set(
     PROGRESS.filter(p => p.reached_at).map(p => p.checkpoint_id)
 );
+
+// ── Trek timeline: "You Are Here" ────────────────────────
+function refreshTimeline(currentCheckpointId) {
+    CHECKPOINTS.forEach(cp => {
+        const item = document.querySelector(`.cp-item[data-cp-id="${cp.id}"]`);
+        if (!item) return;
+
+        const numEl  = item.querySelector('.cp-number');
+        const lineEl = item.querySelector('.cp-line');
+        const card   = item.querySelector('.cp-card');
+
+        const reached    = shownCheckpoints.has(cp.id);
+        const isCurrent  = cp.id === currentCheckpointId && !reached;
+
+        // Number dot styling
+        numEl.classList.remove('cp-number--reached', 'cp-number--current');
+        if (reached)       numEl.classList.add('cp-number--reached');
+        else if (isCurrent) numEl.classList.add('cp-number--current');
+
+        // Connector line
+        if (lineEl) lineEl.classList.toggle('cp-line--done', reached);
+
+        // Remove any existing badge
+        card.querySelector('.cp-you-are-here')?.remove();
+
+        // Inject badge at top of card for current checkpoint
+        if (isCurrent) {
+            const badge = document.createElement('div');
+            badge.className = 'cp-you-are-here';
+            badge.innerHTML = '<i class="fas fa-location-arrow"></i> You are here';
+            card.insertBefore(badge, card.firstChild);
+
+            // Scroll it into view in the page
+            item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+}
+
+// Run on page load with whatever is already completed
+document.addEventListener('DOMContentLoaded', () => {
+    const firstUnreached = CHECKPOINTS.find(cp => !shownCheckpoints.has(cp.id));
+    refreshTimeline(firstUnreached ? firstUnreached.id : null);
+});
 
 async function initMap() {
     const styleId = document.getElementById('style').value;
@@ -1001,6 +1147,7 @@ async function sendLocationToServer({ lat, lng, accuracy, speed, altitude, headi
                 <p style="font-weight:600;font-size:16px;margin-bottom:var(--space-sm);color:var(--color-text);">${data.next_checkpoint.name}</p>
                 <p style="color:var(--color-text-light);font-size:13px;margin:0;">${dist}</p>
             `;
+            refreshTimeline(data.next_checkpoint.id);
         } else if (data.completed_checkpoints === data.total_checkpoints && data.total_checkpoints > 0) {
             document.getElementById('nextCheckpoint').innerHTML = `
                 <div style="text-align:center;padding:var(--space-lg);">
@@ -1008,12 +1155,15 @@ async function sendLocationToServer({ lat, lng, accuracy, speed, altitude, headi
                     <p style="font-weight:700;color:var(--color-success);margin:0;">All checkpoints complete!</p>
                 </div>
             `;
+            refreshTimeline(null);
         }
 
         if (data.checkpoint_reached && data.checkpoint && !shownCheckpoints.has(data.checkpoint.id)) {
             shownCheckpoints.add(data.checkpoint.id);
             showCheckpointModal(data.checkpoint);
             updateCheckpointMarker(data.checkpoint);
+            const nextId = data.next_checkpoint ? data.next_checkpoint.id : null;
+            refreshTimeline(nextId);
         }
 
     } catch (err) {

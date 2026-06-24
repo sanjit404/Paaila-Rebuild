@@ -5,8 +5,7 @@
 @section('content')
 
 <section class="trek-hero">
-    <x-prayer-flags />
-    @if($package->image)
+     @if($package->image)
         <div class="trek-hero__bg" style="background-image: url('{{ $package->image }}')"></div>
     @else
         <div class="trek-hero__bg trek-hero__bg--fallback"></div>
@@ -36,13 +35,13 @@
                         <i class="fas fa-arrow-left"></i> Back to Treks
             </a>
             <div class="content-block">
+            <br>
+            <h1>{{ $package->name }} , {{ $package->duration_days }} {{ Str::plural('Day', $package->duration_days) }}</h1>
+            <br><br>
             <h2 class="section-heading">
                 <span class="section-heading__icon"><i class="fas fa-compass"></i></span>
                 About This Trek
             </h2>
-            <p class="trek-desc">{{ $package->description }}</p>
-            <br>
-            <div class="trek-hero__stats" style="border-top: 1px solid black;"></div>
             <img
                 src="{{ $package->image }}"
                 alt="{{ $package->name }}"
@@ -99,6 +98,25 @@
                     </div>
                 @endif
             @endif
+            <br><br><br><br>
+
+            <div class="trek-hero__stats" style="border-top: 1px solid black;"></div>
+            
+            <div class="trek-desc">
+            <nav class="package-nav">
+                <a href="#overview">Overview</a>
+                <a href="#highlights">Highlights</a>
+                <a href="#itinerary">Itinerary</a>
+                <a href="#difficulty">Difficulty</a>
+                <a href="#packing">Packing List</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+
+            {!! Str::markdown($package->description) !!}
+            </div>
+            <br>
+            
+            
             </div>
 
             <div class="content-block">
@@ -144,9 +162,9 @@
             </div>
 
             <div class="content-block">
-                <h2 class="section-heading">
+                <h2 id="evtng" class="section-heading">
                     <span class="section-heading__icon"><i class="fas fa-list-ol"></i></span>
-                    What You'll Experience
+                    Everything You Need To Know About Your Trek
                 </h2>
 
                 @if($package->checkpoints->count() > 0)
@@ -165,7 +183,7 @@
                                         @if($checkpoint->estimated_time_from_previous)
                                             <div class="cp-card__time">
                                                 <i class="fas fa-clock"></i>
-                                                {{ $checkpoint->estimated_time_from_previous }} mins from prev
+                                                {{ $checkpoint->estimated_time_from_previous }} from prev
                                             </div>
                                         @endif
                                     </div>
@@ -206,8 +224,9 @@
         </div>
 
         <aside class="trek-sidebar">
-            <div class="booking-card">
-                <div class="booking-card__price">
+            <div class="booking-card" >
+                <div class="booking-card__price" 
+                style="background-image: url('{{ $package->image }}'); background-size:cover;">
                     <h1 style="color:white;">{{ $package->name }}</h1>
                     <br><hr><br>
                     <div class="booking-card__from">Starting from</div>
@@ -215,7 +234,9 @@
                     <div class="booking-card__per">per person</div>
                 </div>
 
-                <a href="{{ route('bookings.create', $package) }}" class="btn btn-cta btn-block shiny-btn">
+                <a href="{{ route('bookings.create', $package) }}"
+                 class="btn btn-cta btn-block shiny-btn"
+                 style="background: var(--color-primary-dark)">
                     <i class="fas fa-ticket-alt"></i> Book This Trek
                 </a>
 
@@ -227,7 +248,7 @@
                     <li><i class="fas fa-check-circle"></i> Well managed</li>
                 </ul>
 
-                <div class="booking-card__guarantee">
+                <div class="booking-card__guarantee" >
                     <i class="fas fa-shield-alt"></i>
                     <span>Secure booking · Free cancellation</span>
                 </div>
@@ -253,6 +274,72 @@
 
 @push('styles')
 <style>
+
+
+.trek-desc p {
+    margin-bottom: 1.25rem;
+    line-height: 1.8;
+}
+
+.trek-desc h1,
+.trek-desc h2,
+.trek-desc h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.trek-desc ul,
+.trek-desc ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+}
+
+.trek-desc #cpbtn{
+    text-decoration:none; 
+    color:white; 
+    background:var(--color-primary-dark); 
+    border-radius:5px;
+    padding: 5px 5px;
+}
+
+.package-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 10px 16px;
+    background: whitesmoke;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    position: sticky;
+    top: 70px;
+    z-index: 100;
+    cursor: pointer;
+    transition: opacity 0.25s ease;
+}
+
+.package-nav a {
+    color: black;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border:none;
+    letter-spacing: 0.2em;
+}
+
+.package-nav.nav-sticky {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.package-nav a:hover{
+    border-bottom: 1px solid var(--color-primary-dark);
+}
+
+.package-nav a.active {
+    border-bottom: 1px solid var(--color-primary-dark);
+    border-radius: 1px;
+}
 
 .trek-hero {
     position: relative;
@@ -878,6 +965,22 @@
     color: rgba(255,255,255,0.6);
 }
 
+@media (max-width: 640px) {
+    .package-nav {
+        top: 56px; /* adjust to your mobile navbar height */
+        gap: 2px;
+        padding: 8px 10px;
+        border-radius: 0;
+        margin-left: calc(-1 * var(--space-lg));
+        margin-right: calc(-1 * var(--space-lg));
+    }
+
+    .package-nav a {
+        font-size: 12px;
+        padding: 5px 9px;
+    }
+}
+
 
 @media (max-width: 960px) {
     .trek-layout {
@@ -1036,5 +1139,24 @@
         );
         observer.observe(hero);
     })();
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('.package-nav');
+    const links = nav.querySelectorAll('a');
+    const sections = [...links].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                links.forEach(a => a.classList.remove('active'));
+                const active = nav.querySelector(`a[href="#${entry.target.id}"]`);
+                if (active) active.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-70px 0px -60% 0px', threshold: 0 });
+
+    sections.forEach(s => sectionObserver.observe(s));
+    });
 </script>
 @endpush

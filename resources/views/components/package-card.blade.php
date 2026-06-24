@@ -103,7 +103,7 @@
 
         <p style="font-size: 13px; color: var(--color-text-light);
                     margin-bottom: var(--space-md); line-height: 1.5;">
-            {{ Str::limit($package->description, 85) }}
+            {{ Str::limit(strip_tags(Str::markdown($package->description)), 85) }}
         </p>
 
             @if(!empty($package->tags))

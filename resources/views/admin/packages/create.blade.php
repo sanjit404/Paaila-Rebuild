@@ -525,7 +525,7 @@ function addCheckpoint() {
 
                 <div class="form-group">
                     <label>Estimated Time *</label>
-                    <input type="number" name="checkpoints[\${checkpointIndex}][estimated_time_from_previous]" value="0">
+                    <input type="text" name="checkpoints[\${checkpointIndex}][estimated_time_from_previous]" value="0">
                 </div>
 
             </div>

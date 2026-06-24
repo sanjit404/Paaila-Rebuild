@@ -23,13 +23,17 @@ class TourPackage extends Model
         'end_lng',
         'is_active',
         'tags',
-        'season'
+        'season',
+        'region',
+        'trek_type'
     ];
 
-    protected $casts = [
-        'price' => 'decimal:2',
-        'is_active' => 'boolean',
-    ];
+   protected $casts = [
+    'price'     => 'decimal:2',
+    'is_active' => 'boolean',
+    'tags'      => 'array',
+    'season'    => 'array', 
+];
 
     public function checkpoints(): HasMany
     {

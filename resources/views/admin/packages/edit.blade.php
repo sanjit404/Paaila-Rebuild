@@ -282,7 +282,7 @@
 
                             <div class="form-group">
                                 <label>Estimated Time</label>
-                                <input type="number" name="estimated_time_from_previous">
+                                <input type="text" name="estimated_time_from_previous">
                             </div>
                         </div>
 
@@ -375,7 +375,7 @@
 
                                         <div class="form-group">
                                             <label>Estimated Time</label>
-                                            <input type="number" name="estimated_time_from_previous" value="{{ old('estimated_time_from_previous', $checkpoint->estimated_time_from_previous) }}">
+                                            <input type="text" name="estimated_time_from_previous" value="{{ old('estimated_time_from_previous', $checkpoint->estimated_time_from_previous) }}">
                                         </div>
                                     </div>
 

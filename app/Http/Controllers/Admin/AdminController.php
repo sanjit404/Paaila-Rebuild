@@ -108,9 +108,18 @@ class AdminController extends BaseController
             'is_active' => 'nullable|boolean',
         ]);
 
-        $validated['tags'] = $request->filled('tags')
-            ? array_values(array_filter(array_map('trim', explode(',', $request->tags))))
-            : null;
+        // Replace the tags line in both methods:
+        $validated['tags'] = null;
+        if ($request->filled('tags')) {
+            $raw = $request->input('tags');
+            // Handle JSON array (from tag input widgets) or plain comma-separated string
+            $decoded = json_decode($raw, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $validated['tags'] = array_values(array_filter($decoded));
+            } else {
+                $validated['tags'] = array_values(array_filter(array_map('trim', explode(',', $raw))));
+            }
+        }
 
         $validated['season'] = $request->filled('season') ? $request->season : null;
         $validated['views_count'] = $validated['views_count'] ?? 0;
@@ -225,7 +234,7 @@ class AdminController extends BaseController
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'radius' => 'nullable|integer|min:10',
-            'estimated_time_from_previous' => 'nullable|integer|min:0',
+            'estimated_time_from_previous' => 'nullable|string|min:0',
         ]);
 
         $validated['order'] = ($package->checkpoints()->max('order') ?? 0) + 1;
@@ -246,7 +255,7 @@ class AdminController extends BaseController
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'radius' => 'nullable|integer|min:10',
-            'estimated_time_from_previous' => 'nullable|integer|min:0',
+            'estimated_time_from_previous' => 'nullable|string',
             'order' => 'nullable|integer|min:1',
         ]);
 
