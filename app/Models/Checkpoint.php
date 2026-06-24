@@ -16,7 +16,8 @@ class Checkpoint extends Model
         'longitude',
         'order',
         'image',
-        'detection_radius', 
+        'detection_radius',
+        'estimated_time_from_previous'
     ];
 
     protected $casts = [

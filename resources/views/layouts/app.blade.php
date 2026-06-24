@@ -173,6 +173,7 @@
             font-size: 24px;
             font-weight: 800;
             color: var(--color-primary-light);
+            z-index: 999;
         }
 
         .navbar-menu {
@@ -460,72 +461,89 @@
 <body>
 @include('components.loading-screen')
     <nav class="navbar">
-        <div class="navbar-container">
-            <a href="{{ route('home') }}" class="navbar-brand">
-                <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="navbar-logo-img">
-                <span class="navbar-logo-text almendra-bold">Paaila</span>
-            </a>
+    <div class="navbar-container">
+        <a href="{{ route('home') }}" class="navbar-brand">
+            <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="navbar-logo-img">
+            <span class="navbar-logo-text almendra-bold">Paaila</span>
+        </a>
 
-            <ul class="navbar-menu">
-                <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed</a></li>
-                <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
+        <ul class="navbar-menu">
+            <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed</a></li>
+            <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
 
-                @auth
-                    <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup></a></li>
-                    <li><a href="{{ route('bookings.index') }}" class="navbar-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}">My Bookings</a></li>
-                    <li><a href="{{ route('profile.show') }}" class="navbar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a></li>
+            @auth
+                <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup></a></li>
+                <li><a href="{{ route('bookings.index') }}" class="navbar-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}">My Bookings</a></li>
+                <li><a href="{{ route('profile.show') }}" class="navbar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a></li>
 
-                    @if(auth()->user()->role === 'admin')
-                        <li><a href="{{ route('admin.dashboard') }}" class="navbar-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
-                    @endif
+                @if(auth()->user()->role === 'admin')
+                    <li><a href="{{ route('admin.dashboard') }}" class="navbar-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
+                @endif
 
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
-                        </form>
-                    </li>
-                @else
-                    <li><a href="#footer" class="navbar-link">About Us</a></li>
-                    <li><a href="{{ route('login') }}" class="btn btn-secondary btn-sm">Login</a></li>
-                    <li><a href="{{ route('register') }}" class="btn btn-primary btn-sm">Sign Up</a></li>
-                @endauth
-            </ul>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+                    </form>
+                </li>
+            @else
+                <li><a href="#footer" class="navbar-link">About Us</a></li>
+                <li><a href="{{ route('login') }}" class="btn btn-secondary btn-sm">Login</a></li>
+                <li><a href="{{ route('register') }}" class="btn btn-primary btn-sm">Sign Up</a></li>
+            @endauth
+            
+            <li style="margin-left: var(--space-md);">
+                <div id="nepalClock" style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--color-primary);">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span id="clockTime" style="font-size: 14px; font-weight: 700;"></span>
+                    </div>
+                    <span id="clockDate" style="color: var(--color-text-light); font-size: 11px; font-weight: 600;"></span>
+                </div>
+            </li>
+        </ul>
 
-            <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
+        <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 
-        <div class="navbar-mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
-            <ul style="list-style:none; display:contents;">
-                <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed</a></li>
-                <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
+    <div class="navbar-mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+        <ul style="list-style:none; display:contents;">
+            <li><a href="{{ route('feed.index') }}" class="navbar-link {{ request()->routeIs('feed.*') ? 'active' : '' }}">Feed</a></li>
+            <li><a href="{{ route('home') }}" class="navbar-link {{ request()->routeIs('home') ? 'active' : '' }}">Treks</a></li>
 
-                @auth
-                    <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup></a></li>
-                    <li><a href="{{ route('bookings.index') }}" class="navbar-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}">My Bookings</a></li>
-                    <li><a href="{{ route('profile.show') }}" class="navbar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a></li>
+            @auth
+                <li><a href="{{ route('tour.foryou') }}" class="navbar-link {{ request()->routeIs('tour.*') ? 'active' : '' }}">For You <sup><i class="fa-solid fa-heart fa-beat-fade fa-2xs"></i></sup></a></li>
+                <li><a href="{{ route('bookings.index') }}" class="navbar-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}">My Bookings</a></li>
+                <li><a href="{{ route('profile.show') }}" class="navbar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a></li>
 
-                    @if(auth()->user()->role === 'admin')
-                        <li><a href="{{ route('admin.dashboard') }}" class="navbar-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
-                    @endif
+                @if(auth()->user()->role === 'admin')
+                    <li><a href="{{ route('admin.dashboard') }}" class="navbar-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin</a></li>
+                @endif
 
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}" style="display:block; margin-top:8px;">
-                            @csrf
-                            <button type="submit" class="btn btn-secondary btn-block">Logout</button>
-                        </form>
-                    </li>
-                @else
-                    <li><a href="#footer" class="navbar-link">About Us</a></li>
-                    <li><a href="{{ route('login') }}" class="btn btn-secondary btn-block" style="margin-top:8px;">Login</a></li>
-                    <li><a href="{{ route('register') }}" class="btn btn-primary btn-block" style="margin-top:8px;">Sign Up</a></li>
-                @endauth
+                <li>
+                    <form method="POST" action="{{ route('logout') }}" style="display:block; margin-top:8px;">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary btn-block">Logout</button>
+                    </form>
+                </li>
+            @else
+                <li><a href="#footer" class="navbar-link">About Us</a></li>
+                <li><a href="{{ route('login') }}" class="btn btn-secondary btn-block" style="margin-top:8px;">Login</a></li>
+                <li><a href="{{ route('register') }}" class="btn btn-primary btn-block" style="margin-top:8px;">Sign Up</a></li>
+            @endauth
 
-            </ul>
-        </div>
-    </nav>
+            <li style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #F5F5F5;">
+                <div id="nepalClockMobile" style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--color-primary);">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span id="clockTimeMobile" style="font-size: 14px; font-weight: 700;"></span>
+                    </div>
+                    <span id="clockDateMobile" style="color: var(--color-text-light); font-size: 11px; font-weight: 600;"></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
 
     @if(session('success'))
         <div class="container mt-md">
@@ -560,7 +578,7 @@
                         𑐫𑐵𑐬𑐸 𑐳𑐸𑐏𑐸𑐫𑑂 𑐥𑐵𑐫𑑂:
                     </p>
                     <div style="display:flex; align-items:center; gap:12px; margin-top: var(--space-sm);">
-                        <i class="fas fa-solid fa-flip"><img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img"></i>
+                        <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img">
                         <img src="{{ asset('images/Flag_of_Nepal.gif') }}" alt="Flag of Nepal" class="hero-logo-img">
                     </div>
                 </div>
@@ -688,7 +706,48 @@
                 });
             });
         })();
-    </script>
+
+    (function () {
+    function updateNepalClock() {
+        const now = new Date();
+        
+        const nepalOffset = 5 + 45/60;
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const nepalTime = new Date(utc + (nepalOffset * 3600000));
+        
+        const hours = nepalTime.getHours();
+        const minutes = nepalTime.getMinutes();
+        const seconds = nepalTime.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const displayHours = hours % 12 || 12;
+        const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+        const displaySeconds = seconds < 10 ? '0' + seconds : seconds;
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const dayName = dayNames[nepalTime.getDay()];
+        const monthName = monthNames[nepalTime.getMonth()];
+        const dayNum = nepalTime.getDate();
+        const year = nepalTime.getFullYear().toString().slice(-2);
+        const timeString = `${displayHours}:${displayMinutes}:${displaySeconds} ${ampm}`;
+        const dateString = `${dayName} ${monthName} ${dayNum}, ${year} NEP`;
+        
+        const clockTime = document.getElementById('clockTime');
+        const clockDate = document.getElementById('clockDate');
+        if (clockTime) clockTime.textContent = timeString;
+        if (clockDate) clockDate.textContent = dateString;
+        
+        const clockTimeMobile = document.getElementById('clockTimeMobile');
+        const clockDateMobile = document.getElementById('clockDateMobile');
+        if (clockTimeMobile) clockTimeMobile.textContent = timeString;
+        if (clockDateMobile) clockDateMobile.textContent = dateString;
+    }
+    
+    updateNepalClock();
+    setInterval(updateNepalClock, 1000);
+})();
+</script>
 
     @stack('scripts')
 </body>

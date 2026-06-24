@@ -18,7 +18,8 @@
                         {{ $package->name }}
                     </h2>
                     <p style="color: rgba(255,255,255,0.9); margin-bottom: var(--space-lg);">
-                        {{ $package->description }}
+                    {{ Str::limit(strip_tags(Str::markdown($package->description)), 300) }}
+                        
                     </p>
                     
                     <div class="flex gap-lg" style="flex-wrap: wrap; margin-bottom: var(--space-lg); font-size: 14px;">

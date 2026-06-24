@@ -17,7 +17,7 @@ return new class extends Migration
                 $table->text('image')->nullable();
                 $table->decimal('latitude', 10, 8);
                 $table->decimal('longitude', 11, 8);
-                $table->integer('estimated_time_from_previous')->default(0);
+                $table->string('estimated_time_from_previous')->default("0");
                 $table->integer('order')->default(0);                       
                 $table->integer('radius')->default(50);                      
                 $table->timestamps();

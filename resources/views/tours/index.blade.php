@@ -191,7 +191,7 @@
 
                 <h3 class="card-title">{{ $package->name }}</h3>
 
-                <p class="card-text">{{ Str::limit($package->description, 100) }}</p>
+                <p class="card-text">{{ Str::limit(strip_tags(Str::markdown($package->description)), 100) }}</p>
 
                 <div style="display: flex; gap: var(--space-lg); margin-bottom: var(--space-md); font-size: 14px; color: var(--color-text-light);">
                     <div class="flex" style="align-items: center; gap: var(--space-xs);">
@@ -519,7 +519,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Tangerine', cursive;
-            font-size: 42px;
+            font-size: 32px;
             font-weight: 700;
             color: white;
             margin: 0;

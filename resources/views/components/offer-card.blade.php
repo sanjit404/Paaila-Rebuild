@@ -8,7 +8,7 @@ id="offerCard"
 data-type="{{ $package->trek_type }}">
 
 
-<canvas class="oc-snow-canvas" id="snowCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; pointer-events: none;"></canvas>
+<!-- <canvas class="oc-snow-canvas" id="snowCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; pointer-events: none;"></canvas> -->
 
 
 @if($package->trek_type ?? false)
@@ -20,7 +20,7 @@ data-type="{{ $package->trek_type }}">
                     font-family:'Astloch',system-ui;
                     text-transform: capitalize;
                     box-shadow: 0 2px 8px rgba(26, 95, 122, 0.3);">
-        {{ $package->trek_type }}
+        Luxury
     </span>
 </div>
 @endif
@@ -79,7 +79,7 @@ data-type="{{ $package->trek_type }}">
     <h3 class="offer-card-title" style="position: relative; z-index: 10;">{{ $package->name }}</h3>
 
 
-    <p class="offer-card-text" style="position: relative; z-index: 10;">{{ Str::limit($package->description, 100) }}</p>
+    <p class="offer-card-text" style="position: relative; z-index: 10;">{{ Str::limit(strip_tags(Str::markdown($package->description)), 100) }}</p>
 
 
     <div style="display: flex; gap: var(--space-lg); margin-bottom: var(--space-md); font-size: 14px; color: var(--color-text-light); position: relative; z-index: 10;">
@@ -120,7 +120,7 @@ data-type="{{ $package->trek_type }}">
         position: relative;
         border-radius: 16px;
         overflow: visible;
-        background: linear-gradient(180deg, #1a5f7a 0%, #2d4a5f 50%, #1a2a3a 100%);
+        background: linear-gradient(180deg, #287a1a 20%, #355f2d 60%, #175412 100%);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         transition: transform 0.2s, box-shadow 0.2s;
         height: 100%;
@@ -151,7 +151,7 @@ data-type="{{ $package->trek_type }}">
         display: flex;
         flex-direction: column;
         position: relative;
-        background: linear-gradient(180deg, #0f1a2a 0%, #1a2a3a 100%);
+        background: linear-gradient(180deg, #0f2a14 0%, #1a3a22 100%);
         border-radius: 0 0 16px 16px;
         overflow: hidden;
     }
@@ -261,7 +261,7 @@ data-type="{{ $package->trek_type }}">
     }
 </style>
 
-
+<!-- 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
@@ -436,4 +436,4 @@ document.addEventListener("DOMContentLoaded", () => {
         animate();
     }, 500);
 });
-</script>
+</script> -->

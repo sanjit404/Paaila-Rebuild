@@ -29,7 +29,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.72940000',
                 'order' => 1,
                 'radius' => 150,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "30 min",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -42,7 +42,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.7036',
                 'order' => 2,
                 'radius' => 100,
-                'estimated_time_from_previous' => 3,
+                'estimated_time_from_previous' => "3 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -55,7 +55,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.7136',
                 'order' => 3,
                 'radius' => 120,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -68,7 +68,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.7167',
                 'order' => 4,
                 'radius' => 100,
-                'estimated_time_from_previous' => 5,
+                'estimated_time_from_previous' => "5 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -86,7 +86,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.9206',
                 'order' => 1,
                 'radius' => 120,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -99,7 +99,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.8890',
                 'order' => 2,
                 'radius' => 100,
-                'estimated_time_from_previous' => 5,
+                'estimated_time_from_previous' => "5 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -112,7 +112,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.9632',
                 'order' => 3,
                 'radius' => 100,
-                'estimated_time_from_previous' => 4,
+                'estimated_time_from_previous' => "4 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -125,7 +125,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.8203',
                 'order' => 4,
                 'radius' => 200,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -143,7 +143,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.3147',
                 'order' => 1,
                 'radius' => 120,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "2 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -156,7 +156,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.4110',
                 'order' => 2,
                 'radius' => 100,
-                'estimated_time_from_previous' => 5,
+                'estimated_time_from_previous' => "5 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -169,7 +169,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.5390',
                 'order' => 3,
                 'radius' => 100,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -182,7 +182,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.5400',
                 'order' => 4,
                 'radius' => 100,
-                'estimated_time_from_previous' => 4,
+               'estimated_time_from_previous' => "4 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -200,7 +200,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.7383',
                 'order' => 1,
                 'radius' => 150,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -213,7 +213,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.7837',
                 'order' => 2,
                 'radius' => 100,
-                'estimated_time_from_previous' => 4,
+               'estimated_time_from_previous' => "4 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -226,7 +226,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.8400',
                 'order' => 3,
                 'radius' => 100,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -239,7 +239,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.8659',
                 'order' => 4,
                 'radius' => 200,
-                'estimated_time_from_previous' => 8,
+                'estimated_time_from_previous' => "8 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -257,7 +257,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.7383',
                 'order' => 1,
                 'radius' => 120,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -270,7 +270,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.8500',
                 'order' => 2,
                 'radius' => 80,
-                'estimated_time_from_previous' => 4,
+               'estimated_time_from_previous' => "4 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -283,7 +283,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.8964',
                 'order' => 3,
                 'radius' => 200,
-                'estimated_time_from_previous' => 3,
+                'estimated_time_from_previous' => "3 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -296,7 +296,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '83.9000',
                 'order' => 4,
                 'radius' => 100,
-                'estimated_time_from_previous' => 4,
+               'estimated_time_from_previous' => "4 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -314,7 +314,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.4500',
                 'order' => 1,
                 'radius' => 150,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -327,7 +327,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.4333',
                 'order' => 2,
                 'radius' => 200,
-                'estimated_time_from_previous' => 2,
+                'estimated_time_from_previous' => "2 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -340,7 +340,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.4600',
                 'order' => 3,
                 'radius' => 300,
-                'estimated_time_from_previous' => 3,
+                'estimated_time_from_previous' => "3 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -353,7 +353,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.4550',
                 'order' => 4,
                 'radius' => 100,
-                'estimated_time_from_previous' => 1,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -371,7 +371,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.1520',
                 'order' => 1,
                 'radius' => 120,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -384,7 +384,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.2800',
                 'order' => 2,
                 'radius' => 80,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -397,7 +397,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.3000',
                 'order' => 3,
                 'radius' => 100,
-                'estimated_time_from_previous' => 7,
+                'estimated_time_from_previous' => "7 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -410,7 +410,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '84.3200',
                 'order' => 4,
                 'radius' => 100,
-                'estimated_time_from_previous' => 4,
+               'estimated_time_from_previous' => "4 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -428,7 +428,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.7036',
                 'order' => 1,
                 'radius' => 100,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -441,7 +441,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.7136',
                 'order' => 2,
                 'radius' => 120,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -454,7 +454,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.7000',
                 'order' => 3,
                 'radius' => 80,
-                'estimated_time_from_previous' => 5,
+                'estimated_time_from_previous' => "5 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -467,7 +467,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '86.6971',
                 'order' => 4,
                 'radius' => 200,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -485,7 +485,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.5118',
                 'order' => 1,
                 'radius' => 200,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -498,7 +498,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.5100',
                 'order' => 2,
                 'radius' => 80,
-                'estimated_time_from_previous' => 1,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -511,7 +511,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.5120',
                 'order' => 3,
                 'radius' => 60,
-                'estimated_time_from_previous' => 1,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -524,7 +524,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '85.5130',
                 'order' => 4,
                 'radius' => 50,
-                'estimated_time_from_previous' => 0.5,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -542,7 +542,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '81.6167',
                 'order' => 1,
                 'radius' => 150,
-                'estimated_time_from_previous' => 0,
+                'estimated_time_from_previous' => "1 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -555,7 +555,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '81.7000',
                 'order' => 2,
                 'radius' => 120,
-                'estimated_time_from_previous' => 4,
+               'estimated_time_from_previous' => "4 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -568,7 +568,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '81.7500',
                 'order' => 3,
                 'radius' => 300,
-                'estimated_time_from_previous' => 2,
+                'estimated_time_from_previous' => "2 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
@@ -581,7 +581,7 @@ class CheckpointsTableSeeder extends Seeder
                 'longitude' => '81.7600',
                 'order' => 4,
                 'radius' => 150,
-                'estimated_time_from_previous' => 6,
+                'estimated_time_from_previous' => "6 hr",
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
