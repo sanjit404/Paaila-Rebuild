@@ -69,8 +69,8 @@
                         </a>
                         @endforeach
                     </div>
-                </div>
-                <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="carousel navigation" style="display:none;"></div>
+                </div><br>
+                <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="carousel navigation" "></div>
             </div>
         </div>
     </div>
@@ -352,6 +352,34 @@
             margin-bottom: 8px;
         }
 
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 0 12px 0;
+        }
+
+        .carousel-dots button {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.25s ease, transform 0.25s ease;
+        }
+
+        .carousel-dots button.active,
+        .carousel-dots button[aria-selected="true"] {
+            background: #ffffff;
+            transform: scale(1.35);
+        }
+
+        .carousel-dots button:not(.active):hover {
+            background: rgba(255, 255, 255, 0.65);
+        }
         #packagesGrid {
             transition: opacity 0.3s ease;
         }
