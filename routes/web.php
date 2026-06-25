@@ -14,12 +14,16 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/mail-test', function () {
-    Mail::raw('SMTP test from production', function ($message) {
-        $message->to('sanjitpoudel7@gmail.com')
-                ->subject('Production Mail Test');
-    });
+    try {
+        Mail::raw('test', function ($message) {
+            $message->to('sanjitpoudel7@gmail.com')
+                ->subject('Mail Test');
+        });
 
-    return 'Mail sent';
+        return 'success';
+    } catch (\Throwable $e) {
+        return $e->getMessage();
+    }
 });
 
 Route::get('/', [TourPackageController::class, 'index'])->name('home');
