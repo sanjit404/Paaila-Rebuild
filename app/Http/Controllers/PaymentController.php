@@ -6,6 +6,8 @@ use App\Models\TourBooking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Mail\BookingConfirmation;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -41,6 +43,16 @@ class PaymentController extends Controller
         ]);
 
         if ($status === 'success') {
+
+        try {
+                Mail::to($booking->user->email)->send(new BookingConfirmation($booking));
+            } catch (\Exception $e) {
+                Log::warning('Booking confirmation email failed', [
+                    'booking_id' => $booking->id,
+                    'error'      => $e->getMessage(),
+                ]);
+            }
+
     $booking->update([
         'status' => 'confirmed',
         'confirmed_at' => now(),
@@ -221,6 +233,16 @@ public function esewaSuccess(Request $request)
                 'booking_id' => $booking->id,
                 'transaction_code' => $paymentData['transaction_code'],
             ]);
+
+            try {
+                Mail::to($booking->user->email)->send(new BookingConfirmation($booking));
+            } catch (\Exception $e) {
+                Log::warning('Booking confirmation email failed', [
+                    'booking_id' => $booking->id,
+                    'error'      => $e->getMessage(),
+                ]);
+            }
+
         }
 
         return redirect(route('bookings.show', $booking))
@@ -312,6 +334,15 @@ public function khaltiVerify(Request $request, TourBooking $booking)
     if ($response->successful() && $response->json()['status'] === 'Completed') {
         $booking->markAsConfirmed();
 
+        try {
+                Mail::to($booking->user->email)->send(new BookingConfirmation($booking));
+            } catch (\Exception $e) {
+                Log::warning('Booking confirmation email failed', [
+                    'booking_id' => $booking->id,
+                    'error'      => $e->getMessage(),
+                ]);
+            }
+
         return redirect()
             ->route('bookings.show', $booking)
             ->with('success', 'Payment successful! Your booking is confirmed.');
@@ -359,7 +390,16 @@ public function stripeVerify(Request $request, TourBooking $booking)
             $booking->markAsConfirmed();
 
             session()->flash('success', 'Payment successful! Your booking is confirmed.');
-
+           
+            try {
+                Mail::to($booking->user->email)->send(new BookingConfirmation($booking));
+            } catch (\Exception $e) {
+                Log::warning('Booking confirmation email failed', [
+                    'booking_id' => $booking->id,
+                    'error'      => $e->getMessage(),
+                ]);
+            }
+           
             return response()->json([
                 'success'  => true,
                 'redirect' => route('bookings.show', $booking),
