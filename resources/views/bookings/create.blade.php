@@ -12,7 +12,7 @@
                 </a>
             </div>
 
-            <div class="card" style="margin-bottom: var(--space-xl); background: linear-gradient(135deg, var(--color-primary) 0%, #2E7D32 100%); color: white; border: none;">
+            <div class="card" style="margin-bottom: var(--space-xl); background: linear-gradient(135deg, var(--color-primary-dark) 0%, #0c1b0d 100%); color: white; border: none;">
                 <div class="card-body" style="padding: var(--space-xl);">
                     <h2 style="font-size: 28px; font-weight: 700; color: white; margin-bottom: var(--space-md);">
                         {{ $package->name }}
@@ -163,7 +163,7 @@
                             <a href="{{ route('tours.show', $package) }}" class="btn btn-secondary btn-lg" style="flex: 1;">
                                 <i class="fas fa-arrow-left"></i> Back
                             </a>
-                            <button type="submit" class="btn btn-cta btn-lg" style="flex: 2;">
+                            <button type="submit" class="btn btn-cta btn-lg" style="flex: 2; background:var(--color-primary-dark);">
                                 <i class="fas fa-check-circle"></i> Proceed to Payment
                             </button>
                         </div>

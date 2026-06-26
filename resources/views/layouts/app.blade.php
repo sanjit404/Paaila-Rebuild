@@ -591,7 +591,7 @@
                 </div>
                 <div>
                     <h4 style="color: var(--color-white); margin-bottom: var(--space-md); font-size: 16px;">Contact</h4>
-                    <p style="color: rgba(255,255,255,0.7); font-size: 14px;">Email: info@paaila.com<br>Phone: +977-123-4567</p>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 14px;">Email: info@paaila.me / support@paaila.me<br>Phone: +977-123-4567</p>
                 </div>
             </div>
             <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid rgba(255,255,255,0.3); text-align: center;">  
