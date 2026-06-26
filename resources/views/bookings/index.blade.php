@@ -357,7 +357,7 @@
                             </h3>
 
                             <p style="font-size: 13px; color: var(--color-text-light); margin-bottom: var(--space-md); line-height: 1.5;">
-                                {{ Str::limit($package->description, 75) }}
+                                {{ Str::limit(strip_tags(Str::markdown($package->description)), 100) }}
                             </p>
 
                             <div style="display: flex; gap: var(--space-md); font-size: 12px; color: var(--color-text-light); margin-bottom: var(--space-lg); flex-wrap: wrap;">
@@ -386,7 +386,6 @@
                 </div>
             </div>
         @endif
-        {{-- end liked earlier --}}
 
     </div>
 </section>

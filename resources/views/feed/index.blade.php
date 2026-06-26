@@ -135,7 +135,8 @@
                                 <span style="font-size: 14px; color: var(--color-text-light); margin-bottom: var(--space-md); line-height: 1.6;">
                                 This post includes a trek
                             </span>
-                                    <a href="{{ route('tours.show', $post->trek_id) }}" class="btn btn-cta btn-sm">
+                                    <a href="{{ route('tours.show', $post->trek_id) }}" class="btn btn-cta btn-sm"
+                                    style="background: var(--color-primary-dark)">
                                         Book Now
                                     </a>
                                 @endif

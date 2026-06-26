@@ -76,7 +76,7 @@
                                     <a href="{{ route('tours.show', $post->trek) }}" class="btn btn-primary">
                                         View Trek
                                     </a>
-                                    <a href="{{ route('bookings.create', $post->trek) }}" class="shiny-tbg btn btn-cta">
+                                    <a href="{{ route('bookings.create', $post->trek) }}" class="shiny-tbg btn btn-cta" style="background:var(--color-primary-dark);">
                                         Book Now
                                     </a>
                                 </div>

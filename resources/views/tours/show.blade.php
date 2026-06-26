@@ -258,13 +258,16 @@
     </div>
 </div>
 
-<div class="mobile-book-bar">
+<div class="mobile-book-bar" >
     <div>
         <h6 style="color:white;  font-size: clamp(8px, 12px, 16px);">{{ $package->name }}</h6>
         <div class="mobile-book-bar__price">Rs. {{ number_format($package->price, 0) }}</div>
         <div class="mobile-book-bar__per">per person</div>
     </div>
-    <a href="{{ route('bookings.create', $package) }}" class="btn btn-cta shiny-btn">
+    <a href="{{ route('bookings.create', $package) }}" class="btn btn-cta shiny-btn"
+    style="background: var(--color-primary-dark);
+            border:1px solid white;
+            border-radius:5px;">
         <i class="fas fa-ticket-alt"></i> Book Now
     </a>
 </div>
