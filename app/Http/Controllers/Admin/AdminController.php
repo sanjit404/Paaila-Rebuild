@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use App\Mail\BookingCompleted;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends BaseController
 {
@@ -343,8 +346,20 @@ class AdminController extends BaseController
             return back()->with('error', 'Cancelled bookings cannot be completed.');
         }
         $booking->load('trackingPin');
+        $booking->load('user');
         
         if ($booking->markAsCompleted(true)) {
+            Log::info('Sending completion email', [
+                'booking_id' => $booking->id
+            ]);
+            try {
+                Mail::to($booking->user->email)->send(new BookingCompleted($booking));
+            } catch (\Exception $e) {
+                Log::warning('Booking completed email failed', [
+                    'booking_id' => $booking->id,
+                    'error'      => $e->getMessage(),
+                ]);
+            }
             return back()->with('success', 'Booking marked as completed!');
         }
 

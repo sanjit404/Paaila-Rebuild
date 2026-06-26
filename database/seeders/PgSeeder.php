@@ -15,11 +15,11 @@ class PgSeeder extends Seeder
     {
         // ─── Admin User ───────────────────────────────────────────────────────
         User::updateOrCreate(
-            ['email' => 'admin@paaila.com'],
+            ['email' => 'admin@paaila.me'],
             [
                 'name'     => 'Paaila Admin',
-                'email'    => 'admin@paaila.com',
-                'password' => Hash::make('password'),
+                'email'    => 'admin@paaila.me',
+                'password' => Hash::make('LuTerror@404'),
                 'role'     => 'admin',
             ]
         );

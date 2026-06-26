@@ -1,3 +1,6 @@
+@php
+use Illuminate\Support\Str;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,15 +77,15 @@
 
   <div class="status-bar">
     <div class="status-dot"></div>
-    <div class="status-text" style="margin-left:5px;">Booking Confirmed & Payment received</div>
+    <div class="status-text" style="margin-left:5px;">Booking Completed</div>
   </div>
 
   <div class="body">
 
     <p class="greeting">Namaste, {{ $user->name }}</p>
     <p class="intro">
-      Your booking for <strong>{{ $package->name }}</strong> has been confirmed.
-      Your payment has been received successfully, and your spot is reserved.
+      Your booking for <strong>{{ $package->name }}</strong> has been completed.
+      Your can now book the next adventure.
     </p>
 
     <div class="section-title">Booking Details</div>
@@ -112,28 +115,6 @@
         <td>{{ $booking->participants }} {{ Str::plural('Person', $booking->participants) }}</td>
       </tr>
       <tr>
-        <td>Difficulty</td>
-        <td style="text-transform: capitalize;">{{ $package->difficulty_level }}</td>
-      </tr>
-      @if($package->region)
-      <tr>
-        <td>Region</td>
-        <td>{{ $package->region }}</td>
-      </tr>
-      @endif
-      @if($package->trek_type)
-      <tr>
-        <td>Trek Type</td>
-        <td style="text-transform: capitalize;">{{ $package->trek_type }}</td>
-      </tr>
-      @endif
-      @if($package->season && count($package->season))
-      <tr>
-        <td>Best Seasons</td>
-        <td>{{ implode(', ', $package->season) }}</td>
-      </tr>
-      @endif
-      <tr>
         <td>Payment Method</td>
         <td style="text-transform: uppercase;">{{ $booking->payment_method }}</td>
       </tr>
@@ -150,67 +131,13 @@
 
     <hr class="divider">
 
-    @if($package->start_location_name || $checkpoints->count())
-    <div class="section-title">Trek Route & Checkpoints</div>
-    <div class="route-box">
-
-      @if($package->start_location_name)
-      <div class="route-point">
-        <div class="route-line-wrap">
-          <div class="route-dot start"></div>
-          @if($checkpoints->count() || $package->end_location_name)
-            <div class="route-connector"></div>
-          @endif
-        </div>
-        <div>
-          <div class="route-label">Start — {{ $package->start_location_name }}</div>
-          <div class="route-sub">Day 1 · Departure point</div>
-        </div>
-      </div>
-      @endif
-
-      @foreach($checkpoints as $i => $cp)
-      <div class="route-point">
-        <div class="route-line-wrap">
-          <div class="route-dot checkpoint"></div>
-          @if(!$loop->last || $package->end_location_name)
-            <div class="route-connector"></div>
-          @endif
-        </div>
-        <div>
-          <div class="route-label">{{ $cp->name }}</div>
-          <div class="route-sub">
-            Checkpoint {{ $i + 1 }}
-            @if(!empty($cp->description)) · {{ Str::limit($cp->description, 80) }}@endif
-          </div>
-        </div>
-      </div>
-      @endforeach
-
-      @if($package->end_location_name)
-      <div class="route-point">
-        <div class="route-line-wrap">
-          <div class="route-dot end"></div>
-        </div>
-        <div>
-          <div class="route-label">End — {{ $package->end_location_name }}</div>
-          <div class="route-sub">Day {{ $package->duration_days }} · Trek completion</div>
-        </div>
-      </div>
-      @endif
-
-    </div>
-    @endif
-
-    <hr class="divider">
-
     <div class="info-note">
       <strong>Live GPS Tracking</strong><br>
       Once your trek begins, you will receive a 6-digit tracking PIN. Share it with family or friends so they can monitor your checkpoint progress in real time through Paaila's parent monitoring view.
     </div>
 
     <div class="cta">
-      <a href="{{ route('bookings.show', $booking) }}">View Booking Details</a>
+      <a href="{{ route('home') }}">Explore Treks</a>
     </div>
 
     <p style="font-size:13px; color:#888; text-align:center;">
@@ -220,7 +147,7 @@
   </div>
 
   <div class="footer">
-    © {{ date('Y') }} Paaila Treks · Nepal<br>
+    © {{ date('Y') }} Paaila - Every step matters · Nepal<br>
     You received this because you made a booking on <a href="https://paaila.me">paaila.me</a>
   </div>
 
