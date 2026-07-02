@@ -15,27 +15,7 @@ use Illuminate\Support\Facades\URL;
 
 use Illuminate\Support\Facades\Mail;
 
-Route::get('/mail-test', function () {
-    try {
-        Mail::raw('test', function ($message) {
-            $message->to('sanjitpoudel7@gmail.com')
-                ->subject('Mail Test');
-        });
 
-        return 'success';
-    } catch (\Throwable $e) {
-        return $e->getMessage();
-    }
-});
-
-Route::get('/debug-url', function (\Illuminate\Http\Request $request) {
-    return [
-        'url' => $request->fullUrl(),
-        'scheme' => $request->getScheme(),
-        'host' => $request->getHost(),
-        'secure' => $request->isSecure(),
-    ];
-})->middleware('auth');
 
 Route::get('/email/verification-status', function (Illuminate\Http\Request $request) {
     return response()->json([
