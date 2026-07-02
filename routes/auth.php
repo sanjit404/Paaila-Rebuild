@@ -39,9 +39,19 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['throttle:6,1'])
-        ->name('verification.verify');
+  
+
+
+
+Route::get('/verify-email/{id}/{hash}', function (Request $request) {
+    dd([
+        'hasValidSignature' => URL::hasValidSignature($request),
+        'fullUrl' => $request->fullUrl(),
+        'url' => $request->url(),
+        'secure' => $request->isSecure(),
+        'host' => $request->getHost(),
+    ]);
+})->middleware('auth');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')

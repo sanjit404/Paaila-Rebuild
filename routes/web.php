@@ -10,6 +10,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\PreferenceController;
 use App\Http\Controllers\TrekRatingController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -25,6 +27,15 @@ Route::get('/mail-test', function () {
         return $e->getMessage();
     }
 });
+
+Route::get('/debug-url', function (\Illuminate\Http\Request $request) {
+    return [
+        'url' => $request->fullUrl(),
+        'scheme' => $request->getScheme(),
+        'host' => $request->getHost(),
+        'secure' => $request->isSecure(),
+    ];
+})->middleware('auth');
 
 Route::get('/email/verification-status', function (Illuminate\Http\Request $request) {
     return response()->json([
