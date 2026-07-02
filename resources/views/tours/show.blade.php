@@ -161,6 +161,95 @@
                 </div>
             </div>
 
+            @if($ratings->count() > 0)
+            <div class="content-block" id="reviews">
+                <h2 class="section-heading">
+                    <span class="section-heading__icon"><i class="fas fa-star"></i></span>
+                    Trekker Reviews
+                </h2>
+
+                <div style="display:flex; align-items:center; gap: var(--space-xl); margin-bottom: var(--space-xl); padding: var(--space-lg); background:#F9F9F9; border-radius: var(--radius-md); flex-wrap:wrap;">
+                    <div style="text-align:center;">
+                        <div style="font-size:52px; font-weight:800; color:var(--color-primary); line-height:1;">
+                            {{ number_format($package->rating_avg, 1) }}
+                        </div>
+                        <div style="display:flex; gap:3px; justify-content:center; margin: 6px 0;">
+                            @for($i = 1; $i <= 5; $i++)
+                                <i class="fas fa-star" style="font-size:16px; color:{{ $i <= round($package->rating_avg) ? '#FFC107' : '#E0E0E0' }};"></i>
+                            @endfor
+                        </div>
+                        <div style="font-size:13px; color:var(--color-text-light);">{{ $package->rating_count }} {{ Str::plural('review', $package->rating_count) }}</div>
+                    </div>
+
+                    <div style="flex:1; min-width:200px; display:flex; flex-direction:column; gap:6px;">
+                        @for($star = 5; $star >= 1; $star--)
+                            @php
+                                $count = $ratings->where('rating', $star)->count();
+                                $pct   = $ratings->count() > 0 ? ($count / $ratings->count()) * 100 : 0;
+                            @endphp
+                            <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+                                <span style="width:14px; text-align:right; color:var(--color-text-light);">{{ $star }}</span>
+                                <i class="fas fa-star" style="color:#FFC107; font-size:11px;"></i>
+                                <div style="flex:1; height:8px; background:#E0E0E0; border-radius:4px; overflow:hidden;">
+                                    <div style="height:100%; width:{{ $pct }}%; background:var(--color-primary); border-radius:4px; transition:width 0.5s ease;"></div>
+                                </div>
+                                <span style="width:20px; color:var(--color-text-light);">{{ $count }}</span>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap: var(--space-lg);">
+                    @foreach($ratings as $rating)
+                    <div style="padding: var(--space-lg); border: 1px solid #EEEEEE; border-radius: var(--radius-md); background:white; transition: box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.07)'" onmouseout="this.style.boxShadow='none'">
+
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--space-md); flex-wrap:wrap; gap: var(--space-sm);">
+                            <div style="display:flex; align-items:center; gap: var(--space-md);">
+                                <div style="width:44px; height:44px; background:var(--color-primary); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:white; flex-shrink:0;">
+                                    {{ strtoupper(substr($rating->user->name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div style="font-weight:700; font-size:15px; color:var(--color-text);">
+                                        {{ $rating->user->name }}
+                                    </div>
+                                    <div style="font-size:12px; color:var(--color-text-light);">
+                                        {{ $rating->created_at->format('M d, Y') }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:3px;">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fas fa-star" style="font-size:14px; color:{{ $i <= $rating->rating ? '#FFC107' : '#E0E0E0' }};"></i>
+                                @endfor
+                                <span style="margin-left:6px; font-size:13px; font-weight:700; color:var(--color-primary);">
+                                    {{ $rating->star_label }}
+                                </span>
+                            </div>
+                        </div>
+
+                        @if($rating->review)
+                            <p style="font-size:14px; color:#455a64; line-height:1.75; margin:0; border-left: 3px solid #E8F5E9; padding-left: var(--space-md);">
+                                "{{ $rating->review }}"
+                            </p>
+                        @else
+                            <p style="font-size:13px; color:var(--color-text-light); font-style:italic; margin:0;">
+                                No written review — rated {{ $rating->rating }} {{ Str::plural('star', $rating->rating) }}.
+                            </p>
+                        @endif
+
+                    </div>
+                    @endforeach
+                </div>
+
+                @if($package->rating_count > $ratings->count())
+                    <div style="text-align:center; margin-top: var(--space-lg); color:var(--color-text-light); font-size:14px;">
+                        Showing {{ $ratings->count() }} of {{ $package->rating_count }} reviews
+                    </div>
+                @endif
+            </div>
+            @endif
+
             <div class="content-block">
                 <h2 id="evtng" class="section-heading">
                     <span class="section-heading__icon"><i class="fas fa-list-ol"></i></span>
