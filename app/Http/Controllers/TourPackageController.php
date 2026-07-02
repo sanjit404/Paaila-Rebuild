@@ -33,7 +33,7 @@ class TourPackageController extends Controller
     $package->load(['checkpoints.facts']);
 
     $ratings = \App\Models\TrekRating::where('tour_package_id', $package->id)
-        ->with('user:id,name')
+        ->with('user:id,name,email_verified_at')
         ->whereNotNull('review')
         ->latest()
         ->take(6)
@@ -42,7 +42,7 @@ class TourPackageController extends Controller
     // also grab a few without reviews to pad if needed
     if ($ratings->count() < 3) {
         $ratings = \App\Models\TrekRating::where('tour_package_id', $package->id)
-            ->with('user:id,name')
+            ->with('user:id,name,email_verified_at')
             ->latest()
             ->take(6)
             ->get();

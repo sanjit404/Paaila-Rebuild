@@ -209,8 +209,11 @@
                                     {{ strtoupper(substr($rating->user->name, 0, 1)) }}
                                 </div>
                                 <div>
-                                    <div style="font-weight:700; font-size:15px; color:var(--color-text);">
+                                    <div style="font-weight:700; font-size:15px; color:var(--color-text); display:flex; align-items:center; gap:4px;">
                                         {{ $rating->user->name }}
+                                        @if($rating->user?->hasVerifiedEmail())
+                                            <x-verified-badge />
+                                        @endif
                                     </div>
                                     <div style="font-size:12px; color:var(--color-text-light);">
                                         {{ $rating->created_at->format('M d, Y') }}
