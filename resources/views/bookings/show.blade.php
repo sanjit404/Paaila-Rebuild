@@ -77,7 +77,7 @@
             @endif
 
             @if($booking->status === 'pending')
-                <form method="POST" action="{{ route('bookings.start', $booking) }}" onsubmit="return confirm('Cancel this booking?')">
+                <form method="POST" action="{{ route('bookings.cancel', $booking) }}" onsubmit="return confirm('Cancel this booking?')">
                     @csrf
                     <button type="submit" class="btn btn-secondary">
                         <i class="fas fa-times"></i> Cancel Booking

@@ -26,6 +26,12 @@ Route::get('/mail-test', function () {
     }
 });
 
+Route::get('/email/verification-status', function (Illuminate\Http\Request $request) {
+    return response()->json([
+        'verified' => $request->user()->hasVerifiedEmail(),
+    ]);
+})->middleware('auth');
+
 Route::get('/', [TourPackageController::class, 'index'])->name('home');
 
 Route::get('/tours/{package}', [TourPackageController::class, 'show'])->name('tours.show');

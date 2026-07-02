@@ -30,7 +30,7 @@
         ->take(5)
         ->get();
 
-    $emailLocked = !empty($user->email);
+    $emailLocked = !empty($user->email_verified_at);
     $phoneLocked = !empty($user->phone);
 
     $missingFields = [];
@@ -55,7 +55,10 @@
                     </div>
 
                     <div class="profile-meta" >
-                        <h1 style="color: white;">{{ $user->name }}</h1>
+                        <span class="verified-badge" aria-label="Verified Account">
+                        <h1 style="color: white;">{{ $user->name }}  @if($emailLocked) <x-verified-badge />  @endif </h1>
+                        <span class="tooltip">Verified Account</span>
+                    </span>
                         <p style="color: #c2c2c2;" > {{ $user->email }}</p>
                         <span style="color: #c2c2c2;">Member since {{ optional($user->created_at)->format('F Y') }}</span><br>
 
@@ -297,7 +300,7 @@
                             </div>
 
                             <div class="form-field-inline">
-                                <label>Email Address @if($emailLocked)<span class="locked-tag">Locked</span>@endif</label>
+                                <label>Email Address @if($emailLocked)<span class="locked-tag">Verified</span>@endif</label>
                                 <div class="field-wrap">
                                     <i class="fas fa-envelope field-icon"></i>
                                     <input type="email" name="email" value="{{ old('email', $user->email) }}" {{ $emailLocked ? 'readonly' : 'required' }}>
@@ -435,7 +438,33 @@
     position: relative;
     border: 1px solid #D1D5DB;
 }
-
+.verified-badge {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: help;
+}
+.tooltip {
+  visibility: hidden;
+  background-color: #09761c;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 9999;
+  bottom: 85%;
+  left: 60%;
+  opacity: 0;
+  transition: opacity 0.6s;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.verified-badge:hover .tooltip {
+  visibility: visible;
+  color:#FFF;
+  opacity: 1;
+}
 .avatar-badge {
     position: absolute;
     right: -2px;
