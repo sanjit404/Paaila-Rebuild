@@ -122,13 +122,13 @@
                                     </div>
                                 </label>
 
-                                <label class="payment-option">
+                                <!-- <label class="payment-option">
                                     <input type="radio" name="payment_method" value="khalti" {{ old('payment_method') == 'khalti' ? 'checked' : '' }}>
                                     <div class="option-content">
                                         <i class="fas fa-mobile-alt" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
                                         <span>Instant</span>
                                     </div>
-                                </label>
+                                </label> -->
 
                                 <label class="payment-option">
                                     <input type="radio" name="payment_method" value="stripe" {{ old('payment_method') == 'stripe' ? 'checked' : '' }}>
@@ -163,8 +163,9 @@
                             <a href="{{ route('tours.show', $package) }}" class="btn btn-secondary btn-lg" style="flex: 1;">
                                 <i class="fas fa-arrow-left"></i> Back
                             </a>
-                            <button type="submit" class="btn btn-cta btn-lg" style="flex: 2; background:var(--color-primary-dark);">
-                                <i class="fas fa-check-circle"></i> Proceed to Payment
+                            <button type="submit" id="btn" class="btn btn-cta btn-lg" style="flex: 2; background:var(--color-primary-dark);">
+                                <i class="fas fa-check-circle" id="payIcon"></i>
+                                <i class="fas fa-spinner fa-spin-pulse" id="loadIcon" style="display:none;"></i> Proceed to Payment
                             </button>
                         </div>
                     </form>
@@ -210,7 +211,11 @@
 @push('scripts')
 <script>
     const pricePerPerson = {{ $package->price }};
-
+    document.getElementById('bookingForm').addEventListener('submit', e=>{
+        document.getElementById('btn').disabled=true;
+        document.getElementById('payIcon').style.display = 'none';
+        document.getElementById('loadIcon').style.display = 'inline-block';
+    });
     function updateTotal() {
         const participants = parseInt(document.getElementById('participants').value) || 1;
         const total = participants * pricePerPerson;

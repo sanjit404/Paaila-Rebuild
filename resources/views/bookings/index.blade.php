@@ -249,22 +249,23 @@
                                 @if($booking->status === 'confirmed')
                                     <form method="POST" action="{{ route('bookings.start', $booking) }}" style="margin: 0;">
                                         @csrf
-                                        <button type="submit" class="btn btn-cta btn-sm">
+                                        <button type="submit" class="btn btn-cta btn-sm" style="background:var(--color-primary-light);">
                                             <i class="fas fa-play-circle"></i> Start Trek
                                         </button>
                                     </form>
                                 @endif
 
                                 @if($booking->status === 'pending')
-                                @if(!$booking->payment_method="khalti")
-                                    <a href="{{ route('payment.' . $booking->payment_method, $booking) }}" class="btn btn-cta btn-sm">
+                                    <a href="{{ route('payment.' . $booking->payment_method, $booking) }}" class="btn btn-cta btn-sm" style="background:var(--color-primary-light);">
                                         <i class="fas fa-credit-card"></i> Complete Payment
                                     </a>
-                                @else
-                                <a href="{{ route('payment.test', $booking) }}" class="btn btn-cta btn-sm">
-                                        <i class="fas fa-credit-card"></i> Complete Payment
-                                    </a>
-                                @endif
+                                    
+                                    <form method="POST" action="{{ route('bookings.cancel', $booking) }}" onsubmit="return confirm('Cancel this booking?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-secondary">
+                                            <i class="fas fa-times"></i> Cancel Booking
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
 

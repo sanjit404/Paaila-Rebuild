@@ -61,7 +61,7 @@
                                 value="{{ $esewaConfig['signature'] }}">
  
 
-                        <button type="submit" class="btn btn-cta btn-lg btn-block">
+                        <button type="submit" class="btn btn-cta btn-lg btn-block" style="background:var(--color-primary-light);">
                             <i class="fas fa-wallet"></i>
                             Proceed to eSewa
                         </button>

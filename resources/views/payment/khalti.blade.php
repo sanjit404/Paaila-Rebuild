@@ -44,7 +44,7 @@
 
                     <a href="{{ route('payment.khalti', $booking) }}"
                         class="btn btn-lg btn-block"
-                        style="background: #5C2D91; color: white; padding: var(--space-lg); text-align: center; display: block; text-decoration: none; border-radius: var(--radius-md);">
+                        style="background: #b42121; color: white; padding: var(--space-lg); text-align: center; display: block; text-decoration: none; border-radius: var(--radius-md);">
                         <i class="fas fa-mobile-alt"></i>
                         Pay with Khalti
                     </a>
