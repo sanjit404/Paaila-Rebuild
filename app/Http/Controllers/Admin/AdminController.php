@@ -101,7 +101,7 @@ class AdminController extends BaseController
             'duration_days' => 'required|integer|min:1',
             'difficulty_level' => 'required|in:easy,moderate,hard',
             'max_participants' => 'required|integer|min:1',
-            'image' => 'nullable|string',
+            'images' => 'nullable|string',
             'start_location_name' => 'required|string|max:255',
             'start_lat' => 'required|numeric',
             'start_lng' => 'required|numeric',
@@ -123,6 +123,16 @@ class AdminController extends BaseController
                 $validated['tags'] = array_values(array_filter(array_map('trim', explode(',', $raw))));
             }
         }
+        $images = [];
+
+        if ($request->filled('images')) {
+            $images = array_values(array_filter(
+                array_map('trim', explode(',', $request->images))
+            ));
+        }
+
+        $validated['image'] = $images[0] ?? null;   // Cover image
+        $validated['images'] = $images;             // Gallery
 
         $validated['season'] = $request->filled('season') ? $request->season : null;
         $validated['views_count'] = $validated['views_count'] ?? 0;
@@ -160,7 +170,7 @@ class AdminController extends BaseController
             'duration_days' => 'required|integer|min:1',
             'difficulty_level' => 'required|in:easy,moderate,hard',
             'max_participants' => 'required|integer|min:1',
-            'image' => 'nullable|string',
+            'images' => 'nullable|string',
             'start_location_name' => 'required|string|max:255',
             'start_lat' => 'required|numeric',
             'start_lng' => 'required|numeric',
@@ -169,6 +179,16 @@ class AdminController extends BaseController
             'end_lng' => 'required|numeric',
             'is_active' => 'nullable|boolean',
         ]);
+        $images = [];
+
+        if ($request->filled('images')) {
+            $images = array_values(array_filter(
+                array_map('trim', explode(',', $request->images))
+            ));
+        }
+
+        $validated['image'] = $images[0] ?? null;   // Cover image
+        $validated['images'] = $images;             // Gallery
 
         $validated['tags'] = $request->filled('tags')
             ? array_values(array_filter(array_map('trim', explode(',', $request->tags))))

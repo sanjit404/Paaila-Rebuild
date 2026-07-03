@@ -15,6 +15,7 @@ class TourPackage extends Model
         'difficulty_level',
         'max_participants',
         'image',
+        'images',
         'start_location_name',
         'start_lat',
         'start_lng',
@@ -33,6 +34,9 @@ class TourPackage extends Model
     'is_active' => 'boolean',
     'tags'      => 'array',
     'season'    => 'array', 
+    'image'     => 'string',
+    'images'     => 'array',
+
 ];
 
     public function checkpoints(): HasMany
