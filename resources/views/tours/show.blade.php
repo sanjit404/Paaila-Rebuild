@@ -35,6 +35,7 @@
                         <i class="fas fa-arrow-left"></i> Back to Treks
             </a>
             <div class="content-block">
+               
             <br>
             <h1>{{ $package->name }} , {{ $package->duration_days }} {{ Str::plural('Day', $package->duration_days) }}</h1>
             <br><br>
@@ -98,6 +99,8 @@
                     </div>
                 @endif
             @endif
+
+            
             <br><br><br><br>
 
             <div class="trek-hero__stats" style="border-top: 1px solid black;"></div>
@@ -160,6 +163,49 @@
                     </div>
                 </div>
             </div>
+
+        @if(count($packageImages) > 0)
+        <div class="content-block" id="gallery">
+            <h2 class="section-heading">
+                <span class="section-heading__icon"><i class="fas fa-images"></i></span>
+                Trek Gallery
+            </h2>
+
+            <div id="galleryGrid" style="display:grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 220px 220px; gap:8px; border-radius:var(--radius-md); overflow:hidden;">
+                @foreach(array_slice($packageImages, 0, 5) as $idx => $img)
+                    <img
+                        src="{{ $img }}"
+                        alt="Trek photo {{ $idx + 1 }}"
+                        onclick="openLightbox({{ $idx }})"
+                        style="width:100%; height:100%; object-fit:cover; cursor:zoom-in; transition:transform 0.2s, filter 0.2s;
+                            {{ $idx === 0 ? 'grid-row: span 2;' : '' }}"
+                        onmouseover="this.style.filter='brightness(0.85)'"
+                        onmouseout="this.style.filter='none'"
+                    >
+                @endforeach
+            </div>
+
+            @if(count($packageImages) > 5)
+                <button onclick="openLightbox(5)" style="margin-top:var(--space-md); background:none; border:2px solid var(--color-primary); color:var(--color-primary); padding:8px 20px; border-radius:var(--radius-md); font-weight:600; cursor:pointer; font-size:14px;">
+                    <i class="fas fa-plus"></i> View all {{ count($packageImages) }} photos
+                </button>
+            @endif
+        </div>
+        @endif
+
+        <div id="lightbox" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:99999; align-items:center; justify-content:center; flex-direction:column;">
+            <button onclick="closeLightbox()" style="position:absolute; top:20px; right:24px; background:none; border:none; color:white; font-size:28px; cursor:pointer; z-index:2;">
+                <i class="fas fa-times"></i>
+            </button>
+            <button onclick="prevPhoto()" style="position:absolute; left:20px; background:rgba(255,255,255,0.15); border:none; color:white; font-size:24px; cursor:pointer; width:48px; height:48px; border-radius:50%;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <img id="lightboxImg" src="" style="max-width:90vw; max-height:82vh; object-fit:contain; border-radius:8px;">
+            <div id="lightboxCaption" style="color:rgba(255,255,255,0.6); font-size:13px; margin-top:12px;"></div>
+            <button onclick="nextPhoto()" style="position:absolute; right:20px; background:rgba(255,255,255,0.15); border:none; color:white; font-size:24px; cursor:pointer; width:48px; height:48px; border-radius:50%;">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
 
             @if($ratings->count() > 0)
             <div class="content-block" id="reviews">
@@ -308,11 +354,12 @@
                             </div>
                         @endforeach
                     </div>
+                    
                 @else
                     <p class="empty-state">No checkpoints listed for this trek yet.</p>
                 @endif
             </div>
-
+      
         </div>
 
         <aside class="trek-sidebar">
@@ -1253,5 +1300,44 @@
 
     sections.forEach(s => sectionObserver.observe(s));
     });
+
+    // ── GALLERY LIGHTBOX ─────────────────────────────────────
+const GALLERY_IMAGES = @json($packageImages);
+let lightboxIndex = 0;
+
+function openLightbox(idx) {
+    lightboxIndex = idx;
+    document.getElementById('lightbox').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    updateLightbox();
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+    document.getElementById('lightboxImg').src = GALLERY_IMAGES[lightboxIndex];
+    document.getElementById('lightboxCaption').textContent = (lightboxIndex + 1) + ' / ' + GALLERY_IMAGES.length;
+}
+
+function prevPhoto() {
+    lightboxIndex = (lightboxIndex - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length;
+    updateLightbox();
+}
+
+function nextPhoto() {
+    lightboxIndex = (lightboxIndex + 1) % GALLERY_IMAGES.length;
+    updateLightbox();
+}
+
+document.addEventListener('keydown', function(e) {
+    const lb = document.getElementById('lightbox');
+    if (lb.style.display === 'none') return;
+    if (e.key === 'ArrowLeft')  prevPhoto();
+    if (e.key === 'ArrowRight') nextPhoto();
+    if (e.key === 'Escape')     closeLightbox();
+});
 </script>
 @endpush

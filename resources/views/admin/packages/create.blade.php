@@ -190,8 +190,8 @@
 
                     <input
                         type="text"
-                        name="image"
-                        value="{{ old('image') }}"
+                        name="images"
+                        value="{{ old('images', implode(',', $package->images ?? [])) }}"
                         placeholder="https://example.com/image.jpg"
                         required
                     >

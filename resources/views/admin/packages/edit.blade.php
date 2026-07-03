@@ -141,7 +141,13 @@
 
                         <div class="form-group">
                             <label>Image URL / Path</label>
-                            <input type="text" name="image" value="{{ old('image', $package->image) }}" placeholder="https://example.com/image.jpg or /storage/packages/image.jpg">
+                            <input
+                                type="text"
+                                name="images"
+                                value="{{ old('images', implode(',', $package->images ?? [])) }}"
+                                placeholder="https://example.com/image.jpg"
+                                required
+                            >
                         </div>
                     </div>
 
