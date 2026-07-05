@@ -145,8 +145,36 @@ class TrackingController extends Controller
                 ->checkpoints()
                 ->orderBy('order')
                 ->get();
+            
+                $startCheckpoint = $checkpoints->first();
 
-            foreach ($checkpoints as $checkpoint) {
+                $distanceToStart = $this->haversine(
+                    $validated['latitude'],
+                    $validated['longitude'],
+                    (float)$startCheckpoint->latitude,
+                    (float)$startCheckpoint->longitude
+                );
+                 Log::info([
+                    'distance' => $distanceToStart,
+                    'radius' => $startCheckpoint->detection_radius,
+                    'start_reached_at' => $booking->start_reached_at,
+                ]);
+                if (
+                    !$booking->start_reached_at &&
+                    $distanceToStart <= ($startCheckpoint->detection_radius ?? 50)
+                ) {
+                    $booking->update([
+                        'start_reached_at' => now()
+                    ]);
+
+                    Log::info('START DETECTED', [
+                                        'distance' => $distanceToStart,
+                                        'radius' => $startCheckpoint->detection_radius ?? 50,
+                                        'booking' => $booking->id,
+                    ]);
+                }
+
+                foreach ($checkpoints as $checkpoint) {
                 $progress = CheckpointProgress::firstOrCreate([
                     'tour_booking_id' => $booking->id,
                     'checkpoint_id'   => $checkpoint->id,
@@ -205,6 +233,7 @@ class TrackingController extends Controller
                 'progress'              => $booking->progress_percentage,
                 'completed_checkpoints' => $booking->completed_checkpoints,
                 'total_checkpoints'     => $booking->total_checkpoints,
+                'start_reached_at' => $booking->fresh()->start_reached_at,
             ]);
 
         } catch (\Exception $e) {

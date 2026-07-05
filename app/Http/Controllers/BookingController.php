@@ -232,7 +232,7 @@ class BookingController extends Controller
 
             return redirect()
                 ->route('tracking.traveler', $booking)
-                ->with('success', "Trek started! Your tracking PIN is: {$pin}");
+                ->with('success', "Trek started! Find your pin in the sidebar.");
 
         } catch (\Exception $e) {
             DB::rollBack();
