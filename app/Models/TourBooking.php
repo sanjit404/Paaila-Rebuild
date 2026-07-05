@@ -34,6 +34,7 @@ class TourBooking extends Model
         'started_at',
         'completed_at',
         'cancelled_at',
+        'start_reached_at',
     ];
 
     protected $casts = [
@@ -41,6 +42,7 @@ class TourBooking extends Model
         'confirmed_at' => 'datetime',
         'paid_at' => 'datetime',
         'started_at' => 'datetime',
+        'start_reached_at'=>'datetime',
         'completed_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];

@@ -1,26 +1,22 @@
 <script>
-// Routing Configuration
 const ROUTING_CONFIG = {
     openroute: '{{ env('OPENROUTE_API_KEY') }}',
 };
 
 
 async function drawSmartRoute(waypoints, map) {
+    console.trace("drawSmartRoute called");
     console.log(`🗺️ Drawing route with ${waypoints.length} waypoints...`);
 
     let result = null;
 
-    // Try OpenRouteService first (supports up to 50 waypoints)
+    // Route draw (Only if available in Open Route Service ko API)
     if (ROUTING_CONFIG.openroute && ROUTING_CONFIG.openroute !== '' && waypoints.length <= 50) {
         result = await getOpenRouteServiceRoute(waypoints, map);
         if (result && result.success) return result;
     }
 
-    // Fallback to OSRM
-    result = await getOSRMRoute(waypoints, map);
-    if (result && result.success) return result;
-
-    // Last resort: straight lines
+    //Remote area ko route find navako thau ko lagi drawing dashed lines for reference (May use GPX data later but less chance)
     return drawStraightLine(waypoints, map);
 }
 
@@ -32,7 +28,7 @@ async function getOpenRouteServiceRoute(waypoints, map) {
         // Build coordinates array [[lng, lat], [lng, lat], ...]
         const coordinates = waypoints.map(w => [w.lng, w.lat]);
 
-        const response = await fetch('https://api.openrouteservice.org/v2/directions/driving-car/geojson', {
+        const response = await fetch('https://api.openrouteservice.org/v2/directions/foot-hiking/geojson', {
             method: 'POST',
             headers: {
                 'Authorization': API_KEY,
@@ -46,6 +42,7 @@ async function getOpenRouteServiceRoute(waypoints, map) {
         });
 
         if (!response.ok) {
+            console.log(await response.text());
             throw new Error(`OpenRouteService error: ${response.status}`);
         }
 
@@ -55,8 +52,9 @@ async function getOpenRouteServiceRoute(waypoints, map) {
             const route = data.features[0];
             const routeCoordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
             
+            
             const routeLine = L.polyline(routeCoordinates, {
-                color: '#667eea',
+                color: '#2E7D32',
                 weight: 5,
                 opacity: 0.8,
                 lineJoin: 'round',
@@ -66,156 +64,56 @@ async function getOpenRouteServiceRoute(waypoints, map) {
 
             map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
 
-            const distance = (route.properties.segments.reduce((sum, seg) => sum + seg.distance, 0) / 1000).toFixed(1);
-            const duration = Math.round(route.properties.segments.reduce((sum, seg) => sum + seg.duration, 0) / 60);
+let distance = 0;
+let duration = 0;
 
-            console.log(`✅ OpenRouteService: ${distance} km, ${duration} min`);
+if (route.properties.summary) {
+    distance = (route.properties.summary.distance / 1000).toFixed(1);
+    duration = Math.round(route.properties.summary.duration / 60);
+} else if (route.properties.segments) {
+    distance = (
+        route.properties.segments.reduce((s, seg) => s + seg.distance, 0) / 1000
+    ).toFixed(1);
+
+    duration = Math.round(
+        route.properties.segments.reduce((s, seg) => s + seg.duration, 0) / 60
+    );
+}
+
+console.log(`OpenRouteService: ${distance} km, ${duration} min`);
 
             return {
                 success: true,
                 provider: 'OpenRouteService (Real roads)',
                 distance: distance,
                 duration: duration,
-                coordinates: routeCoordinates
+                coordinates: routeCoordinates,
+                line: routeLine
             };
         }
     } catch (error) {
-        console.error('❌ OpenRouteService error:', error);
+        console.error('OpenRouteService error:', error);
         return null;
     }
 }
 
-
-async function getOSRMRoute(waypoints, map) {
-    try {
-        // OSRM has URL length limits, split if too many waypoints
-        if (waypoints.length > 25) {
-            return await getOSRMRouteSegmented(waypoints, map);
-        }
-
-        const coordinates = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
-        
-        const response = await fetch(
-            `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson`
-        );
-        const data = await response.json();
-
-        if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-            const route = data.routes[0];
-            const routeCoordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
-            
-            const routeLine = L.polyline(routeCoordinates, {
-                color: '#667eea',
-                weight: 5,
-                opacity: 0.8,
-                lineJoin: 'round'
-            }).addTo(map);
-
-            map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
-
-            const distance = (route.distance / 1000).toFixed(1);
-            const duration = Math.round(route.duration / 60);
-
-            console.log(`✅ OSRM: ${distance} km, ${duration} min`);
-
-            return {
-                success: true,
-                provider: 'OSRM (Real roads)',
-                distance: distance,
-                duration: duration,
-                coordinates: routeCoordinates
-            };
-        }
-    } catch (error) {
-        console.error('❌ OSRM error:', error);
-        return null;
-    }
-}
-
-
-async function getOSRMRouteSegmented(waypoints, map) {
-    console.log(`🔄 Splitting ${waypoints.length} waypoints into segments...`);
-    
-    const segments = [];
-    const chunkSize = 20;
-
-    // Split waypoints into chunks with overlap
-    for (let i = 0; i < waypoints.length - 1; i += chunkSize - 1) {
-        const chunk = waypoints.slice(i, Math.min(i + chunkSize, waypoints.length));
-        segments.push(chunk);
-    }
-
-    const allCoordinates = [];
-    let totalDistance = 0;
-    let totalDuration = 0;
-
-    for (const segment of segments) {
-        const coordinates = segment.map(w => `${w.lng},${w.lat}`).join(';');
-        
-        try {
-            const response = await fetch(
-                `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson`
-            );
-            const data = await response.json();
-
-            if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-                const route = data.routes[0];
-                const routeCoordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
-                
-                allCoordinates.push(...routeCoordinates);
-                totalDistance += route.distance;
-                totalDuration += route.duration;
-            }
-        } catch (error) {
-            console.error('Segment error:', error);
-        }
-    }
-
-    if (allCoordinates.length > 0) {
-        const routeLine = L.polyline(allCoordinates, {
-            color: '#667eea',
-            weight: 5,
-            opacity: 0.8
-        }).addTo(map);
-
-        map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
-
-        const distance = (totalDistance / 1000).toFixed(1);
-        const duration = Math.round(totalDuration / 60);
-
-        console.log(`✅ OSRM (segmented): ${distance} km, ${duration} min`);
-
-        return {
-            success: true,
-            provider: 'OSRM (Multi-segment)',
-            distance: distance,
-            duration: duration,
-            coordinates: allCoordinates
-        };
-    }
-
-    return null;
-}
 
 
 function drawStraightLine(waypoints, map) {
     const routePoints = waypoints.map(w => [w.lat, w.lng]);
-    
-    L.polyline(routePoints, {
-        color: '#667eea',
+
+    const line = L.polyline(routePoints, {
+        color: '#2E7D32',
         weight: 4,
         opacity: 0.7,
-        dashArray: '10, 10'
+        dashArray: '10,10'
     }).addTo(map);
-
-    map.fitBounds(routePoints, { padding: [50, 50] });
-
-    console.log('⚠️ Using straight line fallback');
 
     return {
         success: true,
         provider: 'Direct Line',
-        coordinates: routePoints
+        coordinates: routePoints,
+        line: line
     };
 }
 </script>

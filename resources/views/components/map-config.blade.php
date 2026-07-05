@@ -1,7 +1,7 @@
 <script>
 const MAP_CONFIG = {
     maptiler: {
-        key: '{{ env('MAPTILER_API_KEY') }}',
+        key: '{{ config('services.maptiler.key', env('MAPTILER_API_KEY')) }}',
         styles: {
             streets: 'streets-v2',
             satellite: 'satellite',
@@ -20,7 +20,6 @@ const MAP_CONFIG = {
         }
     }
 };
-
 
 function createMap(elementId, options = {}) {
     const defaultOptions = {
@@ -41,7 +40,6 @@ function createMap(elementId, options = {}) {
 
     return map;
 }
-
 
 function addTileLayer(map, style = 'satellite') {
     const maptilerKey = MAP_CONFIG.maptiler.key;

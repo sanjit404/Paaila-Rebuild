@@ -43,9 +43,9 @@
         <div class="trk-topbar">
             <div class="trk-topbar-left">
                 <div class="trk-pkg-name">{{ Str::limit($booking->tourPackage->name, 28) }}</div>
-                <div id="gpsChip" class="gps-chip searching">
+                <div id="gpsChip" class="gps-chip searching" title="GPS Accuracy">
                     <span class="gps-dot"></span>
-                    <span id="gpsLabel">Acquiring GPS…</span>
+                    <span id="gpsLabel" >Acquiring GPS <i class="fa fa-solid fa-spinner fa-spin-pulse"></i></span>
                 </div>
             </div>
             <div class="trk-topbar-right">
@@ -82,6 +82,7 @@
 
     <div class="trk-sidebar" id="trkSidebar">
         <div class="trk-section">
+            <div class="trk-section-title"><i class="fas fa-route"></i> Trek Info</div>
             <div class="trk-stats-grid">
                 <div class="trk-stat">
                     <i class="fas fa-map-marker-alt"></i>
@@ -106,19 +107,34 @@
             </div>
         </div>
 
+        <div class="trk-section">
+            <div class="trk-section-title"><i class="fas fa-satellite-dish"></i> GPS Info</div>
+            <div class="trk-gps-grid">
+                <div><span class="trk-gps-lbl">Accuracy</span><span class="trk-gps-val" id="gpsAccuracy">—</span></div>
+                <div><span class="trk-gps-lbl">Speed</span><span class="trk-gps-val" id="gpsSpeed">—</span></div>
+                <div><span class="trk-gps-lbl">Altitude</span><span class="trk-gps-val" id="gpsAlt">—</span></div>
+                <div><span class="trk-gps-lbl">Updated</span><span class="trk-gps-val" id="gpsTime">—</span></div>
+            </div>
+        </div>
+
         <div class="trk-section trk-pin-section">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
                 <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:var(--color-success);">
-                    <i class="fas fa-share-alt"></i> Family Tracking PIN
+                    <i class="fa-solid fa-lock "></i> Paaila Tracking PIN
                 </span>
                 <div style="display:flex; gap:6px;">
                     <button class="trk-pin-btn" onclick="copyPin()" title="Copy"><i class="fas fa-copy"></i></button>
                     <button class="trk-pin-btn" onclick="sharePin()" title="Share"><i class="fas fa-share"></i></button>
                 </div>
             </div>
-            <div class="trk-pin-display">{{ $booking->trackingPin->pin }}</div>
+            <div class="trk-pin-display">
+				<span id="pin" data-code="{{ $booking->trackingPin->pin }}">
+					XXX XXX
+				</span>
+					<small><i id="eyeIcon" class="fa fa-eye" style="cursor:pointer;" title="Toggle PIN"></i></small>
+			</div>
             <div style="font-size:11px; color:var(--color-text-light); margin-top:4px; text-align:center;">
-                Share with family to track you live
+                Share only with trusted ones to track you live. <br> <strong style="color:red;"> <i class="fa fa-solid fa-warning"></i> Don't make it public !</strong>
             </div>
         </div>
 
@@ -169,15 +185,7 @@
             </div>
         </div>
 
-        <div class="trk-section">
-            <div class="trk-section-title"><i class="fas fa-satellite-dish"></i> GPS Info</div>
-            <div class="trk-gps-grid">
-                <div><span class="trk-gps-lbl">Accuracy</span><span class="trk-gps-val" id="gpsAccuracy">—</span></div>
-                <div><span class="trk-gps-lbl">Speed</span><span class="trk-gps-val" id="gpsSpeed">—</span></div>
-                <div><span class="trk-gps-lbl">Altitude</span><span class="trk-gps-val" id="gpsAlt">—</span></div>
-                <div><span class="trk-gps-lbl">Updated</span><span class="trk-gps-val" id="gpsTime">—</span></div>
-            </div>
-        </div>
+        
 
         <div class="trk-section" style="padding-top:0;">
             <a href="{{ route('bookings.show', $booking) }}" class="trk-back-btn">
@@ -260,6 +268,7 @@ body {
 }
 
 .trk-pkg-name {
+    margin-left:32px;
 	background: white;
 	border-radius: 20px;
 	padding: 7px 14px;
@@ -270,6 +279,7 @@ body {
 }
 
 .gps-chip {
+    cursor:help;
 	display: flex;
 	align-items: center;
 	gap: 7px;
@@ -946,52 +956,110 @@ body {
 @push('scripts')
 @include('components.map-config')
 @include('components.routing-helper')
-
 <script>
-const BOOKING_ID = {{ $booking->id }};
-const CSRF_TOKEN = '{{ csrf_token() }}';
-const CPS = @json($jsCheckpoints);
-const PROGRESS = @json($jsProgress);
-const START_LAT = {{ $startLat }};
-const START_LNG = {{ $startLng }};
-const END_LAT = {{ $endLat }};
-const END_LNG = {{ $endLng }};
+const BOOKING_ID  = {{ $booking->id }};
+const CSRF_TOKEN  = '{{ csrf_token() }}';
+const CPS         = @json($jsCheckpoints);
+const PROGRESS    = @json($jsProgress);
+const START_LAT   = {{ $startLat }};
+const START_LNG   = {{ $startLng }};
+const END_LAT     = {{ $endLat }};
+const END_LNG     = {{ $endLng }};
 
-const MAP_STYLES = ['hybrid', 'outdoor', 'street'];
-let mapStyleIdx = 0;
+const START_RADIUS            = 50;   // arrival detection
+const ROUTE_REFRESH_DISTANCE  = 30;   // nav route redraw threshold
+
+const MAP_STYLES  = ['hybrid', 'outdoor', 'street'];
+let mapStyleIdx   = 0;
 let map, userMarker, userCircle;
-let watchId = null;
-let toastTimer = null;
-let sidebarOpen = true;
-let activeFacts = null;
-const reachedIds = new Set(PROGRESS.filter(p => p.reached_at).map(p => p.checkpoint_id));
-const cpMarkers = {};
+let navigationRoute = null;  // polyline: user → start
+let trekRoute       = null;  // polyline: start → cps → end
+let hasReachedStart = {{ $booking->start_reached_at ? 'true' : 'false' }};
+let lastRouteUpdatePos = null; // {lat, lng} of last nav route draw
+let watchId         = null;
+let currentLat      = null;
+let currentLng      = null;
+let sidebarOpen     = true;
+let toastTimer      = null;
+let activeFacts     = null;
+let mapInitialized  = false;
 
-async function initMap() {
-    if (map) { map.remove(); }
-    map = createMap('map', {
-        center: [START_LAT, START_LNG],
-        zoom: 12,
-        style: MAP_STYLES[mapStyleIdx],
-    });
-    await drawRouteAndMarkers();
-    startGPS();
-    setTimeout(() => { if (map) map.invalidateSize(); }, 200);
+const reachedIds  = new Set(PROGRESS.filter(p => p.reached_at).map(p => p.checkpoint_id));
+const cpMarkers   = {};
+
+// ── ROUTING HELPER (returns layer reference) ──────────
+// Wraps existing drawSmartRoute so we can remove old layers.
+// drawSmartRoute from routing-helper.blade.php adds the polyline
+// directly to map and returns {success, provider, coordinates, distance, duration}.
+// We capture the last added layer by watching map layers before/after.
+
+async function drawRouteReturningLayer(waypoints, options = {}) {
+
+    const result = await drawSmartRoute(waypoints, map);
+
+    if (!result || !result.line) {
+        return result;
+    }
+
+    if (options.color) {
+        result.line.setStyle({
+            color: options.color,
+            weight: options.weight ?? 4,
+            opacity: options.opacity ?? 0.85,
+            dashArray: options.dashArray ?? null
+        });
+    }
+
+    return result;
 }
 
-async function drawRouteAndMarkers() {
-    const waypoints = [
-        { lat: START_LAT, lng: START_LNG },
-        ...CPS.map(c => ({ lat: c.latitude, lng: c.longitude })),
-        { lat: END_LAT, lng: END_LNG },
-    ];
+function removeLayer(layer) {
+    if (layer && map.hasLayer(layer)) map.removeLayer(layer);
+}
 
-    await drawSmartRoute(waypoints, map);
 
+// for route even after page reloads.
+async function initMap() {
+    if (map) {
+        removeLayer(navigationRoute);
+        removeLayer(trekRoute);
+        navigationRoute = null;
+        trekRoute       = null;
+        map.remove();
+    }
+
+    map = createMap('map', {
+        center: [START_LAT, START_LNG],
+        zoom:   12,
+        style:  MAP_STYLES[mapStyleIdx],
+    });
+
+    placeStaticMarkers();
+
+    // If start reached, direct static route draw from st to cp to end
+    if (hasReachedStart) {
+        await drawTrekRoute();
+    }
+
+    // If we are switching map styles while GPS is already running
+    if (currentLat !== null) {
+        placeUserMarker(currentLat, currentLng, 20);
+        
+        // Only draw nav route if we haven't reached the start yet
+        if (!hasReachedStart) {
+            await drawNavRoute(currentLat, currentLng, false);
+        }
+    }
+    mapInitialized = true;
+}
+
+
+// Markers on the maps ko lagi
+function placeStaticMarkers() {
     L.marker([START_LAT, START_LNG], { icon: L.divIcon({
         html: `<div style="background:#1B5E20;color:white;padding:5px 10px;border-radius:16px;font-weight:800;font-size:11px;box-shadow:0 2px 8px rgba(0,0,0,0.25);white-space:nowrap;">▶ START</div>`,
         className: '', iconSize: [70, 26],
-    })}).addTo(map);
+    })}).addTo(map).bindTooltip('Trek starts here', { direction: 'top' });
 
     L.marker([END_LAT, END_LNG], { icon: L.divIcon({
         html: `<div style="background:#C62828;color:white;padding:5px 10px;border-radius:16px;font-weight:800;font-size:11px;box-shadow:0 2px 8px rgba(0,0,0,0.25);white-space:nowrap;">⏹ END</div>`,
@@ -1000,39 +1068,131 @@ async function drawRouteAndMarkers() {
 
     CPS.forEach(cp => {
         const reached = reachedIds.has(cp.id);
-        const marker = makeCheckpointMarker(cp, reached);
+        const marker  = makeCheckpointMarker(cp, reached);
         cpMarkers[cp.id] = marker;
         marker.addTo(map);
 
         L.circle([cp.latitude, cp.longitude], {
-            radius: cp.detection_radius,
-            color: reached ? '#2E7D32' : '#90A4AE',
-            fillColor: reached ? '#2E7D32' : '#90A4AE',
+            radius:      cp.detection_radius,
+            color:       reached ? '#2E7D32' : '#90A4AE',
+            fillColor:   reached ? '#2E7D32' : '#90A4AE',
             fillOpacity: 0.07,
-            weight: 1,
-            dashArray: '4 4',
+            weight:      1,
+            dashArray:   '4 4',
         }).addTo(map);
     });
 }
 
 function makeCheckpointMarker(cp, reached) {
     const hasFacts = cp.facts && cp.facts.length > 0;
-    const bg = reached ? '#2E7D32' : '#607D8B';
+    const bg   = reached ? '#2E7D32' : '#607D8B';
     const ring = reached ? 'box-shadow:0 0 0 3px rgba(46,125,50,0.3);' : '';
+
     return L.marker([cp.latitude, cp.longitude], { icon: L.divIcon({
-        html: `<div onclick="cpMarkerClick(${cp.id})" style="background:${bg};color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.25);${ring}cursor:pointer;position:relative;">
+        html: `<div onclick="cpMarkerClick(${cp.id})" style="
+            background:${bg}; color:white;
+            width:36px; height:36px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-weight:800; font-size:13px;
+            border:3px solid white;
+            box-shadow:0 3px 10px rgba(0,0,0,0.25); ${ring}
+            cursor:pointer; position:relative;">
             ${cp.order}
             ${reached && hasFacts ? '<div style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#FFC107;border-radius:50%;border:1.5px solid white;"></div>' : ''}
         </div>`,
         className: '', iconSize: [36, 36], iconAnchor: [18, 18],
-    })}).bindTooltip(`<strong>${cp.name}</strong><br><small>${reached ? '✓ Reached' : 'Not yet reached'}</small>`, { permanent: false, direction: 'top' });
+    })}).bindTooltip(
+        `<strong>${cp.name}</strong><br><small>${reached ? '✓ Reached' : 'Not yet reached'}</small>`,
+        { permanent: false, direction: 'top' }
+    );
 }
 
 window.cpMarkerClick = function(cpId) {
     const cp = CPS.find(c => c.id === cpId);
     if (!cp) return;
-    if (reachedIds.has(cpId) && cp.facts && cp.facts.length) openFactsPanelFor(cpId);
+    if (reachedIds.has(cpId) && cp.facts && cp.facts.length) {
+        openFactsPanelFor(cpId);
+    } else if (!reachedIds.has(cpId)) {
+        showToast(cp.name, 'Reach this checkpoint to unlock facts', false);
+    }
 };
+
+function placeUserMarker(lat, lng, accuracy) {
+    if (!userMarker) {
+        userMarker = L.marker([lat, lng], { icon: L.divIcon({
+            html: `<div style="
+                background:#1565C0; width:18px; height:18px; border-radius:50%;
+                border:3px solid white;
+                box-shadow:0 0 0 4px rgba(21,101,192,0.3), 0 2px 8px rgba(0,0,0,0.25);">
+            </div>`,
+            className: '', iconSize: [18, 18], iconAnchor: [9, 9],
+        })}).addTo(map);
+
+        userCircle = L.circle([lat, lng], {
+            radius: accuracy ?? 20, color: '#1565C0',
+            fillColor: '#1565C0', fillOpacity: 0.12, weight: 1.5,
+        }).addTo(map);
+    } else {
+        userMarker.setLatLng([lat, lng]);
+        userCircle.setLatLng([lat, lng]).setRadius(accuracy ?? 20);
+    }
+}
+
+//Route drawwwwww
+async function drawNavRoute(lat, lng, doFitBounds = true) {
+    // Remove previous nav route
+    removeLayer(navigationRoute);
+    navigationRoute = null;
+
+    const result = await drawRouteReturningLayer(
+        [{ lat, lng }, { lat: START_LAT, lng: START_LNG }],
+        { color: '#1565C0', weight: 4, opacity: 0.8, dashArray: '8 6' }
+    );
+
+    navigationRoute        = result.line || null;
+    lastRouteUpdatePos     = { lat, lng };
+
+    if (doFitBounds && navigationRoute) {
+        map.fitBounds(navigationRoute.getBounds(), { padding: [60, 60] });
+    }
+
+    
+}
+
+
+// Normal routesss
+async function drawTrekRoute() {
+    removeLayer(trekRoute);
+    trekRoute = null;
+
+    const waypoints = [
+        { lat: START_LAT, lng: START_LNG },
+        ...CPS.map(c => ({ lat: c.latitude, lng: c.longitude })),
+        { lat: END_LAT, lng: END_LNG },
+    ];
+
+    const result = await drawRouteReturningLayer(waypoints, {
+    });
+
+    trekRoute = result.line || null;
+
+    if (result.distance) {
+        const el = document.getElementById('nextCpDist');
+        if (el) el.textContent = parseFloat(result.distance).toFixed(1) + ' km total route';
+    }
+}
+
+
+// JS haversine to check distance between user current location and start point(Trek ko)
+function haversine(lat1, lng1, lat2, lng2) {
+    const R  = 6_371_000;
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lng2 - lng1) * Math.PI / 180;
+    const a  = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
 
 function startGPS() {
     if (!navigator.geolocation) {
@@ -1040,39 +1200,50 @@ function startGPS() {
         return;
     }
     setGPS('searching', 'Acquiring GPS…');
+
     watchId = navigator.geolocation.watchPosition(onPosition, onGPSError, {
         enableHighAccuracy: true, timeout: 12000, maximumAge: 0,
     });
 }
 
+
+// Position and pre-start routing handling ko lagi
 async function onPosition(pos) {
     const { latitude: lat, longitude: lng, accuracy, speed, altitude } = pos.coords;
-    setGPS('active', `±${Math.round(accuracy ?? 0)}m accuracy`);
-    document.getElementById('gpsAccuracy').textContent = accuracy ? Math.round(accuracy) + 'm' : '—';
+    currentLat = lat;
+    currentLng = lng;
+
+    setGPS('active', `±${Math.round(accuracy ?? 0)}m`);
+    document.getElementById('gpsAccuracy').textContent = accuracy? `±${accuracy}m` : '0 km/h';
     document.getElementById('gpsSpeed').textContent = speed ? (speed * 3.6).toFixed(1) + ' km/h' : '0 km/h';
-    document.getElementById('gpsAlt').textContent = altitude ? Math.round(altitude) + 'm' : '—';
-    document.getElementById('gpsTime').textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    document.getElementById('gpsAlt').textContent   = altitude ? Math.round(altitude) + 'm' : '—';
+    document.getElementById('gpsTime').textContent  = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    if (!userMarker) {
-        userMarker = L.marker([lat, lng], { icon: L.divIcon({
-            html: `<div style="background:#1565C0;width:18px;height:18px;border-radius:50%;border:3px solid white;box-shadow:0 0 0 4px rgba(21,101,192,0.3),0 2px 8px rgba(0,0,0,0.25);"></div>`,
-            className: '', iconSize: [18, 18], iconAnchor: [9, 9],
-        })}).addTo(map);
+    placeUserMarker(lat, lng, accuracy);
 
-        userCircle = L.circle([lat, lng], {
-            radius: accuracy ?? 20, color: '#1565C0', fillColor: '#1565C0',
-            fillOpacity: 0.12, weight: 1.5,
-        }).addTo(map);
+    // Location API call garera fetching GPS infos.
+    const data = await sendLocation({ lat, lng, accuracy, speed, altitude });
 
-        map.setView([lat, lng], 14);
-    } else {
-        userMarker.setLatLng([lat, lng]);
-        userCircle.setLatLng([lat, lng]).setRadius(accuracy ?? 20);
+    if (!hasReachedStart) {
+        if (data?.start_reached_at) {
+            hasReachedStart = true;
+            removeLayer(navigationRoute);
+            navigationRoute = null;
+
+            showToast('Trek started!', 'You have reached the starting point. Good luck!', false);
+            await drawTrekRoute(); // Draw trek route ONCE when start is reached
+            return;
+        }
+
+        const shouldRedraw = !lastRouteUpdatePos || haversine(lat, lng, lastRouteUpdatePos.lat, lastRouteUpdatePos.lng) >= ROUTE_REFRESH_DISTANCE;
+        if (shouldRedraw && mapInitialized) {
+            await drawNavRoute(lat, lng, !lastRouteUpdatePos);
+        }
     }
-
-    await sendLocation({ lat, lng, accuracy, speed, altitude });
 }
 
+
+// For sending location to db through API and showing pops for related CPs
 async function sendLocation({ lat, lng, accuracy, speed, altitude }) {
     try {
         const res = await fetch(`/api/tracking/${BOOKING_ID}/location`, {
@@ -1080,36 +1251,41 @@ async function sendLocation({ lat, lng, accuracy, speed, altitude }) {
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
             body: JSON.stringify({ latitude: lat, longitude: lng, accuracy, speed, altitude }),
         });
-        if (!res.ok) return;
+        
+        if (!res.ok) return null;
         const data = await res.json();
+        
 
         if (data.progress !== undefined) {
             document.getElementById('progressFill').style.width = data.progress + '%';
-            document.getElementById('statPct').textContent = data.progress;
+            document.getElementById('statPct').textContent      = data.progress;
         }
+        
         if (data.completed_checkpoints !== undefined) {
             document.getElementById('statCompleted').textContent = data.completed_checkpoints;
             document.getElementById('progressLabel').textContent = data.completed_checkpoints + '/' + data.total_checkpoints + ' checkpoints';
         }
 
         if (data.next_checkpoint) {
-            document.getElementById('nextCpNum').textContent = data.next_checkpoint.order;
+            document.getElementById('nextCpNum').textContent  = data.next_checkpoint.order;
             document.getElementById('nextCpName').textContent = data.next_checkpoint.name;
             document.getElementById('nextCpDist').textContent = data.distance_to_next ? formatDist(data.distance_to_next) + ' away' : '';
             markCurrentInTimeline(data.next_checkpoint.id);
-        } else if (data.completed_checkpoints === data.total_checkpoints) {
-            document.getElementById('nextCpNum').textContent = '✓';
+        } else if (data.completed_checkpoints === data.total_checkpoints && data.total_checkpoints > 0) {
+            document.getElementById('nextCpNum').textContent  = '✓';
             document.getElementById('nextCpName').textContent = 'All checkpoints reached!';
             document.getElementById('nextCpDist').textContent = '';
         }
 
         if (data.checkpoint_reached && data.checkpoint && !reachedIds.has(data.checkpoint.id)) {
-            const cp = data.checkpoint;
+            const apiCp = data.checkpoint;
+            const cp = CPS.find(c => c.id === apiCp.id) || apiCp; 
+            
             reachedIds.add(cp.id);
 
             if (cpMarkers[cp.id]) {
                 cpMarkers[cp.id].remove();
-                cpMarkers[cp.id] = makeCheckpointMarker(CPS.find(c => c.id === cp.id) || cp, true);
+                cpMarkers[cp.id] = makeCheckpointMarker(cp, true);
                 cpMarkers[cp.id].addTo(map);
             }
 
@@ -1128,16 +1304,28 @@ async function sendLocation({ lat, lng, accuracy, speed, altitude }) {
                         const btn = document.createElement('button');
                         btn.className = 'trk-facts-btn';
                         btn.innerHTML = '<i class="fas fa-book-open"></i> ' + cp.facts.length + ' facts';
-                        btn.onclick = () => openFactsPanelFor(cp.id);
+                        btn.onclick   = () => openFactsPanelFor(cp.id);
                         body.appendChild(btn);
                     }
                 }
             }
-
+            
             activeFacts = { cpId: cp.id, name: cp.name, facts: cp.facts };
-            showToast(cp.name, cp.facts && cp.facts.length ? cp.facts.length + ' facts unlocked — tap to read' : 'Checkpoint reached!', true);
+            const hasFacts = cp.facts && cp.facts.length > 0;
+            
+            showToast(
+                cp.name, 
+                hasFacts ? cp.facts.length + ' facts unlocked — tap to read' : 'Checkpoint reached!',
+                hasFacts
+            );
         }
-    } catch(e) {}
+        
+        return data;
+
+    } catch(e) { 
+        console.error("GPS Tracking Error:", e);
+        return null; 
+    }
 }
 
 function onGPSError(err) {
@@ -1152,23 +1340,30 @@ function setGPS(state, label) {
 }
 
 function showToast(title, sub, hasFacts) {
-    const el = document.getElementById('cpToast');
     document.getElementById('cpToastTitle').textContent = title;
-    document.getElementById('cpToastSub').textContent = sub;
+    document.getElementById('cpToastSub').textContent   = sub;
     document.getElementById('cpToastBtn').style.display = hasFacts ? '' : 'none';
+    const el = document.getElementById('cpToast');
     el.style.display = 'flex';
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { el.style.display = 'none'; }, 8000);
+}
+
+function openFactsPanel() {
+    if (!activeFacts) return;
+    openFactsPanelFor(activeFacts.cpId);
 }
 
 function openFactsPanelFor(cpId) {
     const cp = CPS.find(c => c.id === cpId);
     if (!cp) return;
     activeFacts = { cpId: cp.id, name: cp.name, facts: cp.facts };
+
     document.getElementById('factsCpName').textContent = cp.name;
+
     const body = document.getElementById('factsBody');
     if (!cp.facts || !cp.facts.length) {
-        body.innerHTML = '<p style="color:var(--color-text-light);text-align:center;padding:24px 0;">No facts available for this checkpoint.</p>';
+        body.innerHTML = '<p style="color:var(--color-text-light);text-align:center;padding:24px 0;">No facts for this checkpoint.</p>';
     } else {
         body.innerHTML = cp.facts.map(f => `
             <div class="fact-card type-${f.type}">
@@ -1180,13 +1375,10 @@ function openFactsPanelFor(cpId) {
             </div>
         `).join('');
     }
+
     document.getElementById('factsOverlay').style.display = 'block';
     document.getElementById('factsPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
-}
-
-function openFactsPanel() {
-    if (activeFacts) openFactsPanelFor(activeFacts.cpId);
 }
 
 function closeFactsPanel() {
@@ -1216,11 +1408,11 @@ function centerOnUser() {
 function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
     document.getElementById('trkSidebar').classList.toggle('collapsed', !sidebarOpen);
-    setTimeout(() => { if (map) map.invalidateSize(); }, 250);
 }
 
 function jumpTo(lat, lng) {
-    onPosition({ coords: { latitude: lat, longitude: lng, accuracy: 5, speed: 0, altitude: 0 }});
+    if (watchId) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+    onPosition({ coords: { latitude: lat, longitude: lng, accuracy: 5, speed: 0.5, altitude: 1400 }});
 }
 
 function formatDist(m) {
@@ -1229,24 +1421,39 @@ function formatDist(m) {
 
 function copyPin() {
     const pin = '{{ $booking->trackingPin->pin }}';
-    navigator.clipboard?.writeText(pin).then(() => showToast('PIN copied!', pin, false));
+    navigator.clipboard?.writeText(pin).then(() => showToast('PIN copied!', '', false));
 }
 
 function sharePin() {
     const pin = '{{ $booking->trackingPin->pin }}';
     if (navigator.share) {
-        navigator.share({ title: 'Track my trek live', text: 'Use this PIN to track me: ' + pin, url: '{{ route("tracking.pin.entry") }}' });
-    } else {
-        copyPin();
-    }
+        navigator.share({ title: 'Track my trek live with PAAILA', text: 'Use this PIN: ' + pin, url: '{{ route("tracking.pin.entry") }}' });
+    } else copyPin();
 }
 
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeFactsPanel();
+document.getElementById("eyeIcon").addEventListener('click', e=>{
+const pin = document.getElementById("pin");
+    const icon = document.getElementById("eyeIcon");
+
+    if (pin.textContent.trim() === "XXX XXX") {
+        pin.textContent = pin.dataset.code;
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+        pin.textContent = "XXX XXX";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
 });
 
-document.addEventListener('DOMContentLoaded', initMap);
-window.addEventListener('beforeunload', () => { if (watchId) navigator.geolocation.clearWatch(watchId); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFactsPanel(); });
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await initMap();
+    startGPS();
+});
+
+window.addEventListener('beforeunload', () => {
+    if (watchId) navigator.geolocation.clearWatch(watchId);
+});
 </script>
 @endpush
 @endsection
