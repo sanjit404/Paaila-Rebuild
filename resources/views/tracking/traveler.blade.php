@@ -108,7 +108,7 @@
         </div>
 
         <div class="trk-section">
-            <div class="trk-section-title"><i class="fas fa-satellite-dish"></i> GPS Info</div>
+            <div class="trk-section-title"><i class="fas fa-satellite-dish fa-beat-fade"></i> GPS Info </div>
             <div class="trk-gps-grid">
                 <div><span class="trk-gps-lbl">Accuracy</span><span class="trk-gps-val" id="gpsAccuracy">—</span></div>
                 <div><span class="trk-gps-lbl">Speed</span><span class="trk-gps-val" id="gpsSpeed">—</span></div>

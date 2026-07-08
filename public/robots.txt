@@ -1,2 +1,13 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /bookings
+Disallow: /preferences
+Disallow: /my-tour/
+Disallow: /payment/
+Disallow: /api/
+Disallow: /track/
+
+Sitemap: https://paaila.me/sitemap.xml

@@ -4,7 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Paaila') - Every Step Matters</title>
+    <title>@yield('title', 'Paaila') — Every Step Matters</title>
+    <meta name="description" content="@yield('meta_description', 'Paaila — Trek Nepal with real-time GPS tracking, live safety monitoring, and personalised trekking recommendations. Explore Everest, Annapurna, Langtang and more.')">
+    <meta name="keywords"    content="@yield('meta_keywords', 'Nepal trekking, Everest Base Camp, Annapurna trek, GPS tracking trek, Himalaya trekking, Paaila')">
+    <meta name="author"      content="Paaila">
+    <link rel="canonical"    href="{{ url()->current() }}">
+
+    {{-- Open Graph (Facebook, WhatsApp, LinkedIn) --}}
+    <meta property="og:type"        content="website">
+    <meta property="og:site_name"   content="Paaila">
+    <meta property="og:url"         content="{{ url()->current() }}">
+    <meta property="og:title"       content="@yield('og_title', 'Paaila — Trek Nepal with Live GPS Tracking')">
+    <meta property="og:description" content="@yield('og_description', 'Trek Nepal with confidence. Real-time GPS safety tracking, personalised recommendations, and expert-guided routes across the Himalayas.')">
+    <meta property="og:image"       content="@yield('og_image', asset('images/og-default.jpg'))">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale"      content="en_US">
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:site"        content="@paaila_me">
+    <meta name="twitter:title"       content="@yield('og_title', 'Paaila — Trek Nepal with Live GPS Tracking')">
+    <meta name="twitter:description" content="@yield('og_description', 'Trek Nepal with confidence. Real-time GPS safety tracking, personalised recommendations, and expert-guided routes.')">
+    <meta name="twitter:image"       content="@yield('og_image', asset('images/og-default.jpg'))">
+
+    {{-- Structured data: Organisation --}}
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Paaila",
+    "url": "https://paaila.me",
+    "logo": "https://paaila.me/images/paailaLogo.png",
+    "description": "Nepal trekking platform with real-time GPS tracking and live family safety monitoring.",
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "support@paaila.me",
+        "contactType": "customer support"
+    },
+    "sameAs": []
+    }
+    </script>
     <link rel="icon" href="{{ asset('images/paailaLogo.png') }}">
     <link rel="icon" type="image/x-icon"    href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/favicon-32x32.png') }}">
