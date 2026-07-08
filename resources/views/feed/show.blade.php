@@ -12,7 +12,7 @@
                 </a>
             </div>
 
-            <div class="card">
+            <div class="card" style="animation:none;">
                 @if($post->image)
                     <img 
                         src="{{ $post->image }}" 

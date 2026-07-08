@@ -155,7 +155,7 @@
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
                     @foreach($popularNow as $package)
-                        <x-package-card :package="$package" :show-score="false" />
+                        <x-trending-card :package="$package" :show-score="false" />
                     @endforeach
                 </div>
             </div>

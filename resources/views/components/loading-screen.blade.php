@@ -125,7 +125,7 @@ body.loader-active {
         'Loading trek routes...',
         'Exploring the mountains...',
         'Almost there...',
-        'Ready!'
+        'Loading'
     ];
 
     let current         = 0;

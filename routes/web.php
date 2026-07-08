@@ -12,11 +12,10 @@ use App\Http\Controllers\TrekRatingController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
-
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\SitemapController;
 
-
-
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/email/verification-status', function (Illuminate\Http\Request $request) {
     return response()->json([
         'verified' => $request->user()->hasVerifiedEmail(),

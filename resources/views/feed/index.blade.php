@@ -23,10 +23,9 @@
                 News
             </a>
             <a href="{{ route('feed.index', ['trending' => 1]) }}" 
-               class="filter-btn {{ request('trending') ? 'tactive' : '' }} shiny-tbg " style=" background:transparent;">
-                <i class="fas fa-fire" ></i> Trending
+               class="filter-btn {{ request('trending') ? 'tactive' : '' }} shiny-tbg" style="background: transparent;">
+                <i class="fas fa-fire"></i> Trending
             </a>
-            
         </div>
     </div>
 </section>
@@ -45,17 +44,18 @@
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);"></div>
                     
                     <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: var(--space-xl); color: white;">
-                            @if($highlighted->type=='news')
-                        <span class="badge badge-warning" style="background-color:#ff0000; margin-bottom: var(--space-md); font-size: 13px; animation:pulse 1s infinite;">
-                            <i class="fas fa-fire" style="color: #ffffff; "></i> 
-                                  <font color="#ffffff">HOT NEWS</font>
-                        </span>
-                            @else
-                        <span class="badge badge-warning shiny-bg" style="margin-bottom: var(--space-md); font-size: 13px; ">
-                            <i class="fas fa-star " style="color:white;"></i> 
-                                <font color="white">FEATURED OFFER</font>
-                        </span>
-                            @endif
+                        @if($highlighted->type == 'news')
+                            <span class="badge badge-warning" style="background-color: #ff0000; margin-bottom: var(--space-md); font-size: 13px; animation: pulse 1s infinite;">
+                                <i class="fas fa-fire" style="color: #ffffff;"></i> 
+                                <span style="color: #ffffff;">HOT NEWS</span>
+                            </span>
+                        @else
+                            <span class="badge badge-warning shiny-bg" style="margin-bottom: var(--space-md); font-size: 13px;">
+                                <i class="fas fa-star" style="color: white;"></i> 
+                                <span style="color: white;">FEATURED OFFER</span>
+                            </span>
+                        @endif
+
                         <h2 style="font-size: 32px; font-weight: 700; color: white; margin-bottom: var(--space-md); text-shadow: 0 2px 8px rgba(0,0,0,0.3);">
                             {{ $highlighted->title }}
                         </h2>
@@ -63,18 +63,16 @@
                             {{ Str::limit($highlighted->content, 150) }}
                         </p>
                         <div class="flex gap-md" style="align-items: center;">
-                            <a href="{{ route('feed.show', $highlighted) }}" class="btn btn-cta btn-sm" style="background-color:var(--color-primary-light)">
+                            <a href="{{ route('feed.show', $highlighted) }}" class="btn btn-cta btn-sm" style="background-color: var(--color-primary-light);">
                                 <i class="fas fa-eye"></i>
                                 View Details
                             </a>
                             
-                            @if($highlighted->type!='news')
-                            @if($highlighted->trek_id)
-                                <a href="{{ route('tours.show', $highlighted->trek_id) }}" class="btn btn-secondary btn-sm shiny-bg" style="border-color: white; color: white;background:transparent;">
+                            @if($highlighted->type != 'news' && $highlighted->trek_id)
+                                <a href="{{ route('tours.show', $highlighted->trek_id) }}" class="btn btn-secondary btn-sm shiny-bg" style="border-color: white; color: white; background: transparent;">
                                     <i class="fas fa-hiking"></i>
                                     Book Trek
                                 </a>
-                            @endif
                             @endif
                         </div>
                     </div>
@@ -82,19 +80,27 @@
             </div>
         @endif
 
+        <br><hr><br>
+        <h2>Latest Posts From Admin</h2>
+        <br>
+
         @if($posts->count() > 0)
-            <div class="grid grid-2" style="gap: var(--space-lg);">
+            <div class="grid grid-4" style="gap: var(--space-lg);">
                 @foreach($posts as $post)
-                    <div class="card feed-card">
-                        <a href="{{ route('feed.show', $post) }}" style="text-decoration:none;">
-                        <!-- Image -->
+                @php
+                    $postHasLiked = in_array($post->id, $likedPostIds);
+                @endphp
+
+                <div class="card feed-card" >
                         <div style="position: relative; overflow: hidden; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
                             <img 
                                 src="{{ $post->image ?: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600' }}" 
                                 alt="{{ $post->title }}"
                                 style="width: 100%; height: 200px; object-fit: cover; transition: transform 0.3s ease;"
                                 class="feed-card-image"
+                                data-post-id="{{ $post->id }}"
                             >
+                    <a href="{{ route('feed.show', $post) }}" style="text-decoration: none;">
                             
                             <div style="position: absolute; top: var(--space-md); left: var(--space-md);">
                                 @if($post->type === 'trek')
@@ -113,39 +119,44 @@
                             </div>
                         </div>
 
+                        <button 
+                            type="button"
+                            onclick="toggleLike({{ $post->id }})"
+                            id="likeBtn-{{ $post->id }}"
+                            class="like-btn {{ $postHasLiked ? 'liked' : '' }}"
+                        >
+                            <i class="{{ $postHasLiked ? 'fas' : 'far' }} fa-heart like-icon"></i>
+                            <span id="likesCount-{{ $post->id }}" class="like-count">
+                                {{ $post->likes_count }}
+                            </span>
+                        </button>
+
                         <div class="card-body">
                             <h3 style="font-size: 16px; font-weight: 700; margin-bottom: var(--space-sm); color: var(--color-text);">
-                                {{ Str::limit($post->title, 60) }}
+                                {{ Str::limit($post->title, 50) }}
                             </h3>
                             <p style="font-size: 14px; color: var(--color-text-light); margin-bottom: var(--space-md); line-height: 1.6;">
-                                {{ Str::limit(strip_tags($post->content), 100) }}
+                                {{ Str::limit(strip_tags($post->content), 80) }}
                             </p>
 
-                            <div class="flex gap-lg" style="margin-bottom: var(--space-md); font-size: 13px; color: var(--color-text-light);">
-                                <div class="flex" style="align-items: center; gap: 4px;">
-                                    <i class="fas fa-heart" style="color: {{ in_array($post->id, $likedPostIds) ? '#E53935' : 'currentColor' }};"></i>
-                                    <span>{{ $post->likes_count }}</span>
-                                </div>
+                                @if($post->trek_id)
+                            <div class="feed-card-footer">
+
+                                    <div class="trek-cta">
+                                        <span class="trek-label">
+                                            Includes trek
+                                        </span>
+                                        <a href="{{ route('tours.show', $post->trek_id) }}" class="btn btn-cta btn-sm" style="background: var(--color-primary-dark);">
+                                            View Trek
+                                        </a>
+                                    </div>
                             </div>
 
-                            
-                                
-                                
-                                @if($post->trek_id)
-                                <span style="font-size: 14px; color: var(--color-text-light); margin-bottom: var(--space-md); line-height: 1.6;">
-                                This post includes a trek
-                            </span>
-                                    <a href="{{ route('tours.show', $post->trek_id) }}" class="btn btn-cta btn-sm"
-                                    style="background: var(--color-primary-dark)">
-                                        Book Now
-                                    </a>
                                 @endif
-                            
                         </div>
-                                </a>
-
-                    </div>
-                @endforeach
+                    </a>
+                </div>
+            @endforeach
             </div>
 
             <div style="margin-top: var(--space-xl);">
@@ -162,6 +173,7 @@
         @endif
     </div>
 </section>
+@endsection
 
 @push('styles')
 <style>
@@ -191,13 +203,18 @@
         border-color: var(--color-primary);
         color: white;
     }
-.filter-btn.tactive {
+
+    .filter-btn.tactive {
         background: var(--color-primary);
         border-color: var(--color-primary);
         color: var(--color-primary);
     }
+
     .feed-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
     .feed-card:hover {
@@ -213,85 +230,224 @@
         0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.7); }
         50% { box-shadow: 0 0 0 20px rgba(255, 0, 0, 0.28); }
         100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
-
     }
-    
-   
-.shiny-bg {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(120deg, #0e8216, #2d8916, #297b20);
-}
 
-.shiny-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -150%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    transform: skewX(-25deg);
-    animation: shine 2.5s infinite;
-}
+    .shiny-bg {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(120deg, #0e8216, #2d8916, #297b20);
+    }
 
-.shiny-tag {
-    position: relative;
-    overflow: hidden;
-}
-
-.shiny-tag::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -150%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    transform: skewX(-25deg);
-    animation: shine 2.5s infinite;
-}
-.shiny-tbg {
-    position: relative;
-    overflow: hidden;
-}
-
-.shiny-tbg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -150%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(55, 255, 0, 0.4) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    transform: skewX(-25deg);
-    animation: shine 2s infinite;
-}
-
-@keyframes shine {
-    0% {
+    .shiny-bg::before {
+        content: "";
+        position: absolute;
+        top: 0;
         left: -150%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: skewX(-25deg);
+        animation: shine 2.5s infinite;
     }
-    100% {
-        left: 150%;
-    }
-}
 
+    .shiny-tag {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shiny-tag::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: skewX(-25deg);
+        animation: shine 2.5s infinite;
+    }
+
+    .shiny-tbg {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shiny-tbg::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(55, 255, 0, 0.4) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: skewX(-25deg);
+        animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+        0% {
+            left: -150%;
+        }
+        100% {
+            left: 150%;
+        }
+    }
+
+    .feed-card-footer {
+        justify-content: space-between;
+        align-items: center;
+        padding-top: var(--space-sm);
+        margin-top: var(--space-md);
+        border-top: 1px solid #E0E0E0;
+    }
+
+    .like-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border: none;
+        background: transparent;
+        color: var(--color-text-light);
+        cursor: pointer;
+        border-radius: 999px;
+        transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .like-btn:hover {
+        background: rgba(229, 57, 53, 0.08);
+    }
+
+    .like-btn:active {
+        transform: scale(0.95);
+    }
+
+    .like-icon {
+        font-size: 15px;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .like-count {
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+    .like-btn.liked .like-icon,
+    .like-btn.liked .like-count {
+        color: #E53935;
+    }
+
+    .like-btn.liked .like-icon {
+        transform: scale(1.2);
+    }
+
+    @keyframes like-pop {
+        0%   { transform: scale(0.8); }
+        50%  { transform: scale(1.3); }
+        100% { transform: scale(1); }
+    }
+
+    .like-btn.liked.animate .like-icon {
+        animation: like-pop 0.2s ease-out;
+    }
+
+    .trek-cta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .trek-label {
+        font-size: 13px;
+        color: var(--color-text-light);
+    }
 </style>
 @endpush
-@endsection
+
+@push('scripts')
+<script>
+  async function toggleLike(postId) {
+    const btn = document.getElementById(`likeBtn-${postId}`);
+    const likesSpan = document.getElementById(`likesCount-${postId}`);
+
+    if (!btn || !likesSpan) return;
+
+    try {
+        const response = await fetch(`/feed/${postId}/like`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const isLiked = data.action === 'liked';
+
+            btn.classList.toggle('liked', isLiked);
+
+            const icon = btn.querySelector('.like-icon');
+            if (icon) {
+                icon.classList.remove('fas', 'far');
+                icon.classList.add(isLiked ? 'fas' : 'far');
+
+                if (isLiked) {
+                    btn.classList.add('animate');
+                    setTimeout(() => btn.classList.remove('animate'), 250);
+                }
+            }
+
+            likesSpan.textContent = data.likes_count;
+        }
+    } catch (error) {
+        console.error('Like error:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('.feed-card-image[data-post-id]');
+
+    let lastTapTime = 0;
+    const DOUBLE_TAP_DELAY = 400; 
+
+    images.forEach(img => {
+        const postId = img.getAttribute('data-post-id');
+
+        function handleTap(e) {
+            const currentTime = Date.now();
+            const tapLength = currentTime - lastTapTime;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (tapLength > 0 && tapLength < DOUBLE_TAP_DELAY) {
+                toggleLike(postId);
+            }
+
+            lastTapTime = currentTime;
+        }
+
+        img.addEventListener('click', handleTap);
+        img.addEventListener('touchstart', handleTap);
+    });
+});
+</script>
+@endpush

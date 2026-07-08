@@ -2,6 +2,7 @@
 
 A complete rebuild of the Paaila project with a new technology stack, improved architecture, and enhanced features focused on scalability, performance, and real-time tracking reliability.
 
+[View Site](https://paaila.me)
 ---
 
 ## About
@@ -70,3 +71,7 @@ This version introduces major system-level improvements along with new features 
 - [kushal-KRB](https://github.com/kushal-KRB)
 - [Sumanadk7](https://github.com/Sumanadk7)
 
+
+# Copyright
+
+Copyright © PAAILA 2026. All rights reserved.
