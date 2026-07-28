@@ -13,7 +13,8 @@ class DatabaseSeeder extends Seeder
             // TourPackagesTableSeeder::class,
             // CheckpointsTableSeeder::class,
             PgSeeder::class,
-            PostSeeder::class
+            PostSeeder::class,
+            ChitwanPokharaSeeder::class
         ]);
     }
 }

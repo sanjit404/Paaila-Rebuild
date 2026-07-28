@@ -149,7 +149,7 @@
                     <label class="terms-label">
                         <input type="checkbox" name="terms" required>
                         <span class="terms-box"></span>
-                        <span>I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a></span>
+                        <span>I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy </a>*</span>
                     </label>
                 </div>
 

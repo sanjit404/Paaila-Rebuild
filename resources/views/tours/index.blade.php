@@ -12,7 +12,7 @@
                 <img src="{{ asset('images/Flag_of_Nepal.gif') }}" alt="Paaila logo" class="hero-logo-img ">
             </div>
 
-            <p class="hero-tagline tangerine-regular">because every step matters</p>
+            <p class="hero-tagline tangerine-regular">Every step matters</p>
             <div class="hero-rule" aria-hidden="true"></div>
 
             <p class="hero-desc">
