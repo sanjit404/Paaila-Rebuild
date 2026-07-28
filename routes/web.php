@@ -21,6 +21,11 @@ Route::get('/email/verification-status', function (Illuminate\Http\Request $requ
         'verified' => $request->user()->hasVerifiedEmail(),
     ]);
 })->middleware('auth');
+Route::get('/owner', function (Illuminate\Http\Request $request) {
+    return response()->json([
+        'Owner' => 'Sanjit',
+    ]);
+})->middleware('auth');
 
 Route::get('/', [TourPackageController::class, 'index'])->name('home');
 

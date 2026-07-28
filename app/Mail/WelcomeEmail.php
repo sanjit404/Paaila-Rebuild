@@ -20,7 +20,7 @@ class WelcomeEmail extends Mailable
     {
         return new Envelope(
             from: new Address('info@paaila.me', 'Paaila Info'),
-            subject: "Welcome to Paaila ! You account is now active. ",
+            subject: "Welcome to Paaila ! Verify your email to activate your account. ",
         );
     }
 
