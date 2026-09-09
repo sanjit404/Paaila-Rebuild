@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 class TourPackageController extends Controller
 {
     
-    public function index()
+   public function index()
     {
         $packages = TourPackage::where('is_active', true)
             ->withCount('checkpoints')
+            ->withCount(['alerts as active_alerts_count' => fn($q) => $q->active()])
             ->latest()
             ->get();
 
@@ -28,7 +29,7 @@ class TourPackageController extends Controller
         return view('tours.foryou', compact('packages'));
     }
     
-    public function show(TourPackage $package)
+public function show(TourPackage $package)
 {
     $package->load(['checkpoints.facts']);
 
@@ -53,7 +54,23 @@ class TourPackageController extends Controller
             ->get();
     }
 
-    return view('tours.show', compact('package', 'ratings', 'packageImages'));
+    $weatherLocations = [
+        'start' => ['lat' => $package->start_lat, 'lng' => $package->start_lng],
+    ];
+
+    foreach ($package->checkpoints as $checkpoint) {
+        $weatherLocations['checkpoint_' . $checkpoint->id] = [
+            'lat' => (float) $checkpoint->latitude,
+            'lng' => (float) $checkpoint->longitude,
+        ];
+    }
+
+    $weatherLocations['end'] = ['lat' => $package->end_lat, 'lng' => $package->end_lng];
+
+    $weather = \App\Services\WeatherService::forLocations($weatherLocations);
+    $activeAlerts = $package->alerts()->active()->with(['checkpoint', 'updates'])->get();
+
+    return view('tours.show', compact('package', 'ratings', 'packageImages', 'weather', 'activeAlerts'));
 }
 
     

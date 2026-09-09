@@ -21,11 +21,6 @@ Route::get('/email/verification-status', function (Illuminate\Http\Request $requ
         'verified' => $request->user()->hasVerifiedEmail(),
     ]);
 })->middleware('auth');
-Route::get('/owner', function (Illuminate\Http\Request $request) {
-    return response()->json([
-        'Owner' => 'Sanjit',
-    ]);
-})->middleware('auth');
 
 Route::get('/', [TourPackageController::class, 'index'])->name('home');
 
@@ -120,6 +115,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
     Route::get('/posts/{post}/edit', [AdminController::class, 'editPost'])->name('posts.edit');
     Route::put('/posts/{post}', [AdminController::class, 'updatePost'])->name('posts.update');
     Route::delete('/posts/{post}', [AdminController::class, 'deletePost'])->name('posts.delete');
+
+    Route::post('/packages/{package}/alerts', [AdminController::class, 'addAlert'])->name('alerts.add');
+    Route::post('/alerts/{alert}/updates', [AdminController::class, 'addAlertUpdate'])->name('alerts.updates.add');
+    Route::post('/alerts/{alert}/resolve', [AdminController::class, 'resolveAlert'])->name('alerts.resolve');
 });
 
 require __DIR__ . '/auth.php';

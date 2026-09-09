@@ -665,4 +665,37 @@ class AdminController extends BaseController
             return back()->with('error', 'Failed to delete post.');
         }
     }
+    public function addAlert(Request $request, TourPackage $package)
+    {
+        $validated = $request->validate([
+            'title'         => 'required|string|max:255',
+            'description'   => 'required|string',
+            'severity'      => 'required|in:info,warning,danger',
+            'checkpoint_id' => 'nullable|exists:checkpoints,id',
+        ]);
+
+        $validated['tour_package_id'] = $package->id;
+        $validated['status'] = 'active';
+
+        \App\Models\TrekAlert::create($validated);
+
+        return back()->with('success', 'Alert published.');
+    }
+
+    public function addAlertUpdate(Request $request, \App\Models\TrekAlert $alert)
+    {
+        $validated = $request->validate(['message' => 'required|string']);
+
+        $alert->updates()->create($validated);
+
+        return back()->with('success', 'Update posted.');
+    }
+
+    public function resolveAlert(\App\Models\TrekAlert $alert)
+    {
+        $alert->update(['status' => 'resolved']);
+        $alert->updates()->create(['message' => 'This alert has been marked as resolved.']);
+
+        return back()->with('success', 'Alert marked resolved.');
+    }
 }

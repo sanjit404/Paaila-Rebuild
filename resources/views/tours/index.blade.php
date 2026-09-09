@@ -9,16 +9,28 @@
             <div class="hero-logo-row">
                 <img src="{{ asset('images/paailaLogo.png') }}" alt="Paaila logo" class="hero-logo-img ">
                 <h1 class="hero-wordmark almendra-bold">Paaila </h1>
-                <img src="{{ asset('images/Flag_of_Nepal.gif') }}" alt="Paaila logo" class="hero-logo-img ">
+                <!-- <img src="{{ asset('images/Flag_of_Nepal.gif') }}" alt="Paaila logo" class="hero-logo-img "> -->
+                <img src="{{ asset('images/peace.gif') }}" alt="Paaila logo" class="hero-logo-img ">
             </div>
 
-            <p class="hero-tagline tangerine-regular">Every step matters</p>
+            <p class="hero-tagline tangerine-regular">
+                With every hearts out there
+            </p>
             <div class="hero-rule" aria-hidden="true"></div>
 
             <p class="hero-desc">
-                Explore Nepal with planned treks,
+                <!-- Explore Nepal with planned treks,
                 real-time tracking, and experiences designed to keep every journey 
-                meaningful, and unforgettable <i class="fas fa-solid fa-heart"></i>
+                meaningful, and unforgettable -->
+                To all those affected by the floods of August 26 —
+                To every family who has lost a father, a mother, a child, a
+                neighbor — our hearts are broken with yours. We hold your names in silence. To those still searching
+                for missing loved ones — we pray every hour that you will be found.
+
+                The mountains will heal. The rivers will calm. And we will be here — walking beside you, step by step.
+
+                With deepest sorrow and unwavering solidarity,
+                The Paaila Team <i class="fas fa-solid fa-heart"></i>
             </p>
 
             <div class="hero-rule" aria-hidden="true"></div>

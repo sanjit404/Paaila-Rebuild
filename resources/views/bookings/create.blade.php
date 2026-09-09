@@ -41,6 +41,19 @@
                         <div style="font-size: 36px; font-weight: 700;">Rs. {{ number_format($package->price, 0) }}</div>
                         <div style="opacity: 0.9;">per person</div>
                     </div>
+
+                    @if($activeAlerts->isNotEmpty())
+                    <div style="border-top: 1px solid rgba(255,255,255,0.3);"><br>
+                        <div>
+                            <p style="font-size: 14px; color: white; margin-bottom:0px; font-weight:900">NOTICES:</p> 
+                            @foreach($activeAlerts as $alert)
+                                <div style="color:white; margin-top:0px;" >- {{ $alert->title }}  <small>(Reported {{ $alert->created_at->diffForHumans() }})</small></div>
+                            @endforeach
+                            <br>
+                            <small style="color:white;">(Make sure to read all information before making any bookings.)</small>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
 

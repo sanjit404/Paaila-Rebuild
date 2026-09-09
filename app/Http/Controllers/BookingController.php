@@ -38,7 +38,10 @@ class BookingController extends Controller
                 ]);
         }
 
-        return view('bookings.create', compact('package'));
+        $activeAlerts = $package->alerts()->active()->with(['checkpoint', 'updates'])->get();
+
+
+        return view('bookings.create', compact('package','activeAlerts'));
     }
 
   

@@ -54,7 +54,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
@@ -291,6 +291,46 @@
             justify-content: center;
         }
 
+        .global-alert-ticker {
+            background: var(--color-primary-dark);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: 8px var(--space-lg);
+            overflow: hidden;
+        }
+
+        .global-alert-ticker__icon { flex-shrink: 0; font-size: 15px; }
+
+        .global-alert-ticker__track { flex: 1; overflow: hidden; }
+
+        .global-alert-ticker__inner {
+            display: flex;
+            gap: 40px;
+            white-space: nowrap;
+            width: max-content;
+            animation: ticker-scroll 22s linear infinite;
+        }
+
+        .global-alert-ticker__inner--static {
+            animation: none;
+        }
+
+        .global-alert-ticker__item {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .global-alert-ticker__item:hover { text-decoration: underline; }
+
+        @keyframes ticker-scroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
         .btn {
             display: inline-flex;
             align-items: center;
@@ -499,6 +539,23 @@
     @stack('styles')
 </head>
 <body>
+@if($globalActiveAlerts->isNotEmpty())
+<div class="global-alert-ticker">
+    <div class="global-alert-ticker__icon"> <i class="fas fa-triangle-exclamation fa-beat-fade"></i></div>
+    <div class="global-alert-ticker__track">
+        <div class="global-alert-ticker__inner {{ $globalActiveAlerts->count() === 1 ? 'global-alert-ticker__inner--static' : '' }}">
+            @php $loops = $globalActiveAlerts->count() === 1 ? 1 : 2; @endphp
+            @for($i = 0; $i < $loops; $i++)
+                @foreach($globalActiveAlerts as $alert)
+                    <a href="{{ route('tours.show', $alert->tour_package_id) }}#trekAlerts" class="global-alert-ticker__item">
+                        <strong>{{ $alert->tourPackage->name }}:</strong> {{ $alert->title }}
+                    </a>
+                @endforeach
+            @endfor
+        </div>
+    </div>
+</div>
+@endif
 @include('components.loading-screen')
     <nav class="navbar">
     <div class="navbar-container">

@@ -31,7 +31,13 @@ class AppServiceProvider extends ServiceProvider
                     ->where('status', 'active')
                     ->first();
             }
+            $globalActiveAlerts = \App\Models\TrekAlert::active()->whereIn('severity', ['warning', 'danger'])
+                    ->with('tourPackage:id,name')
+                    ->latest()
+                    ->take(5)
+                    ->get();
 
+            $view->with('globalActiveAlerts', $globalActiveAlerts);
             $view->with('activeBooking', $activeBooking);
         });
     }

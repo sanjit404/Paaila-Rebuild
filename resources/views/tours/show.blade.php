@@ -21,18 +21,66 @@
                 <span class="diff-badge diff-badge--hard"><i class="fas fa-mountain"></i> Hard</span>
             @endif
             <span class="trek-type-badge">{{ ucfirst($package->trek_type) }}</span>
+            @php $startWeather = $weather['start'] ?? null; @endphp
+            @if($startWeather)
+                <span class="trek-type-badge hstat" style="color:white;">
+                    <i class="fa fa-solid  fa-beat-fade {{ $startWeather['icon'] }}"></i> {{ $startWeather['temperature'] }}°C {{ $startWeather['label'] }} 
+                    @if( $startWeather['wind_speed']!=0)
+                    <i class="fas fa-wind fa-float"></i>{{ $startWeather['wind_speed'] }} km/h
+                    @endif
+                    <i class="fas fa-smog fa-jello"></i>{{ $startWeather['humidity'] }}%
+                </span>
+            @endif
         </div>
         <h1 class="trek-hero__title">{{ $package->name }}</h1>
     </div>
 </section>
 
+@if($activeAlerts->isNotEmpty())
+<section id="trekAlerts" style="background: var(--color-bg);">
+    <div class="container" style="padding-top: var(--space-lg);">
+        @foreach($activeAlerts as $alert)
+            <div class="trek-alert trek-alert--{{ $alert->severity }}">
+                <div class="trek-alert__header">
+                    <i class="fas {{ $alert->severity_icon }}"></i>
+                    <div>
+                        <div class="trek-alert__title">{{ $alert->title }}</div>
+                        <div class="trek-alert__meta">
+                            {{ ucfirst($alert->status) }} · Reported {{ $alert->created_at->diffForHumans() }}
+                            @if($alert->checkpoint)
+                                · Near {{ $alert->checkpoint->name }}
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <p class="trek-alert__desc">{{ $alert->description }}</p>
+
+                @if($alert->updates->isNotEmpty())
+                    <div class="trek-alert__updates">
+                        <div class="trek-alert__updates-label">
+                            <i class="fas fa-tower-broadcast"></i> Latest updates
+                        </div>
+                        @foreach($alert->updates as $update)
+                            <div class="trek-alert__update">
+                                <span class="trek-alert__update-time">{{ $update->created_at->diffForHumans() }}</span>
+                                <span class="trek-alert__update-msg">{{ $update->message }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endforeach
+    </div>
+</section>
+@endif
 
 <div class="trek-body">
     <div class="container trek-layout">
 
         <div class="trek-main">
             <a href="{{ route('home') }}" class="trek-back-link">
-                        <i class="fas fa-arrow-left"></i> Back to Treks
+                <i class="fas fa-arrow-left"></i> Back to Treks
             </a>
             <div class="content-block">
                
@@ -71,6 +119,24 @@
                     <small>({{ $package->rating_count }})</small>
                 </span>
             </div>
+            @php $startWeather = $weather['start'] ?? null; @endphp
+            @if($startWeather)
+                <div class="hstat">
+                    <i class="fas {{ $startWeather['icon'] }} "></i>
+                    <span style="text-transform:Capitalize;">{{ $startWeather['temperature'] }}°C {{ $startWeather['label'] }}</span>
+                </div>
+
+                <div class="hstat">
+                    <i class="fas fa-wind"></i>
+                    <span style="text-transform:Capitalize;">{{ $startWeather['wind_speed'] }} km/h</span>
+                </div>   
+                
+                <div class="hstat">
+                    <i class="fas fa-smog"></i>
+                    <span style="text-transform:Capitalize;">{{ $startWeather['humidity'] }}%</span>
+                </div>   
+
+            @endif
             
 
         @if(!empty($package->season))
@@ -318,12 +384,22 @@
                                 <div class="cp-card">
                                     <div class="cp-card__header">
                                         <h3 class="cp-card__title">{{ $checkpoint->name }}</h3>
-                                        @if($checkpoint->estimated_time_from_previous)
-                                            <div class="cp-card__time">
-                                                <i class="fas fa-clock"></i>
-                                                {{ $checkpoint->estimated_time_from_previous }} from prev
-                                            </div>
-                                        @endif
+                                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                            @php $cpWeather = $weather['checkpoint_' . $checkpoint->id] ?? null; @endphp
+                                            @if($cpWeather)
+                                                <div class="cp-card__weather">
+                                                    <i class="fas {{ $cpWeather['icon'] }}"></i>
+                                                    {{ $cpWeather['temperature'] }}°C
+                                                    <span class="cp-card__weather-label">{{ $cpWeather['label'] }}</span>
+                                                </div>
+                                            @endif
+                                            @if($checkpoint->estimated_time_from_previous)
+                                                <div class="cp-card__time">
+                                                    <i class="fas fa-clock"></i>
+                                                    {{ $checkpoint->estimated_time_from_previous }} from prev
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
 
                                     @if($checkpoint->image)
@@ -746,6 +822,105 @@
     color: white;
 }
 
+.trek-alert {
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg) var(--space-xl);
+    margin-bottom: var(--space-lg);
+    border-left: 6px solid;
+    background: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.trek-alert--danger  { 
+    border-color: #D32F2F; 
+    background: #FFF5F5; 
+}
+
+.trek-alert--warning { 
+    border-color: #F57C00; 
+    background: #FFFAF0; 
+}
+
+.trek-alert--info    { 
+    border-color: #1976D2;
+    background: #F3F9FF; 
+}
+
+.trek-alert__header { 
+    display: flex; 
+    align-items: flex-start; 
+    gap: var(--space-md); 
+    margin-bottom: var(--space-sm); 
+}
+
+.trek-alert--danger .trek-alert__header i  { 
+    color: #D32F2F; 
+    font-size: 22px; 
+}
+
+.trek-alert--warning .trek-alert__header i { 
+    color: #F57C00; 
+    font-size: 22px; 
+}
+
+.trek-alert--info .trek-alert__header i    { 
+    color: #1976D2; 
+    font-size: 22px; 
+}
+
+.trek-alert__title { 
+    font-size: 17px; 
+    font-weight: 700; 
+    color: var(--color-text); 
+}
+
+.trek-alert__meta  { 
+    font-size: 12px; 
+    color: var(--color-text-light); 
+    margin-top: 2px; 
+    text-transform: capitalize; 
+}
+
+.trek-alert__desc  { 
+    font-size: 14px; 
+    color: var(--color-text-light); 
+    line-height: 1.7; 
+    margin: 0 0 var(--space-md); 
+}
+
+.trek-alert__updates { 
+    border-top: 1px dashed rgba(0,0,0,0.1); 
+    padding-top: var(--space-md); 
+}
+
+.trek-alert__updates-label {
+    font-size: 12px; 
+    font-weight: 700; 
+    text-transform: uppercase;
+    letter-spacing: 0.05em; 
+    color: var(--color-text-light); 
+    margin-bottom: var(--space-sm);
+}
+
+.trek-alert__update {
+    display: flex; 
+    gap: var(--space-md); 
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.trek-alert__update:last-child { 
+    border-bottom: none;
+ }
+ 
+.trek-alert__update-time { 
+    flex-shrink: 0; 
+    color: var(--color-text-light); 
+    font-weight: 600; 
+    min-width: 90px; 
+}
+
 .map-wrapper {
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -837,6 +1012,24 @@
     align-items: center;
     flex-shrink: 0;
     width: 44px;
+}
+.cp-card__weather {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1565C0;
+    background: #E3F2FD;
+    padding: 3px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.cp-card__weather-label {
+    font-weight: 500;
+    color: #546E7A;
+    margin-left: 2px;
 }
 
 .cp-number {

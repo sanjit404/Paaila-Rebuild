@@ -461,6 +461,50 @@
                     @endforelse
                 </div>
             </div>
+            <div class="form-card">
+    <div class="card-header"><h3><i class="fas fa-triangle-exclamation"></i> Trek Alerts</h3></div>
+
+    <form method="POST" action="{{ route('admin.alerts.add', $package) }}" class="checkpoint-form">
+        @csrf
+        <div class="form-group"><label>Title *</label><input type="text" name="title" required></div>
+        <div class="form-group"><label>Description *</label><textarea name="description" rows="3" required></textarea></div>
+        <div class="form-group">
+            <label>Severity *</label>
+            <select name="severity" required>
+                <option value="info">Info</option>
+                <option value="warning" selected>Warning</option>
+                <option value="danger">Danger</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Near Checkpoint (optional)</label>
+            <select name="checkpoint_id">
+                <option value="">None</option>
+                @foreach($package->checkpoints as $cp)
+                    <option value="{{ $cp->id }}">{{ $cp->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Publish Alert</button>
+    </form>
+
+    @foreach($package->alerts as $alert)
+        <div class="checkpoint-item">
+            <strong>{{ $alert->title }}</strong> — {{ ucfirst($alert->status) }} ({{ ucfirst($alert->severity) }})
+            <form method="POST" action="{{ route('admin.alerts.updates.add', $alert) }}">
+                @csrf
+                <input type="text" name="message" placeholder="Post a follow-up update..." required>
+                <button type="submit" class="btn btn-primary btn-sm">Post Update</button>
+            </form>
+            @if($alert->status !== 'resolved')
+                <form method="POST" action="{{ route('admin.alerts.resolve', $alert) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-secondary btn-sm">Mark Resolved</button>
+                </form>
+            @endif
+        </div>
+    @endforeach
+</div>
         </div>
 
         <div class="edit-sidebar">
