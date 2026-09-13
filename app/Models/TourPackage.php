@@ -76,4 +76,8 @@ class TourPackage extends Model
 
         return $coordinates;
     }
+    public function alerts(): HasMany
+    {
+    return $this->hasMany(TrekAlert::class)->latest();
+    }
 }

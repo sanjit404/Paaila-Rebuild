@@ -34,22 +34,15 @@
                      onmouseout="this.style.transform='scale(1)'">
             @endif
 
-            {{-- Difficulty --}}
-            <div style="position: absolute; top: 10px; left: 10px;">
-                @php
-                    $diffColor = match($package->difficulty_level) {
-                        'easy'     => '#2E7D32',
-                        'moderate' => '#F57C00',
-                        'hard'     => '#D32F2F',
-                        default    => '#546E7A',
-                    };
-                @endphp
-                <span class="pkg-difficulty"
-                      style="background: rgba(0,0,0,0.55); color: white;
-                             padding: 3px 10px; border-radius: 20px;
-                             font-size: 11px; font-weight: 600;
-                             text-transform: capitalize;
-                             backdrop-filter: blur(4px);">
+            <div style="position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+                @if(($package->active_alerts_count ?? 0) > 0)
+                    <x-trek-alert-badge :count="$package->active_alerts_count" />
+                @endif
+                <span style="background: rgba(0,0,0,0.55); color: white;
+                            padding: 3px 10px; border-radius: 20px;
+                            font-size: 11px; font-weight: 600;
+                            text-transform: capitalize;
+                            backdrop-filter: blur(4px);">
                     {{ $package->difficulty_level }}
                 </span>
             </div>
